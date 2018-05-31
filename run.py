@@ -3,7 +3,7 @@
 # used to start the created app
 
 from ustutor import create_app
-from ustutor import config
+from config import settings
 import optparse
 
 
@@ -13,7 +13,6 @@ def process_options(config, default_host="0.0.0.0",
     Takes a flask.Flask instance and runs it. Parses
     command-line flags to configure the app.
     """
-
     # Set up the command-line options
     parser = optparse.OptionParser()
     parser.add_option("-H", "--host",
@@ -50,9 +49,9 @@ def process_options(config, default_host="0.0.0.0",
 
 
 # build options to setup config
-options = process_options(config)
+options = process_options(settings)
 # create app using config
-app = create_app(config)
+app = create_app(settings)
 
 
 if __name__ == '__main__':

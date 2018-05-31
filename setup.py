@@ -1,0 +1,1 @@
+./target/dist/ustutorbk-0.1/setup.py

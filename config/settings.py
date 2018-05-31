@@ -3,6 +3,9 @@ import os
 SECRET_KEY = '123'
 
 DEBUG = True
+
+DEBUG_LOGPATH = '/var/ustutor-debug.log'
+
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
 USERNAME = 'root'

@@ -98,7 +98,13 @@ def create_app(config):
                         break
 
     def init_logging(app):
-        file_handler = FileHandler("debug.log")
+        # check log file, if not exist create
+        basedir = os.path.dirname(app.config['DEBUG_LOGPATH'])
+        if not os.path.exists(basedir):
+            os.makedirs(basedir)
+        open(app.config['DEBUG_LOGPATH'], 'a').close()
+        # pass config log path to handler
+        file_handler = FileHandler(app.config['DEBUG_LOGPATH'])
         file_handler.setLevel(logging.DEBUG)
         format = '[%(asctime)s] %(levelname)s %(name)s [%(filename)s:%(' \
                  'funcName)s:%(lineno)d]: %(message)s'
