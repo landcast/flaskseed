@@ -1,0 +1,189 @@
+#!/usr/bin/env python
+from flask import g, jsonify, Blueprint, request, make_response, current_app
+from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
+from sqlalchemy.sql import *
+import jwt
+import random
+
+from ustutor.models import db, session_scope, user_source, SmsLog
+from ustutor.service import send_email, redis_store
+
+BEARER_TOKEN = ' Bearer '
+
+auth = Blueprint('auth', __name__)
+
+
+@auth.route('/login', methods=['POST'])
+def login():
+    user_name = request.json['username']
+    password = request.json['password']
+    user_type = request.json['usertype']
+    with session_scope(db) as session:
+        user = session.query(user_source[user_type]).filter_by(
+            username=user_name).first()
+    if user:
+        # check password
+        if check_password_hash(getattr(user, 'password', ''), password):
+            token = generate_jwt_token(current_app.config['JWT_HEADER'],
+                                       user_name)
+            return jsonify(token)
+        else:
+            return jsonify({'message': 'password check failed!'}), 401
+    else:
+        return jsonify({'message': user_name + ' not found!'}), 401
+
+
+@auth.route('/logout')
+def logout():
+    return jsonify('')
+
+
+@auth.route('/register', methods=['POST'])
+def register():
+    current_app.logger.debug(request.json)
+    user_name = request.json['username']
+    user_type = request.json['usertype']
+    verify_code = request.json['verify_code']
+    check_target = redis_store.get('VC:' + user_name).decode('utf8')
+    current_app.logger.debug(verify_code + ' ' + check_target + ' ' +
+                             str(verify_code != check_target))
+    if verify_code != check_target:
+        return jsonify({'message': 'verify code check failed'}), 401
+    target_table = user_source[user_type]
+    with session_scope(db) as session:
+        # check existing username in all 3 tables
+        found = False
+        message = ''
+        for table_checked in user_source.values():
+            result = session.execute(select([table_checked]).where(
+                table_checked.username == user_name))
+            current_app.logger.debug("table_checked.__name__ " +
+                                     str(table_checked.__name__))
+            row1 = result.first()
+            message = table_checked.__name__ if (
+                    row1 is not None) else ''
+            found = found or (row1 is not None)
+        if found:
+            result.close()
+            return jsonify({
+                "error": "found {0} existing in {1}".format(
+                    user_name,
+                    message)
+            }), 500
+        # check if username is mobile or email, the mobile or email
+        # should be unique in all 3 tables
+        if '@' in user_name:
+            for table_checked in user_source.values():
+                result = session.execute(select([table_checked]).where(
+                    table_checked.email == user_name))
+                row1 = result.first()
+                message = table_checked.__name__ + ' email' if (
+                        row1 is not None) else ''
+                found = found or (row1 is not None)
+        else:
+            for table_checked in user_source.values():
+                result = session.execute(select([table_checked]).where(
+                    table_checked.mobile == user_name))
+                row1 = result.first()
+                message = table_checked.__name__ + ' mobile' if (
+                        row1 is not None) else ''
+                found = found or (row1 is not None)
+        if found:
+            result.close()
+            return jsonify({
+                "error": "found {0} existing in {1}".format(
+                    user_name,
+                    message)
+            }), 500
+        email = user_name if '@' in user_name else None
+        mobile = user_name if '@' not in user_name else None
+        user = target_table(username=user_name,
+                            password=generate_password_hash(
+                                request.json['password']), state=1,
+                            updated_by=user_name, email=email, mobile=mobile)
+        current_app.logger.debug('encrypted password:' + user.password)
+        result = session.add(user)
+        current_app.logger.debug(result)
+
+    token = generate_jwt_token(current_app.config['JWT_HEADER'], user.username)
+    return jsonify(token)
+
+
+@auth.route('/smsverify', methods=['POST'])
+def smsverify():
+    mobile_no = request.json['mobile_no']
+    user_name = mobile_no
+    user_type = 'SysUser'
+    if 'username' in request.json:
+        user_name = request.json['username']
+    if 'usertype' in request.json:
+        user_type = request.json['usertype']
+    verify_code = random.randint(100000, 999999)
+    # TODO send out sms with verify_code
+    with session_scope(db) as session:
+        sms_to = mobile_no.split('-')
+        smslog = SmsLog(country_code=sms_to[0], mobile=sms_to[1],
+                        content=verify_code, sms_channel='TX', state=1,
+                        result_code=0)
+        session.add(smslog)
+    redis_store.set('VC:' + user_name, str(verify_code))
+    return jsonify({'verify_code': str(verify_code)})
+
+
+@auth.route('/emailverify', methods=['POST'])
+def email_verify():
+    email_address = request.json['email_address']
+    user_name = email_address
+    user_type = 'SysUser'
+    if 'username' in request.json:
+        user_name = request.json['username']
+    if 'usertype' in request.json:
+        user_type = request.json['usertype']
+    verify_code = random.randint(100000, 999999)
+    send_email([email_address], subject='verify: ' + str(verify_code),
+               body=user_name + ' - ' + user_type + ' - ' + str(verify_code))
+    redis_store.set('VC:' + user_name, str(verify_code))
+    return jsonify({'verify_code': str(verify_code)})
+
+
+@auth.route('/resetpassword', methods=['POST'])
+def resetpassword():
+    current_app.logger.debug(request.json)
+    user_name = request.json['username']
+    verify_code = request.json['verify_code']
+    password = request.json['password']
+    check_target = redis_store.get('VC:' + user_name).decode('utf8')
+    current_app.logger.debug(verify_code + ' ' + check_target + ' ' +
+                             str(verify_code != check_target))
+    if verify_code != check_target:
+        return jsonify({'message': 'verify code check failed'}), 401
+    with session_scope(db) as session:
+        # check existing username in all 3 tables
+        for table_checked in user_source.values():
+            row1 = session.query(table_checked).filter(
+                table_checked.username == user_name).one_or_none()
+            current_app.logger.debug("table_checked.__name__ " +
+                                     str(table_checked.__name__))
+            if row1:
+                # update password
+                current_app.logger.debug('password: ' + row1.password)
+                row1.password = generate_password_hash(password)
+                current_app.logger.debug(
+                    'new password: ' + row1.password)
+                session.merge(row1)
+                return jsonify({'message': 'reset password succ!'})
+
+    return jsonify({'message': user_name + ' not found!'}), 401
+
+
+def generate_jwt_token(header_name, username):
+    payload = {
+        current_app.config['JWT_SUBJECT_KEY']: username,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+        'iat': datetime.datetime.utcnow(),
+        'iss': 'ustutor'
+    }
+    encoded = jwt.encode(payload, current_app.config['JWT_SECRET'],
+                         algorithm=current_app.config['JWT_ALG'])
+    return {header_name: BEARER_TOKEN + str(encoded, encoding='utf-8')}

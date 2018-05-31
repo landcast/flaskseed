@@ -1,0 +1,7 @@
+{
+  "auth_tests.py::AllAuthTest::test_login": true,
+  "auth_tests.py::AllAuthTest::test_register": true,
+  "auth_tests.py::AllAuthTest::test_register_fail": true,
+  "auth_tests.py::AllAuthTest::test_register_succ": true,
+  "auth_tests.py::test_url": true
+}
