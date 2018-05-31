@@ -4,7 +4,7 @@ import unittest
 import sys
 import json
 
-sys.path.append(".")
+# sys.path.append(".")
 from unittests.test_base import TestBase, random_username
 from ustutor.service.redisservice import redis_store
 

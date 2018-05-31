@@ -61,7 +61,7 @@ class RestLessTest(TestBase):
             "updated_by": "unittests"
         }), content_type='application/json',
             headers={self.config['JWT_HEADER']: self.token})
-        self.app.logger.debug("status = " + str(r.status_code))
+        self.app.logger.debug("post status = " + str(r.status_code))
         self.app.logger.debug(r.get_data(as_text=True))
         # self.assertEqual(201, r.status_code,
         #                  "Return error")
@@ -88,6 +88,8 @@ class RestLessTest(TestBase):
         record must also provide id property
         :return:
         '''
+        self.app.logger.debug('self.channel_id: ' + str(self.channel_id))
+        self.app.logger.debug('self.enrollment_id: ' + str(self.enrollment_id))
         r = self.client.put('/api/v1/channel', data=json.dumps({
             "channel_desc": "calling put, change desc and add new enrollment",
             "channel_enrollments": [
