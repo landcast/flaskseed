@@ -90,6 +90,8 @@ automated api endpoint generation.
 
 ## Swagger
 
+Please notice that the swagger api version is openapi-v3.
+
 In ./ustutor/swaggerapis, the ```__init__.py``` created swagger.json data structure
 with /auth preset in. Other model level rest-less apis are generated with
 code by reflection.
