@@ -1,5 +1,5 @@
 #!/bin/sh
-export FLASK_APP=./server.py
+export FLASK_APP=./run.py
 mysql -h 127.0.0.1  -uroot -plt7116 < ./sql/dbcreate.sql
 rm ./migrations -rf
 flask db init
