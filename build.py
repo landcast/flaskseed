@@ -18,7 +18,8 @@
     built with pybuilder.
 """
 
-from pybuilder.core import use_plugin, init, Author
+from pybuilder.core import use_plugin, init, Author, task, depends
+import os
 
 use_plugin('filter_resources')
 
@@ -39,7 +40,15 @@ summary = 'backend service for ustutor'
 url = 'https://github.com/landcast/flaskseed'
 version = '0.1'
 
-default_task = ['install_dependencies', 'analyze', 'publish']
+default_task = ['install_dependencies', 'analyze', 'publish', 'post_publish']
+
+
+@task
+@depends('publish')
+def post_publish(project, logger):
+    logger.info('run post_publish task')
+    os.system('rm setup.py -rf')
+    os.system('cp ./target/dist/ustutorbk-0.1/setup.py setup.py')
 
 
 @init
@@ -69,5 +78,6 @@ def set_properties(project):
 
     project.set_property('dir_source_main_python', 'ustutor')
     project.set_property('dir_source_unittest_python', 'unittests')
+    project.set_property('dir_source_main_scripts', 'scripts')
     project.set_property(
         'dir_source_integrationtest_python', 'integrationtests')
