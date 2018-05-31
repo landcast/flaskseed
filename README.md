@@ -94,6 +94,9 @@ In ./ustutor/swaggerapis, the ```__init__.py``` created swagger.json data struct
 with /auth preset in. Other model level rest-less apis are generated with
 code by reflection.
 
+To access swagger api, open http://localhost:5000/swagger in browser.
+
+
 ## Authentication
 
 JWT authentication used here, the code are distributed in ```./ustutor/__init__.py```.
