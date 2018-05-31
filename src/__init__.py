@@ -1,19 +1,18 @@
 import logging
 import os
 from logging import FileHandler, Formatter
-from flask import Flask, abort
-from ustutor.swaggerapis import SwagAPIManager
+from flask import Flask
+from src.swaggerapis import SwagAPIManager
 from fnmatch import fnmatchcase
 import inspect
-import json
 
-from ustutor.blueprints.auth import *
-from ustutor.blueprints.upload import upload
-from ustutor.resources.api import api, admin
-from ustutor.models import *
-from ustutor.service import mail, redis_store
+from src.blueprints.auth import *
+from src.blueprints.upload import upload
+from src.resources.api import api, admin
+from src.models import *
+from src.service import mail, redis_store
 
-from ustutor.dbmigrate import migrate
+from src.dbmigrate import migrate
 from sqlalchemy.sql.expression import *
 
 

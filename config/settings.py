@@ -4,7 +4,7 @@ SECRET_KEY = '123'
 
 DEBUG = True
 
-DEBUG_LOGPATH = '/var/ustutor-debug.log'
+DEBUG_LOGPATH = '/var/src-debug.log'
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
@@ -35,7 +35,7 @@ MAIL_USERNAME = '13521273258@163.com'
 MAIL_PASSWORD = 'wl7116'
 MAIL_DEFAULT_SENDER = '13521273258@163.com'
 
-JWT_SECRET = 'ustutor-flask-dev-no-random'
+JWT_SECRET = 'src-flask-dev-no-random'
 JWT_ALG = 'HS256'
 JWT_HEADER = 'Authorization'
 JWT_SUBJECT_KEY = 'sub'

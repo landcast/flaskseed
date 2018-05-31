@@ -1,4 +1,4 @@
-from ustutor.models.common_models import db, EntityMixin, UserBaseMixin
+from src.models.common_models import db, EntityMixin, UserBaseMixin
 from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey, \
     Enum
 from enum import IntFlag

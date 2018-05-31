@@ -8,7 +8,7 @@ import os
 # from werkzeug.utils import secure_filename
 
 
-from ustutor.models import db, session_scope, Attachment
+from src.models import db, session_scope, Attachment
 
 upload = Blueprint('upload', __name__)
 

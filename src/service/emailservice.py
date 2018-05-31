@@ -4,8 +4,7 @@ from flask import current_app
 from flask_mail import Mail, Message
 from threading import Thread
 from collections import namedtuple
-from email.mime.text import MIMEText
-import base64
+
 
 mail = Mail()
 

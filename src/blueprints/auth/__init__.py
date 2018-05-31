@@ -8,8 +8,8 @@ import jwt
 import random
 import requests
 
-from ustutor.models import db, session_scope, user_source, SmsLog
-from ustutor.service import send_email, redis_store
+from src.models import db, session_scope, user_source, SmsLog
+from src.service import send_email, redis_store
 
 BEARER_TOKEN = ' Bearer '
 
@@ -192,7 +192,7 @@ def generate_jwt_token(header_name, username):
         current_app.config['JWT_SUBJECT_KEY']: username,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
         'iat': datetime.datetime.utcnow(),
-        'iss': 'ustutor'
+        'iss': 'src'
     }
     encoded = jwt.encode(payload, current_app.config['JWT_SECRET'],
                          algorithm=current_app.config['JWT_ALG'])

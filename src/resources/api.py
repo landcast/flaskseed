@@ -1,8 +1,8 @@
 from flask_restful import Api
 from flask import Blueprint
 
-from ustutor.resources.todo_api import TodoSimple
-from ustutor.resources.admin_api import CourseApi, CourseScheduleApi, \
+from src.resources.todo_api import TodoSimple
+from src.resources.admin_api import CourseApi, CourseScheduleApi, \
     CurriculumApi, \
     SubjectApi
 

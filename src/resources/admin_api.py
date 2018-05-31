@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-from flask import request, g, current_app
 from flask_restful import Resource
-
-from sqlalchemy.sql import *
-from ustutor.models import db, session_scope, user_source
 
 
 class CurriculumApi(Resource):

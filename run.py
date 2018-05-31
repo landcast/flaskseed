@@ -2,7 +2,7 @@
 
 # used to start the created app
 
-from ustutor import create_app
+from src import create_app
 from config import settings
 import optparse
 

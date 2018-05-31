@@ -1,4 +1,4 @@
-from ustutor.models.common_models import db, EntityMixin
+from src.models.common_models import db, EntityMixin
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 
 

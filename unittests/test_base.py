@@ -4,7 +4,7 @@ import sys
 import socket
 import unittest
 from datetime import datetime
-from ustutor.service import redis_store
+from src.service import redis_store
 
 
 def free_port_no(host):
@@ -28,7 +28,7 @@ class TestBase(unittest.TestCase):
         if not hasattr(self, 'app'):
             upper_path = os.path.abspath('.')
             sys.path.append(upper_path)
-            from ustutor import create_app
+            from src import create_app
             from config import settings
             self.port = free_port_no('localhost')
             app = create_app(settings)

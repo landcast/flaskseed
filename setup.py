@@ -21,7 +21,7 @@ if __name__ == '__main__':
     setup(
         name = 'ustutorbk',
         version = '0.1',
-        description = 'backend service for ustutor',
+        description = 'backend service for src',
         long_description = '',
         author = 'Tom Li, lxf',
         author_email = 'landcast@163.com, xxx@xxx.com',
@@ -41,7 +41,6 @@ if __name__ == '__main__':
         ],
         namespace_packages = [],
         py_modules = [
-            'app',
             'dbmigrate',
             'utils',
             '__init__'

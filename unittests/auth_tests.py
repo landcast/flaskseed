@@ -6,7 +6,7 @@ import json
 
 sys.path.append(".")
 from unittests.test_base import TestBase, random_username
-from ustutor.service.redisservice import redis_store
+from src.service.redisservice import redis_store
 
 
 class AllAuthTest(TestBase):
