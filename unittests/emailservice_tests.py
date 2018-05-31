@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime
 
 sys.path.append(".")
-from unittest.test_base import TestBase, random_username
+from unittests.test_base import TestBase, random_username
 from ustutor.service.emailservice import create_email_attachment, send_email
 
 

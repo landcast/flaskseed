@@ -29,9 +29,9 @@ class TestBase(unittest.TestCase):
             upper_path = os.path.abspath('.')
             sys.path.append(upper_path)
             from ustutor import create_app
-            from ustutor import config
+            from config import settings
             self.port = free_port_no('localhost')
-            app = create_app(config)
+            app = create_app(settings)
             self.client = app.test_client()
             self.app = app
             self.config = app.config

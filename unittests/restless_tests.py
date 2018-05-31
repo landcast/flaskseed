@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 
 sys.path.append(".")
-from unittest.test_base import TestBase, random_username
+from unittests.test_base import TestBase, random_username
 
 
 class RestLessTest(TestBase):
@@ -51,14 +51,14 @@ class RestLessTest(TestBase):
                     "created_at": "2018-05-21T13:27:09.908Z",
                     "student_id": self.student_id,
                     "updated_at": "2018-05-21T13:27:09.908Z",
-                    "updated_by": "unittest"
+                    "updated_by": "unittests"
                 }
             ],
             "channel_name": self.channel_name,
             "channel_orders": [],
             "created_at": "2018-05-21T13:27:09.908Z",
             "updated_at": "2018-05-21T13:27:09.908Z",
-            "updated_by": "unittest"
+            "updated_by": "unittests"
         }), content_type='application/json',
             headers={self.config['JWT_HEADER']: self.token})
         self.app.logger.debug("status = " + str(r.status_code))

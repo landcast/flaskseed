@@ -5,7 +5,7 @@ import unittest
 import sys
 
 sys.path.append(".")
-from unittest.test_base import TestBase, random_username
+from unittests.test_base import TestBase, random_username
 
 
 class TodoTest(TestBase):
