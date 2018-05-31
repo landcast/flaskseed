@@ -107,7 +107,7 @@ jwt_check function.
 
 ## Authorization
 
-Table controlled authorization, using RoleDefinition, RoleAuth to do that.
+Table controlled authorization, using RoleDefinition, RoleAuth, SysUserRole to do that.
 
 ## Deployment with uwsgi and nginx
 

@@ -19,6 +19,7 @@
 """
 
 from pybuilder.core import use_plugin, init, Author, task, depends
+import pymysql
 import os
 
 use_plugin('filter_resources')
