@@ -20,4 +20,4 @@ services:
   - mysql
 script:
 #  - pytest # or py.test for Python versions 3.5 and below
-  - python -m unittest unittests/*.py
+  - pyb
