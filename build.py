@@ -68,6 +68,6 @@ def set_properties(project):
     project.set_property_if_unset("pytest_coverage_break_build_threshold", 30)
 
     project.set_property('dir_source_main_python', 'ustutor')
-    project.set_property('dir_source_unittest_python', 'unittestsrc')
+    project.set_property('dir_source_unittest_python', 'unittest')
     project.set_property(
         'dir_source_integrationtest_python', 'integrationtest')
