@@ -8,7 +8,8 @@ purpose is to depict the correct way to setup python open-source projects.
 
 ## Enviroment
 
-Python 3.6 with flask.
+Python 3.6 with flask. Recommand to use pyenv and virtualenv to manage python
+versions.
 
 Mysql with account root:lt7116 located at localhost:3306.
 
@@ -22,6 +23,7 @@ Future will add elastic-search for document storing and searching.
 Using pybuilder for project building, this tool inspired much by java maven.
 
 ```
+$> pip install -r ./requirements.txt
 $> pyb clean
 $> pyb
 ```
