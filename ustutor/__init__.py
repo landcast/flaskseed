@@ -28,6 +28,86 @@ def setup_api(manager):
                                primary_key='id')
 
 
+def guess_language_from_request(request):
+    langheader = request.headers.get('lang', default=[]) or \
+                 request.headers.get('Accept-Language', default=[])
+    if not langheader:
+        if 'zh' in langheader:
+            return 'zh'
+        else:
+            return 'en'
+    else:
+        return 'en'
+
+
+def auth_check_needed(request):
+    ''' check the request need to be processed with authtication passed
+    before
+    '''
+    path = request.path
+    visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
+                     '/auth/*', '/upload', '/download/*', '/admin/*',
+                     '/api/*', '/swagger.json',
+                     '/static/*', '/swagger_ui/*', '/swagger']
+    for allow in visitor_allow:
+        if fnmatchcase(path, allow):
+            return False
+    return True
+
+
+def jwt_check(request):
+    jwt_header = request.headers.get(current_app.config['JWT_HEADER'])
+    # current_app.logger.debug(jwt_header)
+    if jwt_header:
+        jwt_token = jwt_header
+        if jwt_header.startswith(BEARER_TOKEN):
+            jwt_token = jwt_header[len(BEARER_TOKEN):]
+        payload = jwt.decode(jwt_token, current_app.config['JWT_SECRET'],
+                             algorithm=current_app.config['JWT_ALG'],
+                             verify=True)
+        current_app.logger.debug(payload)
+        return payload
+    else:
+        return None
+
+
+def user_load(username):
+    setattr(g, current_app.config['CUR_ID'], username)
+    if redis_store.exists(username):
+        current_app.logger.debug(username + ' already in redis cache')
+    else:
+        with session_scope(db) as session:
+            for table_check in user_source.values():
+                rs = session.query(table_check).filter(
+                    and_(table_check.username == username,
+                         table_check.state == 1)).all()
+                if len(rs) > 0:
+                    current_app.logger.debug(
+                        username + ' set into redis cache')
+                    redis_store.set('UP:' + username,
+                                    json.dumps(row_dict(rs[0])))
+                    break
+
+
+def init_logging(app):
+    # check log file, if not exist create
+    basedir = os.path.dirname(app.config['DEBUG_LOGPATH'])
+    if not os.path.exists(basedir):
+        os.makedirs(basedir)
+    open(app.config['DEBUG_LOGPATH'], 'a').close()
+    # pass config log path to handler
+    file_handler = FileHandler(app.config['DEBUG_LOGPATH'])
+    file_handler.setLevel(logging.DEBUG)
+    format = '[%(asctime)s] %(levelname)s %(name)s [%(filename)s:%(' \
+             'funcName)s:%(lineno)d]: %(message)s'
+    file_handler.setFormatter(Formatter(format))
+    app.logger.addHandler(file_handler)
+    wsgi_logger = logging.getLogger('werkzeug')
+    wsgi_logger.addHandler(file_handler)
+    # for h in app.logger.handlers:
+    #    print('handler is %s' % str(h))
+
+
 def create_app(config):
     app = Flask(__name__)
     # app loading config
@@ -38,83 +118,6 @@ def create_app(config):
         app.logger.warn('USTUTORCONFIG not set, config overrding ignored!')
     else:
         app.logger.info('load config overriding from env-var USTUTORCONFIG')
-
-    # print('ESHOST=', app.config['ESHOST'])
-
-    def guess_language_from_request(request):
-        langheader = request.headers.get('lang', default=[]) or \
-                     request.headers.get('Accept-Language', default=[])
-        if not langheader:
-            if 'zh' in langheader:
-                return 'zh'
-            else:
-                return 'en'
-        else:
-            return 'en'
-
-    def auth_check_needed(request):
-        ''' check the request need to be processed with authtication passed
-        before
-        '''
-        path = request.path
-        visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
-                         '/auth/*', '/upload', '/download/*', '/admin/*',
-                         '/api/*', '/swagger.json',
-                         '/static/*', '/swagger_ui/*', '/swagger']
-        for allow in visitor_allow:
-            if fnmatchcase(path, allow):
-                return False
-        return True
-
-    def jwt_check(request):
-        jwt_header = request.headers.get(app.config['JWT_HEADER'])
-        # current_app.logger.debug(jwt_header)
-        if jwt_header:
-            jwt_token = jwt_header
-            if jwt_header.startswith(BEARER_TOKEN):
-                jwt_token = jwt_header[len(BEARER_TOKEN):]
-            payload = jwt.decode(jwt_token, app.config['JWT_SECRET'],
-                                 algorithm=app.config['JWT_ALG'], verify=True)
-            current_app.logger.debug(payload)
-            return payload
-        else:
-            return None
-
-    def user_load(username):
-        setattr(g, current_app.config['CUR_ID'], username)
-        if redis_store.exists(username):
-            current_app.logger.debug(username + ' already in redis cache')
-        else:
-            with session_scope(db) as session:
-                for table_check in user_source.values():
-                    rs = session.query(table_check).filter(
-                        and_(table_check.username == username,
-                             table_check.state == 1)).all()
-                    if len(rs) > 0:
-                        current_app.logger.debug(
-                            username + ' set into redis cache')
-                        redis_store.set('UP:' + username,
-                                        json.dumps(row_dict(rs[0])))
-                        break
-
-    def init_logging(app):
-        # check log file, if not exist create
-        basedir = os.path.dirname(app.config['DEBUG_LOGPATH'])
-        if not os.path.exists(basedir):
-            os.makedirs(basedir)
-        open(app.config['DEBUG_LOGPATH'], 'a').close()
-        # pass config log path to handler
-        file_handler = FileHandler(app.config['DEBUG_LOGPATH'])
-        file_handler.setLevel(logging.DEBUG)
-        format = '[%(asctime)s] %(levelname)s %(name)s [%(filename)s:%(' \
-                 'funcName)s:%(lineno)d]: %(message)s'
-        file_handler.setFormatter(Formatter(format))
-        app.logger.addHandler(file_handler)
-        wsgi_logger = logging.getLogger('werkzeug')
-        wsgi_logger.addHandler(file_handler)
-        # for h in app.logger.handlers:
-        #    print('handler is %s' % str(h))
-
     # middle-ware setting app
     init_logging(app)
     api.init_app(app)
@@ -133,10 +136,6 @@ def create_app(config):
 
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     setup_api(manager)
-
-    # manager.create_api(Curriculum, url_prefix='/api/v1',
-    #                    methods=['GET', 'DELETE', 'PUT', 'POST'],
-    #                    primary_key='id')
 
     @app.before_request
     def request_preprocess():
