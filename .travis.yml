@@ -7,7 +7,7 @@ before_script:
   - sudo redis-server /etc/redis/redis.conf --port 6379
   - sudo mkdir ./upload -p
   - sudo chmod 777 ./upload
-  - sudo rm ./ustutor-debug.log
+  - sudo rm ./ustutor-debug.log -rf
   - sudo touch ./ustutor-debug.log
   - sudo chmod 777 ./ustutor-debug.log
 install:
