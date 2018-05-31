@@ -49,18 +49,14 @@ def set_properties(project):
     project.build_depends_on('pyassert')
 
     project.depends_on('flask')
-    project.depends_on('flask-jwt')
     project.depends_on('flask-restful')
-    project.depends_on('flask-restless-swagger')
     project.depends_on('flask-restless')
-    project.depends_on('flask-uploads')
     project.depends_on('flask-sqlalchemy')
     project.depends_on('flask-redis')
     project.depends_on('flask-cors')
     project.depends_on('flask-migrate')
     project.depends_on('flask-mail')
-    project.depends_on('flask-debugtoolbar')
-    project.depends_on('flasgger')
+    project.depends_on('PyJWT')
     project.depends_on('pymysql')
     project.depends_on('elasticsearch')
     project.depends_on('requests')
@@ -73,4 +69,5 @@ def set_properties(project):
 
     project.set_property('dir_source_main_python', 'ustutor')
     project.set_property('dir_source_unittest_python', 'unittestsrc')
-    project.set_property('dir_source_integrationtest_python', 'integrationtest')
+    project.set_property(
+        'dir_source_integrationtest_python', 'integrationtest')
