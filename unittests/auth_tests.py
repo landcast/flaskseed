@@ -51,7 +51,7 @@ class AllAuthTest(TestBase):
             'country_code': '86'
         }), content_type='application/json')
         self.app.logger.debug("status = " + str(r.status_code))
-        self.app.logger.debug(json.loads(r.get_data(as_text=True)))
+        self.app.logger.debug(r.get_data(as_text=True))
 
     def test_reset_password(self):
         username = random_username()

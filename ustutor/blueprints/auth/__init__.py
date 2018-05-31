@@ -128,6 +128,7 @@ def smsverify():
             'countryCode': country_code,
             'code': str(verify_code)
         }), headers={'Content-type': 'application/json'})
+    current_app.logger.debug(r.text)
     if r.json()['code'] == 0:
         with session_scope(db) as session:
             smslog = SmsLog(country_code=country_code, mobile=mobile_no,
@@ -137,7 +138,7 @@ def smsverify():
         redis_store.set('VC:' + mobile_no, str(verify_code))
         return jsonify({'verify_code': str(verify_code)})
     else:
-        abort(401, r.json()['message'])
+        return jsonify({'message': r.json()['message']}), 500
 
 
 @auth.route('/emailverify', methods=['POST'])
