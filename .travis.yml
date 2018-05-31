@@ -5,6 +5,10 @@ python:
 # command to install dependencies
 before_script:
   - sudo redis-server /etc/redis/redis.conf --port 6379
+  - sudo mkdir ./upload
+  - sudo chmod 777 ./upload
+  - sudo touch ./ustutor-debug.log
+  - sudo chmod 777 ./ustutor-debug.log
 install:
   - pip install -r requirements.txt
   - export EXTERNALCFG=`pwd`/config/settings_travisci.cfg
