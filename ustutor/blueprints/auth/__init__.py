@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-from flask import g, jsonify, Blueprint, request, make_response, current_app
+from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
+import json
 import jwt
 import random
+import requests
 
 from ustutor.models import db, session_scope, user_source, SmsLog
 from ustutor.service import send_email, redis_store
@@ -114,6 +116,7 @@ def register():
 def smsverify():
     mobile_no = request.json['mobile_no']
     user_name = mobile_no
+    country_code = '86'
     user_type = 'SysUser'
     if 'username' in request.json:
         user_name = request.json['username']
@@ -121,14 +124,28 @@ def smsverify():
         user_type = request.json['usertype']
     verify_code = random.randint(100000, 999999)
     # TODO send out sms with verify_code
-    with session_scope(db) as session:
-        sms_to = mobile_no.split('-')
-        smslog = SmsLog(country_code=sms_to[0], mobile=sms_to[1],
-                        content=verify_code, sms_channel='TX', state=1,
-                        result_code=0)
-        session.add(smslog)
-    redis_store.set('VC:' + user_name, str(verify_code))
-    return jsonify({'verify_code': str(verify_code)})
+    if 'country_code' in request.json:
+        country_code = request.json['country_code']
+    r = requests.post(
+        current_app.config['EP_LOCATION'] + current_app.config['EP_SMS_PATH'],
+        data=json.dumps({
+            'type': 1,
+            'userName': mobile_no,
+            'registerType': 1,
+            'countryCode': country_code,
+            'code': str(verify_code)
+        }), headers={'Content-type': 'application/json'})
+    if r.json()['code'] == 0:
+        with session_scope(db) as session:
+            sms_to = mobile_no.split('-')
+            smslog = SmsLog(country_code=sms_to[0], mobile=sms_to[1],
+                            content=verify_code, sms_channel='TX', state=1,
+                            result_code=0)
+            session.add(smslog)
+        redis_store.set('VC:' + user_name, str(verify_code))
+        return jsonify({'verify_code': str(verify_code)})
+    else:
+        abort(401, r.json()['message'])
 
 
 @auth.route('/emailverify', methods=['POST'])

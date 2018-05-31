@@ -48,3 +48,7 @@ CUR_USER = 'cur_user'
 HOST = '0.0.0.0'
 ESHOST = None
 PORT = 5000
+
+EP_LOCATION = "http://39.106.143.18:7080"
+EP_SMS_PATH = "/login/sendVerifyCode"
+

@@ -10,10 +10,6 @@ sys.path.append(".")
 from unittests.test_base import TestBase, random_username
 
 
-eplocation = "http://39.106.143.18:7080"
-sms_path = "/login/sendVerifyCode"
-
-
 class ExtportTest(TestBase):
 
     def test_smsverifycode(self):
@@ -25,15 +21,18 @@ class ExtportTest(TestBase):
         String code //随机码
         :return:
         '''
-        r = requests.post(eplocation + sms_path, data=json.dumps({
-            'type': 1,
-            'userName': '13521273258',
-            'registerType': 1,
-            'countryCode': '86',
-            'code': str(random.randint(100000, 999999))
-        }), headers={'Content-type': 'application/json'})
+        r = requests.post(
+            self.config['EP_LOCATION'] + self.config['EP_SMS_PATH'],
+            data=json.dumps({
+                'type': 1,
+                'userName': '13521273258',
+                'registerType': 1,
+                'countryCode': '86',
+                'code': str(random.randint(100000, 999999))
+            }), headers={'Content-type': 'application/json'})
+        self.assertEqual(0, r.json()['code'], 'returned code not 0')
         self.app.logger.debug(r.status_code)
-        self.app.logger.debug(r.text)
+        self.app.logger.debug(r.json()['message'])
 
 
 if __name__ == "__main__":

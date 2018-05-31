@@ -240,6 +240,10 @@ class SwagAPIManager(object):
                         'mobile_no': {
                             'description': 'mobile NO to receive verify code',
                             'type': 'string'
+                        },
+                        'country_code': {
+                            'description': 'country code, if omit, default to 86',
+                            'type': 'string'
                         }
                     }
                 },
