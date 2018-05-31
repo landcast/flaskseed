@@ -80,23 +80,23 @@ Currently involve redis for cache and flash storage.
 
 ## Restful
 
-./ustutor/resources contains endpoint created by flask-restful.
+```./ustutor/resources``` contains endpoint created by flask-restful.
 
 ## Restless
 
 Using flask-restless to generate restful endpoint for every model in models.
-In ./ustutor/__init__.py setup_api function using reflection method to control
+In ```./ustutor/__init__.py``` setup_api function using reflection method to control
 automated api endpoint generation.
 
 ## Swagger
 
-In ./ustutor/swaggerapis, the __init__.py created swagger.json data structure
+In ./ustutor/swaggerapis, the ```__init__.py``` created swagger.json data structure
 with /auth preset in. Other model level rest-less apis are generated with
 code by reflection.
 
 ## Authentication
 
-JWT authentication used here, the code are distributed in ./ustutor/__init__.py.
+JWT authentication used here, the code are distributed in ```./ustutor/__init__.py```.
 The intercept policy controlled by auth_check_needed function, and jwt handled in
 jwt_check function.
 
