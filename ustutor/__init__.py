@@ -113,11 +113,11 @@ def create_app(config):
     # app loading config
     app.config.from_object(config)
     try:
-        app.config.from_envvar('USTUTORCONFIG')
+        app.config.from_envvar('EXTERNALCFG')
     except Exception:
-        app.logger.warn('USTUTORCONFIG not set, config overrding ignored!')
+        app.logger.warn('EXTERNALCFG not set, config overrding ignored!')
     else:
-        app.logger.info('load config overriding from env-var USTUTORCONFIG')
+        app.logger.info('load config overriding from env-var EXTERNALCFG')
     # middle-ware setting app
     init_logging(app)
     api.init_app(app)
