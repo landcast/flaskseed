@@ -115,13 +115,7 @@ def register():
 @auth.route('/smsverify', methods=['POST'])
 def smsverify():
     mobile_no = request.json['mobile_no']
-    user_name = mobile_no
     country_code = '86'
-    user_type = 'SysUser'
-    if 'username' in request.json:
-        user_name = request.json['username']
-    if 'usertype' in request.json:
-        user_type = request.json['usertype']
     verify_code = random.randint(100000, 999999)
     # TODO send out sms with verify_code
     if 'country_code' in request.json:
@@ -137,12 +131,11 @@ def smsverify():
         }), headers={'Content-type': 'application/json'})
     if r.json()['code'] == 0:
         with session_scope(db) as session:
-            sms_to = mobile_no.split('-')
-            smslog = SmsLog(country_code=sms_to[0], mobile=sms_to[1],
+            smslog = SmsLog(country_code=country_code, mobile=mobile_no,
                             content=verify_code, sms_channel='TX', state=1,
                             result_code=0)
             session.add(smslog)
-        redis_store.set('VC:' + user_name, str(verify_code))
+        redis_store.set('VC:' + mobile_no, str(verify_code))
         return jsonify({'verify_code': str(verify_code)})
     else:
         abort(401, r.json()['message'])
