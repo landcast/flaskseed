@@ -36,7 +36,7 @@ authors = [Author('Tom Li', 'landcast@163.com'),
            Author('lxf', 'xxx@xxx.com')]
 license = 'Apache License, Version 2.0'
 summary = 'backend service for ustutor'
-url = 'https://github.com/landcast/tomli78/tree/master/ustutor/bkflask'
+url = 'https://github.com/landcast/flaskseed'
 version = '0.1'
 
 default_task = ['install_dependencies', 'analyze', 'publish']
