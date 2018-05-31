@@ -6,7 +6,7 @@ This is a sample web project based on flask. The business model is for
 e-learning. It reference much from sandman2 project on github. The main
 purpose is to depict the correct way to setup python open-source projects.
 
-## Enviroment
+## Environment
 
 Python 3.6 with flask. Recommand to use pyenv and virtualenv to manage python
 versions.
