@@ -8,7 +8,8 @@ before_script:
 install:
   - pip install -r requirements.txt
   - export EXTERNALCFG=`pwd`/config/settings_travisci.cfg
-  - ./dbrecreate.sh
+  - chmod 777 ./dbinit_travisci.sh
+  - ./dbinit_travisci.sh
 # command to run tests
 services:
   - mysql
