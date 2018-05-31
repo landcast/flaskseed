@@ -469,24 +469,6 @@ class SwagAPIManager(object):
                 if model.__doc__:
                     self.swagger['paths'][path]['description'] = model.__doc__
             elif method == 'put' or method == 'patch':
-                self.swagger['paths'][path][method] = {
-                    'tags': [schema],
-                    'requestBody': {
-                        'content': {
-                            'application/json': {
-                                'schema': {
-                                    '$ref': '#/components/schemas/' + name
-                                }
-                            }
-                        }
-                    },
-                    'responses': {
-                        200: {
-                            'description': 'Success'
-                        }
-
-                    }
-                }
                 if model.__doc__:
                     self.swagger['paths'][path]['description'] = model.__doc__
                 if id_path not in self.swagger['paths']:

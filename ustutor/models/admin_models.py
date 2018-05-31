@@ -7,7 +7,7 @@ class Enrollment(EntityMixin, db.Model):
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     channel_id = Column(Integer, ForeignKey('channel.id'),
-                        nullable=False)
+                        nullable=True)
     channel_enrollments = db.relationship('Channel',
                                           backref='channel_enrollments',
                                           lazy=True)
@@ -24,7 +24,7 @@ class Channel(EntityMixin, db.Model):
     service_helper = Column(Integer, ForeignKey('sys_user.id'),
                             nullable=True)
     channels = db.relationship('SysUser',
-                               backref='channels',
+                               backref='serve_channels',
                                lazy=True)
 
 

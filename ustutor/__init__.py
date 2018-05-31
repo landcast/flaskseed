@@ -79,11 +79,11 @@ def user_load(username):
         with session_scope(db) as session:
             for table_check in user_source.values():
                 rs = session.query(table_check).filter(
-                    and_(table_check.username == username,
-                         table_check.state == 1)).all()
+                        and_(table_check.username == username,
+                             table_check.state == 1)).all()
                 if len(rs) > 0:
                     current_app.logger.debug(
-                        username + ' set into redis cache')
+                            username + ' set into redis cache')
                     redis_store.set('UP:' + username,
                                     json.dumps(row_dict(rs[0])))
                     break
@@ -164,7 +164,8 @@ def create_app(config):
         else:
             setattr(g, current_app.config['CUR_ID'],
                     'visitor_' + str(request.remote_addr))
-            current_app.logger.debug('visitor comming ' + request.url)
+            current_app.logger.debug(
+                    'visitor comming ' + request.method + ': ' + request.url)
 
     @app.after_request
     def request_postprocess(response):

@@ -21,7 +21,7 @@ class RestLessTest(TestBase):
         super().setUp()
         test_user = random_username()
         self.auth_header = json.loads(
-            super().register(test_user, 'Student').get_data(as_text=True))
+                super().register(test_user, 'Student').get_data(as_text=True))
         self.token = self.auth_header[self.config['JWT_HEADER']]
         self.app.logger.debug("jwt:" + self.token)
 
@@ -60,13 +60,15 @@ class RestLessTest(TestBase):
             "updated_at": "2018-05-21T13:27:09.908Z",
             "updated_by": "unittests"
         }), content_type='application/json',
-            headers={self.config['JWT_HEADER']: self.token})
+                             headers={self.config['JWT_HEADER']: self.token})
         self.app.logger.debug("post status = " + str(r.status_code))
         self.app.logger.debug(r.get_data(as_text=True))
         # self.assertEqual(201, r.status_code,
         #                  "Return error")
-        filters = {'filters': [
-            {'name': 'channel_name', 'op': '==', 'val': self.channel_name}]}
+        filters = {
+            'filters': [
+                {'name': 'channel_name', 'op': '==', 'val': self.channel_name}]
+        }
         r = self.client.get('/api/v1/channel',
                             query_string='q=' + json.dumps(filters),
                             content_type='application/json',
@@ -76,8 +78,8 @@ class RestLessTest(TestBase):
         channels = json.loads(r.get_data(as_text=True))['objects']
         self.assertGreater(len(channels), 0, 'get channels empty')
         self.app.logger.debug(
-            'channel.id = ' + str(channels[0]['id']) + ' channel.name = ' +
-            channels[0]['channel_name'])
+                'channel.id = ' + str(channels[0]['id']) + ' channel.name = ' +
+                channels[0]['channel_name'])
         self.channel_id = channels[0]['id']
         self.enrollment_id = channels[0]['channel_enrollments'][0]['id']
 
@@ -90,26 +92,40 @@ class RestLessTest(TestBase):
         '''
         self.app.logger.debug('self.channel_id: ' + str(self.channel_id))
         self.app.logger.debug('self.enrollment_id: ' + str(self.enrollment_id))
-        r = self.client.put('/api/v1/channel', data=json.dumps({
-            "channel_desc": "calling put, change desc and add new enrollment",
-            "channel_enrollments": [
-                {
-                    "created_at": "2018-05-22T13:27:09.908Z",
-                    "student_id": self.student_id,
-                    "channel_id": self.channel_id,
-                    "id": self.enrollment_id,
-                    "updated_at": "2018-05-22T13:27:09.908Z",
-                    "updated_by": "put-action"
-                }
-            ],
-            "id": self.channel_id,
-            "created_at": "2018-05-22T13:27:09.908Z",
-            "updated_at": "2018-05-22T13:27:09.908Z",
-            "updated_by": "put-action"
-        }), content_type='application/json',
-            headers={self.config['JWT_HEADER']: self.token})
-        self.app.logger.debug("put.status = " + str(r.status_code))
+        r = self.client.put('/api/v1/channel/' + str(self.channel_id),
+                            data=json.dumps({
+                                "channel_desc": "calling put, change desc and "
+                                                "add new enrollment",
+                                "created_at": "2018-05-29T13:27:09.900Z",
+                                "updated_at": "2018-05-29T13:27:09.900Z",
+                                "updated_by": "put-action",
+                                "channel_enrollments": [
+                                    {
+                                        "created_at":
+                                            "2018-05-29T13:27:09.908Z",
+                                        "student_id": self.student_id,
+                                        "channel_id": self.channel_id,
+                                        "id": self.enrollment_id,
+                                        "updated_at":
+                                            "2018-05-29T13:27:09.908Z",
+                                        "updated_by": "put-action cascade"
+                                    }
+                                ],
+                            }), content_type='application/json',
+                            headers={self.config['JWT_HEADER']: self.token})
+        self.app.logger.debug("channel put.status = " + str(r.status_code))
         self.app.logger.debug(r.get_data(as_text=True))
+        # r = self.client.put('/api/v1/enrollment/' + str(self.enrollment_id),
+        #                     data=json.dumps({
+        #                         "created_at": "2018-05-29T13:27:09.908Z",
+        #                         "student_id": self.student_id,
+        #                         "channel_id": self.channel_id,
+        #                         "updated_at": "2018-05-29T13:27:09.908Z",
+        #                         "updated_by": "put-action alone"
+        #                     }), content_type='application/json',
+        #                     headers={self.config['JWT_HEADER']: self.token})
+        # self.app.logger.debug("enrollment put.status = " + str(r.status_code))
+        # self.app.logger.debug(r.get_data(as_text=True))
 
     def test_channel(self):
         self.get_student()
