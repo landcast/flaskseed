@@ -117,7 +117,6 @@ def smsverify():
     mobile_no = request.json['mobile_no']
     country_code = '86'
     verify_code = random.randint(100000, 999999)
-    # TODO send out sms with verify_code
     if 'country_code' in request.json:
         country_code = request.json['country_code']
     r = requests.post(
@@ -133,7 +132,7 @@ def smsverify():
         with session_scope(db) as session:
             smslog = SmsLog(country_code=country_code, mobile=mobile_no,
                             content=verify_code, sms_channel='TX', state=1,
-                            result_code=0)
+                            result_code=0, fee=5)
             session.add(smslog)
         redis_store.set('VC:' + mobile_no, str(verify_code))
         return jsonify({'verify_code': str(verify_code)})

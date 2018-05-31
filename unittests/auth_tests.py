@@ -45,6 +45,14 @@ class AllAuthTest(TestBase):
         self.app.logger.debug("status = " + str(r.status_code))
         self.app.logger.debug(json.loads(r.get_data(as_text=True)))
 
+    def test_smsverify(self):
+        r = self.client.post('/auth/smsverify', data=json.dumps({
+            'mobile_no': '13521273258',
+            'country_code': '86'
+        }), content_type='application/json')
+        self.app.logger.debug("status = " + str(r.status_code))
+        self.app.logger.debug(json.loads(r.get_data(as_text=True)))
+
     def test_reset_password(self):
         username = random_username()
         super().register(username, 'Teacher')
