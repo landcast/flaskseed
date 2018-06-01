@@ -1,18 +1,18 @@
 import json
 import subprocess
-import os
 import sys
 import unittest
-
 sys.path.append('.')
-from integrationtests import random_username, redis_store, TestBase
+from integrationtests import random_username, TestBase, redis_store, logger
+
 
 json_header = '"Content-Type:application/json"'
 
 server_location = 'http://localhost:5000'
 
 
-class AuthTest(TestBase):
+
+class CurlTest(TestBase):
 
     def test_register(self):
         username = random_username()
@@ -29,11 +29,10 @@ class AuthTest(TestBase):
             curl -sS -i -H {json_header} -X POST --data {json_data} {
             register_url}
             '''
-        self.logger.debug(cmd)
+        logger.debug(cmd)
         status_code, output = subprocess.getstatusoutput(cmd)
-        self.assertEqual(200, status_code,
-                         'failed register with succ test data')
-        self.logger.debug(output)
+        self.assertTrue('200 OK' in output, 'expect http status return 200')
+        logger.debug(output)
 
 
 if __name__ == "__main__":

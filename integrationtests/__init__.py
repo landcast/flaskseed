@@ -1,18 +1,17 @@
-import json
+import logging
 import os
-import sys
-import socket
+import redis
+import subprocess
+import time
 import unittest
+
+from config import settings
 from datetime import datetime
-from src.service import redis_store
 
 
-def free_port_no(host):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, 0))
-    port = sock.getsockname()[1]
-    sock.close()
-    return port
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
+redis_store = redis.from_url(settings.REDIS_URL)
 
 
 def random_username():
@@ -20,21 +19,24 @@ def random_username():
 
 
 class TestBase(unittest.TestCase):
+
+    def server_check(self):
+        pid_file_path = settings.PID_FILE + ".pid"
+        if os.path.exists(pid_file_path):
+            with open(pid_file_path, 'r+') as pidfile:
+                old_pid = pidfile.read()
+                # check process exist or not
+                output = subprocess.getoutput('ps -q ' + old_pid)
+                if old_pid not in output:
+                    logger.debug('start new server')
+                    os.system(
+                        'nohup python run.py > /dev/null 2>&1 &')
+                    time.sleep(2)
+        else:
+            subprocess.run('nohup python run.py > /dev/null 2>&1 &'.split())
+
     def setUp(self):
-        if not hasattr(self, 'app'):
-            upper_path = os.path.abspath('.')
-            sys.path.append(upper_path)
-            from src import create_app
-            from config import settings
-            self.port = free_port_no('localhost')
-            app = create_app(settings)
-            self.client = app.test_client()
-            self.app = app
-            self.config = app.config
-            self.logger = app.logger
-            self.app_context = self.app.app_context()
-            self.app_context.push()
+        self.server_check()
 
     def tearDown(self):
-        self.app_context.pop()
         pass

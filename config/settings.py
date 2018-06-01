@@ -2,9 +2,11 @@ import os
 
 SECRET_KEY = '123'
 
-DEBUG = True
+DEBUG = False
 
 DEBUG_LOGPATH = '/var/ustutor-debug.log'
+
+PID_FILE = 'flaskseed'
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'

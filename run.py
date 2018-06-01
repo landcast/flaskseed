@@ -5,6 +5,9 @@
 from src import create_app
 from config import settings
 import optparse
+import os
+import signal
+import subprocess
 
 
 def process_options(config, default_host="0.0.0.0",
@@ -53,7 +56,6 @@ options = process_options(settings)
 # create app using config
 app = create_app(settings)
 
-
 if __name__ == '__main__':
     # If the user selects the profiling option, then we need
     # to do a little extra setup
@@ -67,9 +69,24 @@ if __name__ == '__main__':
     # run app
     if (options.eshost):
         print('-E: ' + options.eshost)
-
+    pid = os.getpid()
+    pid_file_path = app.config['PID_FILE'] + ".pid"
+    if os.path.exists(pid_file_path):
+        with open(pid_file_path, 'r+') as pidfile:
+            old_pid = pidfile.read()
+            # kill the process
+            try:
+                os.kill(int(old_pid), signal.SIGKILL)
+                print('kill ' + old_pid + ', started ' + str(pid))
+            except ProcessLookupError as e:
+                print(old_pid + ' process already killed', e)
+            # move file teller to start
+            pidfile.seek(0, 0)
+            pidfile.write(str(pid))
+    else:
+        with open(pid_file_path, 'a+') as pidfile:
+            pidfile.write(str(pid))
     app.run(
-        debug=True,
-        host=options.host,
-        port=int(options.port)
+            host=options.host,
+            port=int(options.port)
     )
