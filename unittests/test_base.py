@@ -7,18 +7,6 @@ from datetime import datetime
 from src.service import redis_store
 
 
-def free_port_no(host):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, 0))
-    port = sock.getsockname()[1]
-    sock.close()
-    return port
-
-
-def test_url(path, host='localhost', port=5000):
-    return 'http://' + host + ':' + str(port) + path
-
-
 def random_username():
     return 'u_' + str(datetime.now().timestamp())
 
@@ -30,7 +18,6 @@ class TestBase(unittest.TestCase):
             sys.path.append(upper_path)
             from src import create_app
             from config import settings
-            self.port = free_port_no('localhost')
             app = create_app(settings)
             self.client = app.test_client()
             self.app = app

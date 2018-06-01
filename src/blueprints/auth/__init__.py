@@ -47,11 +47,15 @@ def register():
     user_name = request.json['username']
     user_type = request.json['usertype']
     verify_code = request.json['verify_code']
-    check_target = redis_store.get('VC:' + user_name).decode('utf8')
+    check_target = redis_store.get('VC:' + user_name)
+    if check_target:
+        check_target = check_target.decode('utf8')
+    else:
+        check_target = 'None'
     current_app.logger.debug(verify_code + ' ' + check_target + ' ' +
                              str(verify_code != check_target))
     if verify_code != check_target:
-        return jsonify({'message': 'verify code check failed'}), 401
+        return jsonify({'message': 'verify code check failed'}), 500
     target_table = user_source[user_type]
     with session_scope(db) as session:
         # check existing username in all 3 tables
@@ -163,7 +167,11 @@ def resetpassword():
     user_name = request.json['username']
     verify_code = request.json['verify_code']
     password = request.json['password']
-    check_target = redis_store.get('VC:' + user_name).decode('utf8')
+    check_target = redis_store.get('VC:' + user_name)
+    if check_target:
+        check_target = check_target.decode('utf8')
+    else:
+        check_target = 'None'
     current_app.logger.debug(verify_code + ' ' + check_target + ' ' +
                              str(verify_code != check_target))
     if verify_code != check_target:
