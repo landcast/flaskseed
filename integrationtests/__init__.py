@@ -34,6 +34,7 @@ class TestBase(unittest.TestCase):
                     time.sleep(2)
         else:
             os.system('nohup python run.py > /dev/null 2>&1 &')
+            time.sleep(2)
 
     def setUp(self):
         self.server_check()
