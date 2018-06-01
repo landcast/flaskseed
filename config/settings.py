@@ -2,7 +2,7 @@ import os
 
 SECRET_KEY = '123'
 
-DEBUG = False
+DEBUG = True
 
 DEBUG_LOGPATH = '/var/ustutor-debug.log'
 

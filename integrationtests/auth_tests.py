@@ -11,7 +11,6 @@ json_header = '"Content-Type:application/json"'
 server_location = 'http://localhost:5000'
 
 
-
 class CurlTest(TestBase):
 
     def test_register(self):
