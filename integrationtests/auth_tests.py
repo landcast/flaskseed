@@ -3,12 +3,13 @@ import subprocess
 import os
 import sys
 import unittest
+
 sys.path.append('.')
 from integrationtests import random_username, redis_store, TestBase
 
 json_header = '"Content-Type:application/json"'
 
-server_location = 'http://t.vipustutor.com:5000'
+server_location = 'http://localhost:5000'
 
 
 class AuthTest(TestBase):
@@ -22,13 +23,16 @@ class AuthTest(TestBase):
             "username": username,
             "usertype": "SysUser",
             "password": "123456",
-            "verify_code": "123456"
+            "verify_code": "000000"
         }) + "'"
         cmd = f'''
-            curl -i -H {json_header} -X POST --data {json_data} {register_url}
+            curl -sS -i -H {json_header} -X POST --data {json_data} {
+            register_url}
             '''
-        print(cmd)
+        self.logger.debug(cmd)
         status_code, output = subprocess.getstatusoutput(cmd)
+        self.assertEqual(200, status_code,
+                         'failed register with succ test data')
         self.logger.debug(output)
 
 
