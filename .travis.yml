@@ -7,9 +7,6 @@ before_script:
   - sudo redis-server /etc/redis/redis.conf --port 6379
   - sudo mkdir ./upload -p
   - sudo chmod 777 ./upload
-  - sudo rm ./src-debug.log -rf
-  - sudo touch ./src-debug.log
-  - sudo chmod 777 ./src-debug.log
 install:
   - pip install -r requirements.txt
   - export EXTERNALCFG=`pwd`/config/settings_travisci.cfg
@@ -20,4 +17,5 @@ services:
   - mysql
 script:
 #  - pytest # or py.test for Python versions 3.5 and below
-  - pyb
+  - python integrationtests/auth_tests.py
+#  - pyb
