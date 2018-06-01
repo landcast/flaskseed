@@ -21,7 +21,7 @@ def random_username():
 class TestBase(unittest.TestCase):
 
     def server_check(self):
-        pid_file_path = settings.PID_FILE + ".pid"
+        pid_file_path = "./" + settings.PID_FILE + ".pid"
         if os.path.exists(pid_file_path):
             logger.debug('step 10')
             with open(pid_file_path, 'r+') as pidfile:
@@ -38,16 +38,10 @@ class TestBase(unittest.TestCase):
                     logger.debug('step 13')
         else:
             logger.debug('step 20')
+            logger.debug(os.getcwd())
             os.system('nohup python run.py > /dev/null 2>&1 &')
             time.sleep(2)
             logger.debug('step 21')
-            with open(pid_file_path, 'r+') as pidfile:
-                logger.debug('step 22')
-                old_pid = pidfile.read()
-                # check process exist or not
-                output = subprocess.getoutput('ps -q ' + old_pid)
-                logger.debug(output)
-                logger.debug('step 23')
 
     def setUp(self):
         self.server_check()
