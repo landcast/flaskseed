@@ -19,4 +19,4 @@ services:
 script:
 #  - pytest # or py.test for Python versions 3.5 and below
 #  - python integrationtests/auth_tests.py
-  - pyb
+  - pyb -v
