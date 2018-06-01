@@ -9,7 +9,7 @@ from config import settings
 from datetime import datetime
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 redis_store = redis.from_url(settings.REDIS_URL)
 
