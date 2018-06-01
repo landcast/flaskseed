@@ -2,71 +2,128 @@
 # https://github.com/damnever/pigar
 
 # migrations/env.py: 20
-# ustutor/__init__.py: 4
-# ustutor/blueprints/auth/__init__.py: 2
-# ustutor/blueprints/upload/__init__.py: 3
-# ustutor/resources/admin_api.py: 2
-# ustutor/resources/api.py: 2
-# ustutor/resources/todo_api.py: 2
-# ustutor/service/emailservice.py: 3
-# ustutor/swaggerapis/__init__.py: 3
+# src/__init__.py: 4
+# src/blueprints/auth/__init__.py: 2
+# src/blueprints/upload/__init__.py: 3
+# src/resources/api.py: 2
+# src/resources/todo_api.py: 2
+# src/service/emailservice.py: 3
+# src/swaggerapis/__init__.py: 3
+# target/dist/ustutorbk-0.1/__init__.py: 4
+# target/dist/ustutorbk-0.1/blueprints/auth/__init__.py: 2
+# target/dist/ustutorbk-0.1/blueprints/upload/__init__.py: 3
+# target/dist/ustutorbk-0.1/build/lib/__init__.py: 4
+# target/dist/ustutorbk-0.1/build/lib/blueprints/auth/__init__.py: 2
+# target/dist/ustutorbk-0.1/build/lib/blueprints/upload/__init__.py: 3
+# target/dist/ustutorbk-0.1/build/lib/resources/api.py: 2
+# target/dist/ustutorbk-0.1/build/lib/resources/todo_api.py: 2
+# target/dist/ustutorbk-0.1/build/lib/service/emailservice.py: 3
+# target/dist/ustutorbk-0.1/build/lib/swaggerapis/__init__.py: 3
+# target/dist/ustutorbk-0.1/resources/api.py: 2
+# target/dist/ustutorbk-0.1/resources/todo_api.py: 2
+# target/dist/ustutorbk-0.1/service/emailservice.py: 3
+# target/dist/ustutorbk-0.1/swaggerapis/__init__.py: 3
 Flask == 1.0.2
 
-# ustutor/service/emailservice.py: 4
+# src/service/emailservice.py: 4
+# target/dist/ustutorbk-0.1/build/lib/service/emailservice.py: 4
+# target/dist/ustutorbk-0.1/service/emailservice.py: 4
 Flask_Mail == 0.9.1
 
-# ustutor/dbmigrate.py: 1
+# src/dbmigrate.py: 1
+# target/dist/ustutorbk-0.1/build/lib/dbmigrate.py: 1
+# target/dist/ustutorbk-0.1/dbmigrate.py: 1
 Flask_Migrate == 2.1.1
 
-# ustutor/resources/admin_api.py: 3
-# ustutor/resources/api.py: 1
-# ustutor/resources/todo_api.py: 3
+# src/resources/admin_api.py: 2
+# src/resources/api.py: 1
+# src/resources/todo_api.py: 3
+# target/dist/ustutorbk-0.1/build/lib/resources/admin_api.py: 2
+# target/dist/ustutorbk-0.1/build/lib/resources/api.py: 1
+# target/dist/ustutorbk-0.1/build/lib/resources/todo_api.py: 3
+# target/dist/ustutorbk-0.1/resources/admin_api.py: 2
+# target/dist/ustutorbk-0.1/resources/api.py: 1
+# target/dist/ustutorbk-0.1/resources/todo_api.py: 3
 Flask_RESTful == 0.3.6
 
-# ustutor/service/redisservice.py: 1
+# src/service/redisservice.py: 1
+# target/dist/ustutorbk-0.1/build/lib/service/redisservice.py: 1
+# target/dist/ustutorbk-0.1/service/redisservice.py: 1
 Flask_Redis == 0.3.0
 
-# ustutor/swaggerapis/__init__.py: 4,5
+# src/swaggerapis/__init__.py: 4,5
+# target/dist/ustutorbk-0.1/build/lib/swaggerapis/__init__.py: 4,5
+# target/dist/ustutorbk-0.1/swaggerapis/__init__.py: 4,5
 Flask_Restless == 0.17.0
 
-# ustutor/models/common_models.py: 2
+# src/models/common_models.py: 2
+# target/dist/ustutorbk-0.1/build/lib/models/common_models.py: 2
+# target/dist/ustutorbk-0.1/models/common_models.py: 2
 Flask_SQLAlchemy == 2.3.2
 
-# ustutor/blueprints/auth/__init__.py: 6
+# src/blueprints/auth/__init__.py: 7
+# target/dist/ustutorbk-0.1/blueprints/auth/__init__.py: 7
+# target/dist/ustutorbk-0.1/build/lib/blueprints/auth/__init__.py: 7
 PyJWT == 1.4.2
 
 # build.py: 22
 PyMySQL == 0.8.1
 
-# ustutor/swaggerapis/__init__.py: 2
+# src/swaggerapis/__init__.py: 2
+# target/dist/ustutorbk-0.1/build/lib/swaggerapis/__init__.py: 2
+# target/dist/ustutorbk-0.1/swaggerapis/__init__.py: 2
 PyYAML == 3.12
 
 # migrations/env.py: 3
-# migrations/versions/b58c0e17f33a_.py: 9
-# ustutor/__init__.py: 17
-# ustutor/blueprints/auth/__init__.py: 5
-# ustutor/models/admin_models.py: 2
-# ustutor/models/common_models.py: 3
-# ustutor/models/course_models.py: 2
-# ustutor/models/order_models.py: 2
-# ustutor/models/student_models.py: 2
-# ustutor/models/teacher_models.py: 2
-# ustutor/resources/admin_api.py: 5
+# migrations/versions/24709b0d5f2c_.py: 9
+# src/__init__.py: 16
+# src/blueprints/auth/__init__.py: 5
+# src/models/admin_models.py: 2
+# src/models/common_models.py: 3
+# src/models/course_models.py: 2
+# src/models/order_models.py: 2
+# src/models/student_models.py: 2
+# src/models/teacher_models.py: 2
+# target/dist/ustutorbk-0.1/__init__.py: 16
+# target/dist/ustutorbk-0.1/blueprints/auth/__init__.py: 5
+# target/dist/ustutorbk-0.1/build/lib/__init__.py: 16
+# target/dist/ustutorbk-0.1/build/lib/blueprints/auth/__init__.py: 5
+# target/dist/ustutorbk-0.1/build/lib/models/admin_models.py: 2
+# target/dist/ustutorbk-0.1/build/lib/models/common_models.py: 3
+# target/dist/ustutorbk-0.1/build/lib/models/course_models.py: 2
+# target/dist/ustutorbk-0.1/build/lib/models/order_models.py: 2
+# target/dist/ustutorbk-0.1/build/lib/models/student_models.py: 2
+# target/dist/ustutorbk-0.1/build/lib/models/teacher_models.py: 2
+# target/dist/ustutorbk-0.1/models/admin_models.py: 2
+# target/dist/ustutorbk-0.1/models/common_models.py: 3
+# target/dist/ustutorbk-0.1/models/course_models.py: 2
+# target/dist/ustutorbk-0.1/models/order_models.py: 2
+# target/dist/ustutorbk-0.1/models/student_models.py: 2
+# target/dist/ustutorbk-0.1/models/teacher_models.py: 2
 SQLAlchemy == 1.2.7
 
-# run.py: 61
-# ustutor/blueprints/auth/__init__.py: 3
+# run.py: 63
+# src/blueprints/auth/__init__.py: 3
+# target/dist/ustutorbk-0.1/blueprints/auth/__init__.py: 3
+# target/dist/ustutorbk-0.1/build/lib/blueprints/auth/__init__.py: 3
 Werkzeug == 0.14.1
 
 # migrations/env.py: 2
-# migrations/versions/b58c0e17f33a_.py: 8
+# migrations/versions/24709b0d5f2c_.py: 8
 alembic == 0.9.9
 
 # build.py: 21
 pybuilder == 0.11.17
 
-# unittests/extport_test.py: 1
+# integrationtests/__init__.py: 3
+redis == 2.10.6
+
+# src/blueprints/auth/__init__.py: 9
+# target/dist/ustutorbk-0.1/blueprints/auth/__init__.py: 9
+# target/dist/ustutorbk-0.1/build/lib/blueprints/auth/__init__.py: 9
+# unittests/extport_test.py: 5
 requests == 2.18.4
 
 # setup.py: 3,4
+# target/dist/ustutorbk-0.1/setup.py: 3,4
 setuptools == 39.0.1

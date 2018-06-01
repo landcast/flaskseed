@@ -33,7 +33,7 @@ class TestBase(unittest.TestCase):
                         'nohup python run.py > /dev/null 2>&1 &')
                     time.sleep(2)
         else:
-            subprocess.run('nohup python run.py > /dev/null 2>&1 &'.split())
+            os.system('nohup python run.py > /dev/null 2>&1 &')
 
     def setUp(self):
         self.server_check()
