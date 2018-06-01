@@ -8,7 +8,7 @@ from integrationtests import random_username, TestBase, redis_store, logger
 
 json_header = '"Content-Type:application/json"'
 
-server_location = 'http://localhost:5000'
+server_location = 'http://127.0.0.1:5000'
 
 
 class CurlTest(TestBase):
