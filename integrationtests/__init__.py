@@ -41,6 +41,13 @@ class TestBase(unittest.TestCase):
             os.system('nohup python run.py > /dev/null 2>&1 &')
             time.sleep(2)
             logger.debug('step 21')
+            with open(pid_file_path, 'r+') as pidfile:
+                logger.debug('step 22')
+                old_pid = pidfile.read()
+                # check process exist or not
+                output = subprocess.getoutput('ps -q ' + old_pid)
+                logger.debug(output)
+                logger.debug('step 23')
 
     def setUp(self):
         self.server_check()
