@@ -73,7 +73,7 @@ into requirements.txt
 
 ./flaskseed.pid when call run.py, the process id will be write into. 
 
-/var/flaskseed-debug.log is the default debug log file, tail -f for it.
+/var/log/flaskseed-debug.log is the default debug log file, tail -f for it.
 
 ## Data Model
 
