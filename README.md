@@ -54,7 +54,7 @@ this script also.
 ./unittests for unit test case. Using $> python -m unittest unittests/*.py to
 run all.
 
-./integrationtests currently not used.
+./integrationtests using python unittest to call os command curl to test the endpoints.
 
 ./.travis.yml CI setting for github travis-ci integration.
 

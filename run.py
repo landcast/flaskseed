@@ -68,7 +68,7 @@ def setup_pid_file(app):
                 os.kill(int(old_pid), signal.SIGKILL)
                 app.logger.debug('kill ' + old_pid + ', started ' + str(pid))
             except ProcessLookupError as e:
-                app.logger.debug(old_pid + ' process already killed. ' + str(e))
+                app.logger.debug(old_pid + ' process already killed', e)
             # move file teller to start
             pidfile.seek(0, 0)
             pidfile.write(str(pid))
@@ -78,10 +78,10 @@ def setup_pid_file(app):
 
 
 if __name__ == '__main__':
-    # create app using config
-    app = create_app(settings)
     # build options to setup config
     options = process_options(settings)
+    # create app using config
+    app = create_app(settings)
     # If the user selects the profiling option, then we need
     # to do a little extra setup
     if options.profile:
