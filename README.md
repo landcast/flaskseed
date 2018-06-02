@@ -71,6 +71,10 @@ into requirements.txt
 
 ./tox.ini currently not used.
 
+./flaskseed.pid when call run.py, the process id will be write into. 
+
+/var/flaskseed-debug.log is the default debug log file, tail -f for it.
+
 ## Data Model
 
 Manually written for table generation and SQLAlchemy modeling. The common_models

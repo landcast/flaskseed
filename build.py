@@ -37,7 +37,7 @@ name = 'ustutorbk'
 authors = [Author('Tom Li', 'landcast@163.com'),
            Author('lxf', 'xxx@xxx.com')]
 license = 'Apache License, Version 2.0'
-summary = 'backend service for src'
+summary = 'Flask template application'
 url = 'https://github.com/landcast/flaskseed'
 version = '0.1'
 
