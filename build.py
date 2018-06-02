@@ -33,7 +33,7 @@ use_plugin('python.flake8')
 use_plugin('python.pydev')
 use_plugin("python.distutils")
 
-name = 'ustutorbk'
+name = 'flaskseed'
 authors = [Author('Tom Li', 'landcast@163.com'),
            Author('lxf', 'xxx@xxx.com')]
 license = 'Apache License, Version 2.0'

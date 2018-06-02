@@ -43,7 +43,7 @@ from ./target to ./
 
 ./dbmigrate using flask-migrate for database incremental change.
 
-./debug-ustutor.sh will do debug start and tail the log. If log file location
+./debug-flaskseed.sh will do debug start and tail the log. If log file location
 changed in ./config/settings, do remember to change the log file location in
 this script also.
 

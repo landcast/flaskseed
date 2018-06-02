@@ -1,4 +1,4 @@
 #!/bin/sh
 
 export eip=`curl -s ipecho.net/plain`
-./debug-ustutor.sh -E $eip
+./debug-flaskseed.sh -E $eip
