@@ -31,7 +31,6 @@ class CurlTest(TestBase):
         logger.debug(cmd)
         status_code, output = subprocess.getstatusoutput(cmd)
         logger.debug(output)
-        print(output)
         self.assertTrue('200 OK' in output, 'expect http status return 200')
 
 

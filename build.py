@@ -82,5 +82,5 @@ def set_properties(project):
     project.set_property('dir_source_main_scripts', 'scripts')
     project.set_property(
         'dir_source_integrationtest_python', 'integrationtests')
-    project.set_property('teamcity_output', True)
+
     project.set_property('integrationtest_parallel', False)

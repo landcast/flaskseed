@@ -8,7 +8,6 @@ import unittest
 from config import settings
 from datetime import datetime
 
-
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 redis_store = redis.from_url(settings.REDIS_URL)
@@ -31,17 +30,20 @@ class TestBase(unittest.TestCase):
                 output = subprocess.getoutput('ps -q ' + old_pid)
                 if old_pid not in output:
                     logger.debug('step 12')
-                    logger.debug('start new server')
-                    os.system(
-                        'nohup python run.py > /dev/null 2>&1 &')
+                    logger.debug('start new server ' + str(datetime.now()))
+                    subprocess.Popen(
+                            'python run.py',
+                            shell=True, start_new_session=True)
                     time.sleep(2)
-                    logger.debug('step 13')
+                    logger.debug('step 13 ' + str(datetime.now()))
         else:
-            logger.debug('step 20')
+            logger.debug('step 20 ' + str(datetime.now()))
             logger.debug(os.getcwd())
-            os.system('nohup python run.py > /dev/null 2>&1 &')
+            subprocess.Popen(
+                    'python run.py ',
+                    shell=True, start_new_session=True)
             time.sleep(2)
-            logger.debug('step 21')
+            logger.debug('step 21 ' + str(datetime.now()))
 
     def setUp(self):
         self.server_check()
