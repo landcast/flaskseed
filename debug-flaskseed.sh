@@ -2,4 +2,4 @@
 
 nohup python run.py $@ > /dev/null 2>&1 &
 sleep 1s
-tail -f /var/flaskseed-debug.log
+tail -f /var/log/flaskseed-debug.log
