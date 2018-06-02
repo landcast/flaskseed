@@ -171,7 +171,9 @@ def create_app(config):
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE'
         response.headers[
-            'Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+            'Access-Control-Allow-Headers'] = 'x-requested-with, ' \
+                                              'Content-type, Authorization, ' \
+                                              'lang'
         response.headers['Cache-Control'] = 'no-cache'
         language = g.get('lang', None)
         if language:
