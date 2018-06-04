@@ -84,11 +84,13 @@ def setup_pid_file(app):
             pidfile.write(str(pid))
 
 
+# build options to setup config
+options = process_options(settings)
+# create app using config
+app = create_app(settings)
+
+
 if __name__ == '__main__':
-    # build options to setup config
-    options = process_options(settings)
-    # create app using config
-    app = create_app(settings)
     # If the user selects the profiling option, then we need
     # to do a little extra setup
     if options.profile:
