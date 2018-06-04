@@ -23,6 +23,7 @@ class DuobeiLiveTest(TestBase):
 
         '''
         start_time = datetime.now().isoformat()[:-3] + 'Z'
+        self.app.logger.debug(start_time)
         r = requests.post(
             self.config['EP_LOCATION'] + self.config[
                 'EP_LIVE_PATH'] + '/createRoom',
