@@ -65,8 +65,14 @@ def setup_pid_file(app):
             old_pid = pidfile.read()
             # kill the process
             try:
-                os.kill(int(old_pid), signal.SIGKILL)
-                app.logger.debug('kill ' + old_pid + ', started ' + str(pid))
+                if not os.getppid() == int(old_pid):
+                    os.kill(int(old_pid), signal.SIGKILL)
+                    app.logger.debug(
+                        'kill ' + old_pid + ', started ' + str(pid))
+                else:
+                    app.logger.debug(
+                        'flaskseed.pid refer to current process parent id,'
+                        ' ignore kill action')
             except ProcessLookupError as e:
                 # app.logger.debug(old_pid + ' process already killed', e)
                 pass
@@ -95,6 +101,6 @@ if __name__ == '__main__':
     # run app
     setup_pid_file(app)
     app.run(
-            host=options.host,
-            port=int(options.port)
+        host=options.host,
+        port=int(options.port)
     )
