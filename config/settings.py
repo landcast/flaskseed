@@ -1,4 +1,4 @@
-import os
+ENV_NAME = 'dev'
 
 SECRET_KEY = '123'
 

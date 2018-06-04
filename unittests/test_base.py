@@ -3,9 +3,11 @@ import os
 import sys
 import socket
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.service import redis_store
-from src.models import db, session_scope, Curriculum
+from src.models import db, session_scope, SysControl, Curriculum, Subject, \
+    SubjectCategory, Course, CourseSchedule, CourseClassroom, Courseware, \
+    Teacher
 
 
 def random_username():
@@ -15,7 +17,6 @@ def random_username():
 class TestBase(unittest.TestCase):
     def setUp(self):
         if not hasattr(self, 'app'):
-            self.data_prepare()
             upper_path = os.path.abspath('.')
             sys.path.append(upper_path)
             from src import create_app
@@ -23,9 +24,11 @@ class TestBase(unittest.TestCase):
             app = create_app(settings)
             self.client = app.test_client()
             self.app = app
+            self.logger = app.logger
             self.config = app.config
             self.app_context = self.app.app_context()
             self.app_context.push()
+            self.data_prepare()
 
     def tearDown(self):
         self.app_context.pop()
@@ -51,11 +54,83 @@ class TestBase(unittest.TestCase):
         return r
 
     def data_prepare(self):
-        if not self.app.debug:
+        if not self.app.debug or self.app.config['ENV_NAME'] == 'prd':
+            # only running in debug mode and not in prd environment
             return
+
         with session_scope(db) as session:
-            session.add(Curriculum(fullname='AP'))
-            session.add(Curriculum(fullname='IB'))
+            pid = os.getpid()
+            r = session.query(SysControl).filter(
+                    SysControl.current_pid == pid).one_or_none()
+            if r:
+                # one process only run once
+                return
+
+            c_ap = Curriculum(full_name='AP', updated_by=str(pid))
+            session.add(c_ap)
+            c_ib = Curriculum(full_name='IB', updated_by=str(pid))
+            session.add(c_ib)
+            session.flush()
+            self.logger.debug(c_ap)
+            self.logger.debug(c_ib)
+            sc = SubjectCategory(subject_category='history',
+                                 updated_by=str(pid))
+            session.add(sc)
+            session.flush()
+            self.logger.debug(sc)
+            s_ap_history = Subject(subject_name='AP_history_grade_9',
+                    curriculum_id=c_ap.id,
+                    subject_category_id=sc.id, updated_by=str(pid))
+            session.add(s_ap_history)
+            s_ib_history = Subject(subject_name='IB_history_grade_9',
+                                   curriculum_id=c_ib.id,
+                                   subject_category_id=sc.id,
+                                   updated_by=str(pid))
+            session.add(s_ib_history)
+            session.flush()
+            self.logger.debug(s_ap_history)
+            self.logger.debug(s_ib_history)
+            teacher_name = random_username()
+            self.register(teacher_name, 'Teacher')
+            t = session.query(Teacher).filter(
+                    Teacher.username == teacher_name).one_or_none()
+            self.logger.debug(t)
+            cs_ap_history = Course(course_name='T1_AP_history_grade_9',
+                                   course_type=1,
+                                   state=1, price=900000,
+                                   primary_teacher_id=t.id,
+                                   subject_id=s_ap_history.id,
+                                   updated_by=str(pid))
+            session.add(cs_ap_history)
+            cs_ib_history = Course(course_name='T1_IB_history_grade_9',
+                                   course_type=2,
+                                   state=1, price=800000,
+                                   primary_teacher_id=t.id,
+                                   subject_id=s_ib_history.id,
+                                   updated_by=str(pid))
+            session.add(cs_ib_history)
+            session.flush()
+            self.logger.debug(cs_ap_history)
+            self.logger.debug(cs_ib_history)
+            cs_s_ap = CourseSchedule(start=datetime.now(), end=(
+                    datetime.now() + timedelta(days=90)), state=1,
+                                     course_id=cs_ap_history.id,
+                                     updated_by=str(pid))
+            session.add(cs_s_ap)
+            cs_s_ib = CourseSchedule(start=datetime.now(), end=(
+                    datetime.now() + timedelta(days=90)), state=1,
+                                     course_id=cs_ib_history.id,
+                                     updated_by=str(pid))
+            session.add(cs_s_ib)
+            session.flush()
+            self.logger.debug(cs_s_ap)
+            self.logger.debug(cs_s_ib)
+            # finally add the control record of this pid
+            sys_control = SysControl(current_pid=pid)
+            session.add(sys_control)
+            session.flush()
+            self.logger.debug(sys_control)
+
 
 if __name__ == '__main__':
     unittest.main()

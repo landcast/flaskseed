@@ -14,9 +14,9 @@ class SubjectCategory(EntityMixin, db.Model):
 
 
 class Subject(EntityMixin, db.Model):
-    subject_open_grade = Column(String(120), nullable=False)
     subject_name = Column(String(120), nullable=False)
     subject_desc = Column(String(120), nullable=True)
+    subject_open_grade = Column(String(120), nullable=True)
     subject_requirements = Column(String(120), nullable=True)
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                            nullable=True)

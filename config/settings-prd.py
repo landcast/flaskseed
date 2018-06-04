@@ -1,4 +1,4 @@
-import os
+ENV_NAME = 'prd'
 
 SECRET_KEY = '123'
 
@@ -23,9 +23,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 DEBUG_TB_INTERCEPT_REDIRECTS=False
 
-# followed upload config items
-UPLOAD_FOLDER = '/var/upload'
-ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'gif']
 # upload file size limitation
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
@@ -38,20 +35,13 @@ MAIL_PASSWORD = 'wl7116'
 MAIL_DEFAULT_SENDER = '13521273258@163.com'
 
 JWT_SECRET = 'src-flask-dev-no-random'
-JWT_ALG = 'HS256'
-JWT_HEADER = 'Authorization'
-JWT_SUBJECT_KEY = 'sub'
 
 REDIS_URL = "redis://:@localhost:6379/0"
 
-CUR_ID = 'cur_identity'
-CUR_USER = 'cur_user'
 
 HOST = '0.0.0.0'
 ESHOST = None
 PORT = 5000
 
 EP_LOCATION = "http://39.106.143.18:7080"
-EP_SMS_PATH = "/login/sendVerifyCode"
-EP_LIVE_PATH = '/live'
 
