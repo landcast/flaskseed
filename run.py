@@ -68,7 +68,8 @@ def setup_pid_file(app):
                 os.kill(int(old_pid), signal.SIGKILL)
                 app.logger.debug('kill ' + old_pid + ', started ' + str(pid))
             except ProcessLookupError as e:
-                app.logger.debug(old_pid + ' process already killed', e)
+                # app.logger.debug(old_pid + ' process already killed', e)
+                pass
             # move file teller to start
             pidfile.seek(0, 0)
             pidfile.write(str(pid))
