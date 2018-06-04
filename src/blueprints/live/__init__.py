@@ -15,41 +15,41 @@ from src.service import send_email, redis_store
 live = Blueprint('live', __name__)
 
 
-@live.route('/create-room', methods=['POST'])
+@live.route('/create_room', methods=['POST'])
 def create_room():
     return jsonify({})
 
 
-@live.route('/edit-room', methods=['POST'])
-def create_room():
+@live.route('/edit_room', methods=['POST'])
+def edit_room():
     return jsonify({})
 
 
-@live.route('/delete-room', methods=['POST'])
-def create_room():
+@live.route('/delete_room', methods=['POST'])
+def delete_room():
     return jsonify({})
 
 
-@live.route('/enter-room', methods=['POST'])
-def create_room():
+@live.route('/enter_room', methods=['POST'])
+def enter_room():
     return jsonify({})
 
 
-@live.route('/upload-doc', methods=['POST'])
-def create_room():
+@live.route('/upload_doc', methods=['POST'])
+def upload_doc():
     return jsonify({})
 
 
-@live.route('/attach-doc', methods=['POST'])
-def create_room():
+@live.route('/attach_doc', methods=['POST'])
+def attach_doc():
     return jsonify({})
 
 
-@live.route('/remove-doc', methods=['POST'])
-def create_room():
+@live.route('/remove_doc', methods=['POST'])
+def remove_doc():
     return jsonify({})
 
 
-@live.route('/preview-doc', methods=['POST'])
-def create_room():
+@live.route('/preview_doc', methods=['POST'])
+def preview_doc():
     return jsonify({})
