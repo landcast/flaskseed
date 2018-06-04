@@ -1,7 +1,7 @@
 import logging
 import os
 from logging import FileHandler, Formatter
-from flask import Flask, current_app, abort, request
+from flask import Flask, current_app, abort, request, g
 import json
 import jwt
 from src.swaggerapis import SwagAPIManager
