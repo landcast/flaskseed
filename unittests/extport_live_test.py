@@ -17,7 +17,7 @@ class DuobeiLiveTest(TestBase):
         '''
         start_time = datetime.now().isoformat()[:-3] + 'Z'
         self.app.logger.debug(start_time)
-        r = create_room('86-13521273258', 'test room', 60)
+        r = create_room('86-13521273258', 1, 'test room', 60)
         self.app.logger.debug(r)
         self.assertEqual(0, r['code'], 'not return 0 for succ')
 

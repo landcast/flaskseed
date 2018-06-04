@@ -86,7 +86,8 @@ def setup_pid_file(app):
 
 # build options to setup config
 options = process_options(settings)
-# create app using config
+# create app using config, keep create_app in global' reason is to support
+# the "flask * *" command, such as "flask db init"
 app = create_app(settings)
 
 
@@ -95,7 +96,6 @@ if __name__ == '__main__':
     # to do a little extra setup
     if options.profile:
         from werkzeug.contrib.profiler import ProfilerMiddleware
-
         app.config['PROFILE'] = True
         app.wsgi_app = ProfilerMiddleware(app.wsgi_app,
                                           restrictions=[30])

@@ -34,7 +34,7 @@ class Course(EntityMixin, db.Model):
     course_name = Column(String(120), nullable=False)
     course_type = Column(Integer, nullable=False,
                          comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
-    open_grade = Column(String(120), nullable=False)
+    open_grade = Column(String(120), nullable=True)
     course_desc = Column(String(120), nullable=True)
     difficult_level = Column(Integer, nullable=True)
     critical_level = Column(Integer, nullable=True)
@@ -101,10 +101,13 @@ class CourseClassroom(EntityMixin, db.Model):
     provider = Column(Integer, nullable=False, comment='1:duobei, 2:xxx')
     room_title = Column(String(255), nullable=False)
     video_ready = Column(Integer, nullable=False, comment='0:disable, 1:enable')
-    room_url = Column(String(255), nullable=False)
+    room_url = Column(String(255), nullable=True)
     room_id = Column(String(255), nullable=True)
+    room_type = Column(Integer, nullable=True)
     room_uid = Column(String(255), nullable=True,
-                      comment='store duobei host_code')
+                      comment='room uuid')
+    host_code = Column(String(255), nullable=True,
+                      comment='store duobei host_code used as invite code')
     state = Column(Integer, nullable=False)
     duration_start = Column(DateTime, nullable=True)
     duration_end = Column(DateTime, nullable=True)
