@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from datetime import datetime
 # from mockito import mock, verify
 import json
 import random
@@ -10,7 +11,7 @@ sys.path.append(".")
 from unittests.test_base import TestBase, random_username
 
 
-class ExtportTest(TestBase):
+class SmsTest(TestBase):
 
     def test_smsverifycode(self):
         '''
