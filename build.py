@@ -49,7 +49,7 @@ default_task = ['install_dependencies', 'analyze', 'publish', 'post_publish']
 def post_publish(project, logger):
     logger.info('run post_publish task')
     os.system('rm setup.py -rf')
-    os.system('cp ./target/dist/ustutorbk-0.1/setup.py setup.py')
+    os.system('cp ./target/dist/flaskseed-0.1/setup.py setup.py')
 
 
 @init
