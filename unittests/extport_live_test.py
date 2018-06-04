@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 from datetime import datetime
 # from mockito import mock, verify
-import json
-import random
-import requests
 import unittest
 import sys
 

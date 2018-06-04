@@ -98,10 +98,13 @@ class Courseware(EntityMixin, db.Model):
 
 
 class CourseClassroom(EntityMixin, db.Model):
-    provider = Column(Integer, nullable=False)
+    provider = Column(Integer, nullable=False, comment='1:duobei, 2:xxx')
+    room_title = Column(String(255), nullable=False)
+    video_ready = Column(Integer, nullable=False, comment='0:disable, 1:enable')
     room_url = Column(String(255), nullable=False)
     room_id = Column(String(255), nullable=True)
-    room_uid = Column(String(255), nullable=True)
+    room_uid = Column(String(255), nullable=True,
+                      comment='store duobei host_code')
     state = Column(Integer, nullable=False)
     duration_start = Column(DateTime, nullable=True)
     duration_end = Column(DateTime, nullable=True)
