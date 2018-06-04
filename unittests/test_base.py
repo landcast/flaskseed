@@ -5,6 +5,7 @@ import socket
 import unittest
 from datetime import datetime
 from src.service import redis_store
+from src.models import db, session_scope, Curriculum
 
 
 def random_username():
@@ -14,6 +15,7 @@ def random_username():
 class TestBase(unittest.TestCase):
     def setUp(self):
         if not hasattr(self, 'app'):
+            self.data_prepare()
             upper_path = os.path.abspath('.')
             sys.path.append(upper_path)
             from src import create_app
@@ -48,6 +50,12 @@ class TestBase(unittest.TestCase):
         self.app.logger.debug(json.loads(r.get_data(as_text=True)))
         return r
 
+    def data_prepare(self):
+        if not self.app.debug:
+            return
+        with session_scope(db) as session:
+            session.add(Curriculum(fullname='AP'))
+            session.add(Curriculum(fullname='IB'))
 
 if __name__ == '__main__':
     unittest.main()

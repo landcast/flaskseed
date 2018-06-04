@@ -6,7 +6,7 @@ from src.models.student_models import Student, StudentAppraisal, \
     StudyAppointment, Homework
 from src.models.admin_models import Enrollment, Channel, SysUser, \
     Attachment, SmsLog, Menu, Region, Notification, FeedBack, RoleDefinition, \
-    SysUserRole
+    SysUserRole, SysControl
 from src.models.order_models import Order, PayLog, Account
 from src.models.course_models import Course, Subject, CourseExam, \
     CourseSchedule, Curriculum, CourseClassroom, CourseClassParticipant, \

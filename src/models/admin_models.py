@@ -136,3 +136,7 @@ class RoleAuth(EntityMixin, db.Model):
                                comment='Auth target data, '
                                        'could be menu_id, url etc')
     auth_level = Column(Integer, nullable=False, comment='enum view, edit etc')
+
+
+class SysControl(EntityMixin, db.Model):
+    current_pid = Column(Integer, nullable=False)
