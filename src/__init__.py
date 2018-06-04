@@ -1,12 +1,15 @@
 import logging
 import os
 from logging import FileHandler, Formatter
-from flask import Flask
+from flask import Flask, current_app, abort, request
+import json
+import jwt
 from src.swaggerapis import SwagAPIManager
 from fnmatch import fnmatchcase
 import inspect
 
-from src.blueprints.auth import *
+from src.blueprints.auth import auth, BEARER_TOKEN
+from src.blueprints.live import live
 from src.blueprints.upload import upload
 from src.resources.api import api, admin
 from src.models import *
@@ -131,6 +134,8 @@ def create_app(config):
     # register blueprints
     app.register_blueprint(upload)
     app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(live, url_prefix='/live')
+    # register restful endpoints
     app.register_blueprint(admin, url_prefix='/admin')
 
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
