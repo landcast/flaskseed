@@ -21,7 +21,7 @@ if __name__ == '__main__':
     setup(
         name = 'ustutorbk',
         version = '0.1',
-        description = 'Flask template application',
+        description = 'backend service for ustutor',
         long_description = '',
         author = 'Tom Li, lxf',
         author_email = 'landcast@163.com, xxx@xxx.com',
@@ -30,20 +30,21 @@ if __name__ == '__main__':
         scripts = ['scripts/script_run_on_pip_install.py'],
         packages = [
             'models',
-            'swaggerapis',
             'resources',
             'service',
-            'blueprints.upload',
+            'swaggerapis',
             'blueprints.auth',
-            'blueprints.teacher',
             'blueprints.school',
-            'blueprints.student'
+            'blueprints.student',
+            'blueprints.teacher',
+            'blueprints.upload'
         ],
         namespace_packages = [],
         py_modules = [
-            '__init__',
+            'app',
+            'dbmigrate',
             'utils',
-            'dbmigrate'
+            '__init__'
         ],
         classifiers = [
             'Development Status :: 3 - Alpha',

@@ -31,6 +31,14 @@ $> pyb
 The ./target folder contains output, and I add a custom task to copy setup.py
 from ./target to ./
 
+## CI
+
+Using travis-ci for project continuous integration, click Build button for 
+detailed information.
+
+![Build Status](https://travis-ci.org/landcast/flaskseed.svg?branch=master)
+(https://travis-ci.org/landcast/flaskseed)
+
 ## Structure
 
 ./src main source of web application ustutor (e-learning).
