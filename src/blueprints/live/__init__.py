@@ -17,6 +17,10 @@ live = Blueprint('live', __name__)
 
 @live.route('/create_room', methods=['POST'])
 def create_room():
+    '''
+
+    :return:
+    '''
     return jsonify({})
 
 

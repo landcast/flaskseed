@@ -4,27 +4,35 @@ import json
 import requests
 
 
-def create_room(title, length, menNum,
-                start_time=datetime.now().isoformat()[:-3] + 'Z'):
+def create_room(username, title, length, room_type=1,
+                start_time=datetime.now().isoformat()[:-3] + 'Z', user_type=0,
+                lang='en'):
     '''
-    create living room for teacher and students
+    Create living teaching room for teach and students.
     :param title:
     :param length:
-    :param menNum:
+    :param room_type: 1: 1V1, 2:1VX, 3:Public-lecture
+    :param username:
     :param start_time:
-    :return: room created information
+    :param user_type:
+    :param lang:
+    :return: room created by third-party provider
     '''
     current_app.logger.debug(start_time)
     r = requests.post(
         current_app.config['EP_LOCATION'] + current_app.config[
             'EP_LIVE_PATH'] + '/createRoom',
         data=json.dumps({
-            'title': 'test extport live room',
+            'title': title,
             'startTime': start_time,
-            'length': 60,
-            'menNum': 1
+            'length': length,
+            'menNum': room_type,
+            'username': username,
+            'lang': lang,
+            'userType': user_type,
         }), headers={'Content-type': 'application/json'})
     current_app.logger.debug(r.text)
+    return r.json()
 
 
 def edit_room():
