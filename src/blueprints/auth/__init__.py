@@ -18,6 +18,23 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['POST'])
 def login():
+    """
+    swagger-doc: do login for registered user
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      password:
+        description: 'login user password'
+        type: 'string'
+      usertype:
+        description: 'login user type (Student, Teacher, SysUser)'
+        type: 'string'
+    res:
+      Authorization:
+        description: 'Athorization jwt http header'
+        type: 'string'
+    """
     user_name = request.json['username']
     password = request.json['password']
     user_type = request.json['usertype']
@@ -44,22 +61,23 @@ def logout():
 @auth.route('/register', methods=['POST'])
 def register():
     """
+    swagger-doc: do register for new user
     req:
       username:
-        description: 'login user name',
+        description: 'login user name'
         type: 'string'
       password:
-        description: 'login user password',
+        description: 'login user password'
         type: 'string'
       usertype:
-        description: 'login user type (Student, Teacher, SysUser)',
+        description: 'login user type (Student, Teacher, SysUser)'
         type: 'string'
       verify_code:
-        description: 'code sent by calling email verify or sms verify',
+        description: 'code sent by calling email verify or sms verify'
         type: 'string'
     res:
       Authorization:
-        description: 'Athorization jwt http header',
+        description: 'Athorization jwt http header'
         type: 'string'
     """
     current_app.logger.debug(request.json)
@@ -137,6 +155,20 @@ def register():
 
 @auth.route('/smsverify', methods=['POST'])
 def smsverify():
+    """
+    swagger-doc: send verify code by sms
+    req:
+      mobile_no:
+        description: 'mobile NO to receive verify code'
+        type: 'string'
+      country_code:
+        description: 'country code, if omit, default to 86'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'verify code sent to user mobile NO'
+        type: 'string'
+    """
     mobile_no = request.json['mobile_no']
     country_code = '86'
     verify_code = random.randint(100000, 999999)
@@ -166,6 +198,17 @@ def smsverify():
 
 @auth.route('/emailverify', methods=['POST'])
 def email_verify():
+    """
+    swagger-doc: send verify code by email
+    req:
+      email_address:
+        description: 'email address to receive verify code'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'verify code sent to user email address'
+        type: 'string'
+    """
     email_address = request.json['email_address']
     user_name = email_address
     user_type = 'SysUser'
@@ -182,6 +225,23 @@ def email_verify():
 
 @auth.route('/resetpassword', methods=['POST'])
 def resetpassword():
+    """
+    swagger-doc: do resetpassword with verify code sent by email or sms
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      password:
+        description: 'login user password'
+        type: 'string'
+      verify_code:
+        description: 'code sent by calling email verify or sms verify'
+        type: 'string'
+    res:
+      message:
+        description: 'success message for reset password'
+        type: 'string'
+    """
     current_app.logger.debug(request.json)
     user_name = request.json['username']
     verify_code = request.json['verify_code']

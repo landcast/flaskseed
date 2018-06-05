@@ -191,12 +191,4 @@ def create_app(config):
         if exc:
             app.log_exception(repr(exc))
 
-    # iterate all urls, if its docstring contains swagger spec,
-    # add it to /swagger
-    for url_mapping in app.url_map.iter_rules():
-        app.logger.debug(url_mapping)
-        app.logger.debug(url_mapping.endpoint)
-        app.logger.debug(app.view_functions[url_mapping.endpoint])
-        app.logger.debug(app.view_functions[url_mapping.endpoint].__doc__)
-
     return app

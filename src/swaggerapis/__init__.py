@@ -29,147 +29,13 @@ sqlalchemy_swagger_type = {
 class SwagAPIManager(object):
     swagger = {
         'openapi': '3.0.0',
-        'info': {'description': 'api definition', 'version': 'v1',
-                 'description': ''},
+        'info': {
+            'description': 'api definition', 'version': 'v1',
+            'description': ''
+        },
         'servers': [{'url': 'http://localhost:5000/'}],
         'tags': [],
-        'paths': {
-            '/auth/login': {
-                'post': {
-                    "requestBody": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/login_req"
-                                }
-                            }
-                        }
-                    }
-                    ,
-                    'responses': {
-                        "200": {
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "$ref": "#/components/schemas/login_res"
-                                    }
-                                }
-                            },
-                            "description": "Success"
-                        }
-                    },
-                    'tags': ['Auth']
-                }
-            },
-            '/auth/register': {
-                'post': {
-                    "requestBody": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/register_req"
-                                }
-                            }
-                        }
-                    }
-                    ,
-                    'responses': {
-                        "200": {
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "$ref": "#/components/schemas/register_res"
-                                    }
-                                }
-                            },
-                            "description": "Success"
-                        }
-                    },
-                    'tags': ['Auth']
-                }
-            },
-            '/auth/smsverify': {
-                'post': {
-                    "requestBody": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/smsverify_req"
-                                }
-                            }
-                        }
-                    }
-                    ,
-                    'responses': {
-                        "200": {
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "$ref": "#/components/schemas/smsverify_res"
-                                    }
-                                }
-                            },
-                            "description": "Success"
-                        }
-                    },
-                    'tags': ['Auth']
-                }
-            },
-            '/auth/emailverify': {
-                'post': {
-                    "requestBody": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/emailverify_req"
-                                }
-                            }
-                        }
-                    }
-                    ,
-                    'responses': {
-                        "200": {
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "$ref": "#/components/schemas/emailverify_res"
-                                    }
-                                }
-                            },
-                            "description": "Success"
-                        }
-                    },
-                    'tags': ['Auth']
-                }
-            },
-            '/auth/resetpassword': {
-                'post': {
-                    "requestBody": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/resetpassword_req"
-                                }
-                            }
-                        }
-                    }
-                    ,
-                    'responses': {
-                        "200": {
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "$ref": "#/components/schemas/resetpassword_res"
-                                    }
-                                }
-                            },
-                            "description": "Success"
-                        }
-                    },
-                    'tags': ['Auth']
-                }
-            }
-        },
+        'paths': {},
         # global security setting enabled for all endpoints
         # 'security': {
         #     'bearerAuth': []
@@ -182,126 +48,78 @@ class SwagAPIManager(object):
                     'bearerFormat': 'JWT'
                 }
             },
-            'schemas': {
-                'login_req': {
-                    'properties': {
-                        'username': {
-                            'description': 'login user name',
-                            'type': 'string'
-                        },
-                        'password': {
-                            'description': 'login user password',
-                            'type': 'string'
-                        },
-                        'usertype': {
-                            'description': 'login user type (Student, Teacher, SysUser)',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'login_res': {
-                    'properties': {
-                        'Authorization': {
-                            'description': 'Athorization jwt http header',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'register_req': {
-                    'properties': {
-                        'username': {
-                            'description': 'login user name',
-                            'type': 'string'
-                        },
-                        'password': {
-                            'description': 'login user password',
-                            'type': 'string'
-                        },
-                        'usertype': {
-                            'description': 'login user type (Student, Teacher, SysUser)',
-                            'type': 'string'
-                        },
-                        'verify_code': {
-                            'description': 'code sent by calling email verify or sms verify',
-                            'type': 'string'
-                        },
-                    }
-                },
-                'register_res': {
-                    'properties': {
-                        'Authorization': {
-                            'description': 'Athorization jwt http header',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'smsverify_req': {
-                    'properties': {
-                        'mobile_no': {
-                            'description': 'mobile NO to receive verify code',
-                            'type': 'string'
-                        },
-                        'country_code': {
-                            'description': 'country code, if omit, default to 86',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'smsverify_res': {
-                    'properties': {
-                        'verify_code': {
-                            'description': 'verify code sent to user mobile NO',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'emailverify_req': {
-                    'properties': {
-                        'email_address': {
-                            'description': 'email address to receive verify code',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'emailverify_res': {
-                    'properties': {
-                        'verify_code': {
-                            'description': 'verify code sent to user email address',
-                            'type': 'string'
-                        }
-                    }
-                },
-                'resetpassword_req': {
-                    'properties': {
-                        'username': {
-                            'description': 'login user name',
-                            'type': 'string'
-                        },
-                        'password': {
-                            'description': 'login user password',
-                            'type': 'string'
-                        },
-                        'verify_code': {
-                            'description': 'code sent by calling email verify or sms verify',
-                            'type': 'string'
-                        },
-                    }
-                },
-                'resetpassword_res': {
-                    'properties': {
-                        'message': {
-                            'description': 'success message for reset password',
-                            'type': 'string'
-                        }
-                    }
-                },
-            }
+            'schemas': {}
         }
     }
+
+    def setup_swagger_blueprint(self, method, url):
+        operation_name = url.split('/')[-1]
+        self.swagger['paths'][url] = {}
+        self.swagger['paths'][url][method.lower()] = {
+            'requestBody': {
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            '$ref': '#/components/schemas/' +
+                                    operation_name + '_req'
+                        }
+                    }
+                }
+            },
+            'responses': {
+                '200': {
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                '$ref':
+                                    '#/components/schemas/' +
+                                    operation_name + '_res'
+                            }
+                        }
+                    },
+                    'description': 'Success',
+                }
+            },
+            'tags': [url.split('/')[1]]
+        }
 
     def __init__(self, app=None, **kwargs):
         self.app = None
         self.manager = None
+        # iterate all urls, if its docstring contains swagger spec,
+        # add it to /swagger
+        for url_mapping in app.url_map.iter_rules():
+            doc_string = app.view_functions[url_mapping.endpoint].__doc__
+            if doc_string:
+                app.logger.debug('-----------------------')
+                app.logger.debug(url_mapping)
+                app.logger.debug(url_mapping.methods)
+                app.logger.debug(url_mapping.endpoint)
+                app.logger.debug(app.view_functions[url_mapping.endpoint])
+                app.logger.debug(
+                    app.view_functions[url_mapping.endpoint].__doc__)
+                index = doc_string.find('swagger-doc:')
+                if index == -1:
+                    continue
+                swagger_doc = doc_string.replace('swagger-doc:', 'description:')
+                swagger_dict = yaml.load(swagger_doc)
+                app.logger.debug(swagger_dict)
+                operation_name = str(url_mapping).split('/')[-1]
+                self.swagger['components']['schemas'][
+                    operation_name + "_req"] = {
+                    'properties': swagger_dict['req']
+                }
+                self.swagger['components']['schemas'][
+                    operation_name + "_res"] = {
+                    'properties': swagger_dict['res']
+                }
+                if 'POST' in url_mapping.methods:
+                    self.setup_swagger_blueprint('POST', str(url_mapping))
+                if 'GET' in url_mapping.methods:
+                    self.setup_swagger_blueprint('GET', str(url_mapping))
+                if 'PUT' in url_mapping.methods:
+                    pass
+
         if app is not None:
             self.init_app(app, **kwargs)
 
@@ -375,7 +193,8 @@ class SwagAPIManager(object):
                                         'title': name,
                                         'type': 'array',
                                         'items': {
-                                            '$ref': '#/components/schemas/' + name
+                                            '$ref': '#/components/schemas/' +
+                                                    name
                                         }
                                     }
                                 }
@@ -411,7 +230,8 @@ class SwagAPIManager(object):
                                         'title': name,
                                         'type': 'array',
                                         'items': {
-                                            '$ref': '#/components/schemas/' + name
+                                            '$ref': '#/components/schemas/' +
+                                                    name
                                         }
                                     }
                                 }
@@ -548,10 +368,10 @@ class SwagAPIManager(object):
             if host == '0.0.0.0':
                 host = '127.0.0.1'
             self.swagger['servers'][0]['url'] = 'http://{}:{}/'.format(
-                host, app.config['PORT'])
+                    host, app.config['PORT'])
             if app.config['ESHOST']:
                 self.swagger['servers'][0]['url'] = 'http://{}:{}/'.format(
-                    app.config['ESHOST'], app.config['PORT'])
+                        app.config['ESHOST'], app.config['PORT'])
                 # self.swagger['servers'].append({
                 #     'url': 'http://127.0.0.1:5000/'
                 # })
