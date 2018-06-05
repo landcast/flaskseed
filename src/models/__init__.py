@@ -1,6 +1,7 @@
 from src.models.common_models import db, session_scope, row_dict, \
     EntityMixin
-from src.models.teacher_models import Teacher, Certificate, TeacherSubject
+from src.models.teacher_models import Teacher, Certificate, TeacherSubject, \
+    Interview
 from src.models.student_models import Student, StudentAppraisal, \
     StudentSubject, StudySchedule, StudyResult, CourseAppraisal, \
     StudyAppointment, Homework
