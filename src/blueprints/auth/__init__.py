@@ -43,6 +43,25 @@ def logout():
 
 @auth.route('/register', methods=['POST'])
 def register():
+    """
+    req:
+      username:
+        description: 'login user name',
+        type: 'string'
+      password:
+        description: 'login user password',
+        type: 'string'
+      usertype:
+        description: 'login user type (Student, Teacher, SysUser)',
+        type: 'string'
+      verify_code:
+        description: 'code sent by calling email verify or sms verify',
+        type: 'string'
+    res:
+      Authorization:
+        description: 'Athorization jwt http header',
+        type: 'string'
+    """
     current_app.logger.debug(request.json)
     user_name = request.json['username']
     user_type = request.json['usertype']
