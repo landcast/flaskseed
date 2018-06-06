@@ -30,8 +30,15 @@ class SwagAPIManager(object):
     swagger = {
         'openapi': '3.0.0',
         'info': {
-            'description': 'api definition', 'version': 'v1',
-            'description': ''
+            'description': 'Api definition: Model field has * is required, but '
+                           'created_at & updated_at will be set current '
+                           'timestamp automatically. The id field should '
+                           'be ignored in POST also. The del_flag and state '
+                           'are enum and has server default value, can also be '
+                           'treated like unrequired. Any field in the form '
+                           'like Xxxxx_id is foreign key, which refer to table '
+                           'Xxxxx.',
+            'version': 'v1'
         },
         'servers': [{'url': 'http://localhost:5000/'}],
         'tags': [],
@@ -328,6 +335,7 @@ class SwagAPIManager(object):
             'properties': {}
         }
         columns = [c for c in get_columns(model).keys()]
+        required = []
         for column_name, column in get_columns(model).items():
             if column_name in kwargs.get('exclude_columns', []):
                 continue
@@ -339,6 +347,8 @@ class SwagAPIManager(object):
                 column_val = {'type': column_defn[0]}
                 if column_defn[1]:
                     column_val['format'] = column_defn[1]
+                if not column.nullable:
+                    required.append(column_name)
                 if hasattr(column, 'comment'):
                     column_val['description'] = getattr(column, 'comment')
                 self.swagger['components']['schemas'][name]['properties'][
@@ -355,6 +365,7 @@ class SwagAPIManager(object):
                 if associates + '_id' not in columns:
                     self.swagger['components']['schemas'][name]['properties'][
                         column_name] = column_defn
+            self.swagger['components']['schemas'][name]['required'] = required
 
     def init_app(self, app, **kwargs):
         self.app = app
@@ -365,10 +376,10 @@ class SwagAPIManager(object):
             if host == '0.0.0.0':
                 host = '127.0.0.1'
             self.swagger['servers'][0]['url'] = 'http://{}:{}/'.format(
-                    host, app.config['PORT'])
+                host, app.config['PORT'])
             if app.config['ESHOST']:
                 self.swagger['servers'][0]['url'] = 'http://{}:{}/'.format(
-                        app.config['ESHOST'], app.config['PORT'])
+                    app.config['ESHOST'], app.config['PORT'])
                 # self.swagger['servers'].append({
                 #     'url': 'http://127.0.0.1:5000/'
                 # })
