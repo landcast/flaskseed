@@ -28,7 +28,7 @@ def row_dict(row):
 
 
 class DeleteEnum(enum.IntEnum):
-    '''
+    """
     Using enum.IntEnum instead of enum.Enum
     because this class instance will be used
     for json serialization, the enum.Enum
@@ -36,7 +36,7 @@ class DeleteEnum(enum.IntEnum):
     The start value should be from 1, not 0
     because generated mysql enum using
     1 as start value by default
-    '''
+    """
     IN_FORCE = 1
     DELETED = 2
 

@@ -10,49 +10,218 @@ import requests
 
 from src.models import db, session_scope, user_source, SmsLog
 from src.service import send_email, redis_store
-
+from src.service.live_service import *
 
 live = Blueprint('live', __name__)
 
 
 @live.route('/create_room', methods=['POST'])
 def create_room():
-    '''
-    :return:
-    '''
+    """
+    swagger-doc: 'Create living teaching room for teach and students.'
+    required: ['username', 'course_schedule_id', 'title']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      course_schedule_id:
+        description: 'course schedule id'
+        type: 'integer'
+      title:
+        description: 'room title displayed'
+        type: 'string'
+      length:
+        description: 'lecture room service time duration in minutes, default=60'
+        type: 'integer'
+      room_type:
+        description: 'ONE_VS_ONE, ONE_VS_MANY, PRIVATE_CLASS, PUBLIC_CLASS,
+        default=ONE_VS_ONE'
+        type: 'string'
+        enum: [ONE_VS_ONE, ONE_VS_MANY, PRIVATE_CLASS, PUBLIC_CLASS]
+      start_time:
+        description: 'room available time, default=current-timestamp'
+        type: 'string'
+    res:
+      title:
+        description: 'room title displayed'
+        type: 'string'
+      startTime:
+        description: 'room available time'
+        type: 'string'
+      endTime:
+        description: 'room closed time'
+        type: 'string'
+      roomId:
+        description: 'room id returned after creation'
+        type: 'string'
+      hostCode:
+        description: 'host code for room participants invitation'
+        type: 'string'
+      video:
+        description: 'room enabled video'
+        type: 'boolean'
+    """
     return jsonify({})
 
 
 @live.route('/edit_room', methods=['POST'])
 def edit_room():
+    """
+    swagger-doc: 'Edit living teaching room created before.'
+    required: ['username', 'room_id']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      course_schedule_id:
+        description: 'course schedule id'
+        type: 'integer'
+      title:
+        description: 'room title displayed'
+        type: 'string'
+      length:
+        description: 'lecture room service time duration in minutes, default=60'
+        type: 'integer'
+      room_id:
+        description: 'room id returned after creation'
+        type: 'string'
+      start_time:
+        description: 'room available time, default=current-timestamp'
+        type: 'string'
+    res:
+    """
     return jsonify({})
 
 
 @live.route('/delete_room', methods=['POST'])
 def delete_room():
+    """
+    swagger-doc: 'Delete living teaching room.'
+    required: ['username', 'room_id']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      room_id:
+        description: 'room id returned after creation'
+        type: 'string'
+    res:
+    """
     return jsonify({})
 
 
 @live.route('/enter_room', methods=['POST'])
 def enter_room():
+    """
+    swagger-doc: 'Get url for classroom by provide nick_name, role and
+    device_type'
+    required: ['username', 'room_id', 'nick_name']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      room_id:
+        description: 'room id returned after creation'
+        type: 'string'
+      nick_name:
+        description: 'login user name displayed in room'
+        type: 'string'
+      role_in_classroom:
+        description: 'AUDIENCE, TEACHER, STUDENT, SIT_IN, ASSISTANT,
+        default=ASSISTANT'
+        type: 'string'
+        enum: [AUDIENCE, TEACHER, STUDENT, SIT_IN, ASSISTANT]
+      device_type:
+        description: 'PC, PHONE, default=PC'
+        type: 'string'
+        enum: [PC, PHONE]
+    res:
+      room_url:
+        description: 'url for entering room'
+        type: 'string'
+    """
     return jsonify({})
 
 
 @live.route('/upload_doc', methods=['POST'])
 def upload_doc():
+    """
+    swagger-doc: 'Upload file as courseware into classroom'
+    required: ['username', 'file_url', 'file_name']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      file_url:
+        description: 'courseware file url'
+        type: 'string'
+      file_name:
+        description: 'courseware file display name'
+        type: 'string'
+    res:
+      ware_uid:
+        description: 'url for entering room'
+        type: 'string'
+    """
     return jsonify({})
 
 
 @live.route('/attach_doc', methods=['POST'])
 def attach_doc():
+    """
+    swagger-doc: 'Attach previously uploaded course ware to specified class
+    room, for teacher and student usage during study in class room'
+    required: ['username', 'room_id', 'ware_uid']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      room_id:
+        description: 'class room created for lecture'
+        type: 'string'
+      ware_uid:
+        description: 'previously uploaded course ware uid returned by provider'
+        type: 'string'
+    res:
+    """
     return jsonify({})
 
 
 @live.route('/remove_doc', methods=['POST'])
 def remove_doc():
+    """
+    swagger-doc: 'Remove attached course ware from room'
+    required: ['username', 'room_id', 'ware_uid']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      room_id:
+        description: 'class room created for lecture'
+        type: 'string'
+      ware_uid:
+        description: 'previously uploaded course ware uid returned by provider'
+        type: 'string'
+    res:
+    """
     return jsonify({})
 
 
 @live.route('/preview_doc', methods=['POST'])
 def preview_doc():
+    """
+    swagger-doc: 'Get course ware preview url'
+    required: ['username', 'ware_uid']
+    req:
+      username:
+        description: 'login user name'
+        type: 'string'
+      ware_uid:
+        description: 'previously uploaded course ware uid returned by provider'
+        type: 'string'
+    res:
+      ware_url:
+        description: 'preview course ware url'
+        type: 'string'
+    """
     return jsonify({})

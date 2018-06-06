@@ -83,9 +83,9 @@ class StudentAppraisal(EntityMixin, db.Model):
 
 
 class CourseAppraisal(EntityMixin, db.Model):
-    '''
+    """
     After study the whole course, record the study result and credit
-    '''
+    """
     course_study_result = Column(String(255), nullable=True)
     course_credit = Column(Float, nullable=True)
     course_id = Column(Integer, ForeignKey('course.id'),

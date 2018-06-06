@@ -43,9 +43,12 @@ def guess_language_from_request(request):
 
 
 def auth_check_needed(request):
-    ''' check the request need to be processed with authtication passed
+    """
+    check the request need to be processed with authtication passed
     before
-    '''
+    :param request:
+    :return:
+    """
     if str(request.method).upper() in ['OPTIONS', 'HEAD']:
         return False
     path = request.path

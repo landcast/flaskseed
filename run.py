@@ -51,13 +51,13 @@ def process_options(config, default_host="0.0.0.0",
 
 
 def setup_pid_file(app):
-    '''
+    """
     check pid file configured by PID_FILE in app config,
     if exists, get old process id from file and kill it, then write the new
     process id into it.
     if not exist, write the new process id directly into it.
     :return:
-    '''
+    """
     pid = os.getpid()
     pid_file_path = app.config['PID_FILE'] + ".pid"
     if os.path.exists(pid_file_path):

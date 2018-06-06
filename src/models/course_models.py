@@ -89,7 +89,7 @@ class CourseSchedule(EntityMixin, db.Model):
 
 
 class CoursewareCheckResultEnum(enum.IntEnum):
-    '''
+    """
     Using enum.IntEnum instead of enum.Enum
     because this class instance will be used
     for json serialization, the enum.Enum
@@ -97,17 +97,17 @@ class CoursewareCheckResultEnum(enum.IntEnum):
     The start value should be from 1, not 0
     because generated mysql enum using
     1 as start value by default
-    '''
+    """
     BEFORE_CHECK = 1
     CHECK_PASSED = 2
     CHECK_DENY = 3
 
 
 class Courseware(EntityMixin, db.Model):
-    '''
+    """
     PPT or something showing in course uploaded by teacher
     before course study, needs to be checked by admin
-    '''
+    """
     ware_desc = Column(String(2000), nullable=False)
     ware_url = Column(String(255), nullable=True)
     ware_uid = Column(String(120), nullable=True, index=True,
@@ -125,7 +125,7 @@ class Courseware(EntityMixin, db.Model):
 
 
 class ClassroomStateEnum(enum.IntEnum):
-    '''
+    """
     Using enum.IntEnum instead of enum.Enum
     because this class instance will be used
     for json serialization, the enum.Enum
@@ -133,7 +133,7 @@ class ClassroomStateEnum(enum.IntEnum):
     The start value should be from 1, not 0
     because generated mysql enum using
     1 as start value by default
-    '''
+    """
     CREATED = 1
     DELETED = 2
     IN_USE = 3
@@ -141,7 +141,7 @@ class ClassroomStateEnum(enum.IntEnum):
 
 
 class ClassroomTypeEnum(enum.IntEnum):
-    '''
+    """
     Using enum.IntEnum instead of enum.Enum
     because this class instance will be used
     for json serialization, the enum.Enum
@@ -149,7 +149,7 @@ class ClassroomTypeEnum(enum.IntEnum):
     The start value should be from 1, not 0
     because generated mysql enum using
     1 as start value by default
-    '''
+    """
     ONE_VS_ONE = 1
     ONE_VS_MANY = 2
     PRIVATE_CLASS = 3
@@ -180,7 +180,7 @@ class CourseClassroom(EntityMixin, db.Model):
 
 
 class ClassroomRoleEnum(enum.IntEnum):
-    '''
+    """
     Using enum.IntEnum instead of enum.Enum
     because this class instance will be used
     for json serialization, the enum.Enum
@@ -189,7 +189,7 @@ class ClassroomRoleEnum(enum.IntEnum):
     because generated mysql enum using
     1 as start value by default
     1：听众，2:老师，3：学生，4：兼课，5：助教
-    '''
+    """
     AUDIENCE = 1
     TEACHER = 2
     STUDENT = 3
@@ -198,7 +198,7 @@ class ClassroomRoleEnum(enum.IntEnum):
 
 
 class ClassroomDeviceEnum(enum.IntEnum):
-    '''
+    """
     Using enum.IntEnum instead of enum.Enum
     because this class instance will be used
     for json serialization, the enum.Enum
@@ -206,7 +206,7 @@ class ClassroomDeviceEnum(enum.IntEnum):
     The start value should be from 1, not 0
     because generated mysql enum using
     1 as start value by default
-    '''
+    """
     PC = 1
     PHONE = 2
 

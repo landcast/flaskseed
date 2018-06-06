@@ -19,7 +19,8 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['POST'])
 def login():
     """
-    swagger-doc: do login for registered user
+    swagger-doc: 'do login for registered user'
+    required: ['username', 'password', 'usertype']
     req:
       username:
         description: 'login user name'
@@ -61,7 +62,8 @@ def logout():
 @auth.route('/register', methods=['POST'])
 def register():
     """
-    swagger-doc: do register for new user
+    swagger-doc: 'do register for new user'
+    required: ['username', 'password', 'usertype', 'verify_code']
     req:
       username:
         description: 'login user name'
@@ -156,7 +158,8 @@ def register():
 @auth.route('/smsverify', methods=['POST'])
 def smsverify():
     """
-    swagger-doc: send verify code by sms
+    swagger-doc: 'send verify code by sms'
+    required: ['mobile_no']
     req:
       mobile_no:
         description: 'mobile NO to receive verify code'
@@ -199,7 +202,8 @@ def smsverify():
 @auth.route('/emailverify', methods=['POST'])
 def email_verify():
     """
-    swagger-doc: send verify code by email
+    swagger-doc: 'send verify code by email'
+    required: ['email_address']
     req:
       email_address:
         description: 'email address to receive verify code'
@@ -226,7 +230,8 @@ def email_verify():
 @auth.route('/resetpassword', methods=['POST'])
 def resetpassword():
     """
-    swagger-doc: do resetpassword with verify code sent by email or sms
+    swagger-doc: 'do resetpassword with verify code sent by email or sms'
+    required: ['username', 'password', 'verify_code']
     req:
       username:
         description: 'login user name'

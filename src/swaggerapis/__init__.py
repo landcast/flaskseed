@@ -59,9 +59,10 @@ class SwagAPIManager(object):
         }
     }
 
-    def setup_swagger_blueprint(self, method, url, model_name):
+    def setup_swagger_blueprint(self, method, url, model_name, description):
         self.swagger['paths'][url] = {}
         self.swagger['paths'][url][method.lower()] = {
+            'description': description,
             'requestBody': {
                 'content': {
                     'application/json': {
@@ -111,6 +112,7 @@ class SwagAPIManager(object):
                 model_name = url.replace('/', '_')
                 self.swagger['components']['schemas'][
                     model_name + "_req"] = {
+                    'required': swagger_dict['required'],
                     'properties': swagger_dict['req']
                 }
                 self.swagger['components']['schemas'][
@@ -118,9 +120,11 @@ class SwagAPIManager(object):
                     'properties': swagger_dict['res']
                 }
                 if 'POST' in url_mapping.methods:
-                    self.setup_swagger_blueprint('POST', url, model_name)
+                    self.setup_swagger_blueprint('POST', url, model_name,
+                                                 swagger_dict['description'])
                 if 'GET' in url_mapping.methods:
-                    self.setup_swagger_blueprint('GET', url, model_name)
+                    self.setup_swagger_blueprint('GET', url, model_name,
+                                                 swagger_dict['description'])
                 if 'PUT' in url_mapping.methods:
                     pass
 
