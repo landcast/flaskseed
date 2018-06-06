@@ -110,7 +110,7 @@ class Courseware(EntityMixin, db.Model):
     '''
     ware_desc = Column(String(2000), nullable=False)
     ware_url = Column(String(255), nullable=True)
-    ware_uid = Column(String(255), nullable=True, index=True,
+    ware_uid = Column(String(120), nullable=True, index=True,
                       comment='e.g. duobei use')
     room_id = Column(String(2000), nullable=True, comment='classroom list')
     other_desc = Column(String(2000), nullable=True, comment="e.g. duobei use")
