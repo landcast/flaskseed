@@ -97,7 +97,8 @@ is the fundamental ware for other business domain model to subclass.
 
 ## Other Storage
 
-Currently involve redis for cache and flash storage.
+Currently involve redis for cache and flash storage. Elastic search will be 
+added in future.
 
 ## Restful
 
