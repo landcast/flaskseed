@@ -3,8 +3,8 @@
 ## flask template project for e-learning
 
 ![Build Status](https://travis-ci.org/landcast/flaskseed.svg?branch=master)
-[![Code Health](https://landscape.io/github/landcast/flaskseed/master/landscape.svg?style=flat)](https://landscape.io/github/rochacbruno/flasgger/master)
-[![Coverage Status](https://coveralls.io/repos/github/landcast/flaskseed/badge.svg?branch=master)](https://coveralls.io/github/rochacbruno/flasgger?branch=master)
+[![Code Health](https://landscape.io/github/landcast/flaskseed/master/landscape.svg?style=flat)](https://landscape.io/github/landcast/flaskseed/master)
+[![Coverage Status](https://coveralls.io/repos/github/landcast/flaskseed/badge.svg?branch=master)](https://coveralls.io/github/landcast/flaskseed?branch=master)
  <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=landcast%40163%2ecom&amp;lc=BR&amp;item_name=flaskseed&amp;no_note=0&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHostedGuest"><img alt='Donate with Paypal' src='http://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif' /></a>
 
 ## Background

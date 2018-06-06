@@ -214,7 +214,15 @@ def upload_doc(username, file_url, file_name, course_id):
     return r.json()
 
 
-def attach_doc():
+def attach_doc(username, room_id, ware_uid):
+    '''
+    Attach previously uploaded course ware to specified class room, for teacher
+    and student usage during study in class room
+    :param username:
+    :param room_id: class room created for lecture
+    :param ware_uid: previously uploaded course ware uid returned by provider
+    :return: None
+    '''
     pass
 
 
