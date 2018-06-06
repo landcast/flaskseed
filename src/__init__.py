@@ -46,6 +46,8 @@ def auth_check_needed(request):
     ''' check the request need to be processed with authtication passed
     before
     '''
+    if str(request.method).upper() == 'OPTIONS':
+        return False
     path = request.path
     visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                      '/auth/*', '/upload', '/download/*', '/admin/*',
