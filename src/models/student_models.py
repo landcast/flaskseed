@@ -110,12 +110,25 @@ class StudyAppointment(EntityMixin, db.Model):
 class StudentState(IntFlag):
     """
     FRESH: 新注册
-    TAKEN_TRAIL: 上过试听课
+    BASIC_INFO：学生基本信息
+    DISTRIBUTION_ADVISER:分配学生顾问
+    PERFECT_INFORMATION：完善信息
+    DISTRIBUTION_HEADMASTER:分配学生班主任
+    HAVE_HEADMASTER:分配学生班主任
+    NOORDER:未下订单
     INSTUDY: 付费上课
+    GRADUATED: 已经毕业
     """
     FRESH = 1
-    TAKEN_TRAIL = 2
-    INSTUDY = 4
+    BASIC_INFO = 2
+    DISTRIBUTION_ADVISER = 3
+    PERFECT_INFORMATION = 4
+    DISTRIBUTION_HEADMASTER = 5
+    HAVE_HEADMASTER = 6
+    NOORDER = 7
+    INSTUDY = 8
+    GRADUATED = 9
+
 
 
 class Student(UserBaseMixin, db.Model):
