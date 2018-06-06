@@ -111,14 +111,15 @@ class Courseware(EntityMixin, db.Model):
     ware_desc = Column(String(2000), nullable=False)
     ware_url = Column(String(255), nullable=True)
     ware_uid = Column(String(255), nullable=True, comment='e.g. duobei use')
+    room_id = Column(String(2000), nullable=True, comment='classroom list')
     other_desc = Column(String(2000), nullable=True, comment="e.g. duobei use")
     checked_result = Column(Enum(CoursewareCheckResultEnum), nullable=True,
                             comment='admin check result',
                             server_default=CoursewareCheckResultEnum.
                             BEFORE_CHECK.name)
-    course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
+    course_id = Column(Integer, ForeignKey('course.id'),
                                 nullable=False)
-    course_wares = db.relationship('CourseSchedule', backref='course_wares',
+    course_wares = db.relationship('Course', backref='course_wares',
                                    lazy=True)
 
 
@@ -159,9 +160,10 @@ class CourseClassroom(EntityMixin, db.Model):
     room_title = Column(String(255), nullable=False)
     video_ready = Column(Integer, nullable=False, comment='0:disable, 1:enable')
     room_url = Column(String(4000), nullable=True)
-    room_id = Column(String(255), nullable=True)
+    room_id = Column(String(255), nullable=True, index=True, unique=True,
+                     comment='provider returned id after room created')
     room_type = Column(Enum(ClassroomTypeEnum), nullable=False,
-                   server_default=ClassroomTypeEnum.ONE_VS_ONE.name)
+                       server_default=ClassroomTypeEnum.ONE_VS_ONE.name)
     room_uid = Column(String(255), nullable=True,
                       comment='room uuid')
     host_code = Column(String(255), nullable=True,
@@ -210,12 +212,12 @@ class ClassroomDeviceEnum(enum.IntEnum):
 
 class CourseClassParticipant(EntityMixin, db.Model):
     role_in_course = Column(Enum(ClassroomRoleEnum), nullable=False,
-                   server_default=ClassroomRoleEnum.ASSISTANT.name)
+                            server_default=ClassroomRoleEnum.ASSISTANT.name)
     role_id = Column(String(255), nullable=True)
     role_uid = Column(String(255), nullable=True)
     access_url = Column(String(255), nullable=True)
     device_type = Column(Enum(ClassroomDeviceEnum), nullable=False,
-                   server_default=ClassroomDeviceEnum.PC.name)
+                         server_default=ClassroomDeviceEnum.PC.name)
     role_id = Column(String(255), nullable=True)
     role_table = Column(String(60), nullable=True)
     role_table_id = Column(Integer, nullable=True)

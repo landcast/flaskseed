@@ -37,8 +37,8 @@ class DuobeiLiveTest(TestBase):
                 self.app.logger.debug(r)
                 self.assertEqual(0, r['code'], 'enter not return 0 for succ')
                 # test upload course ware
-                r = upload_doc('86-13521273258', room_id, url,
-                               'python-consul.pdf')
+                r = upload_doc('86-13521273258', url,
+                               'python-consul.pdf', cs.course_id)
                 self.app.logger.debug(r)
                 self.assertEqual(0, r['code'], 'delete not return 0 for succ')
                 # finally delete class room

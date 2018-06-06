@@ -184,26 +184,19 @@ def enter_room(username, room_id, nick_name,
     return r.json()
 
 
-def upload_doc(username, room_id, file_url, file_name):
+def upload_doc(username, file_url, file_name, course_id):
     '''
     Upload file as courseware into classroom
     :param username:
-    :param room_id: class room created before
     :param file_url: courseware file url
     :param file_name: courseware file display name
     :return: uuid refer to uploaded courseware from provider
     '''
-    current_app.logger.debug(room_id)
     with session_scope(db) as session:
-        course_classroom = session.query(CourseClassroom).filter(
-            CourseClassroom.room_id == room_id).one_or_none()
-        if not course_classroom:
-            raise RuntimeError('CourseClassroom of room_id passed in not found')
         r = requests.post(
             current_app.config['EP_LOCATION'] + current_app.config[
                 'EP_LIVE_PATH'] + '/uploadFileUrl',
             data=json.dumps({
-                'roomId': room_id,
                 'filename': file_name,
                 'fileUrl': file_url,
                 'username': username
@@ -215,7 +208,7 @@ def upload_doc(username, room_id, file_url, file_name):
                 ware_url=file_url,
                 ware_uid=r.json()['uuid'],
                 checked_result=CoursewareCheckResultEnum.BEFORE_CHECK,
-                course_schedule_id=course_classroom.course_schedule_id
+                course_id=course_id
             )
             session.add(cw)
     return r.json()
