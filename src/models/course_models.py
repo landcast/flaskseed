@@ -111,7 +111,7 @@ class Courseware(EntityMixin, db.Model):
     ware_desc = Column(String(2000), nullable=False)
     ware_url = Column(String(255), nullable=True)
     ware_uid = Column(String(255), nullable=True, comment='e.g. duobei use')
-    other_desc = Column(String(2000), nullable=False, comment="e.g. duobei use")
+    other_desc = Column(String(2000), nullable=True, comment="e.g. duobei use")
     checked_result = Column(Enum(CoursewareCheckResultEnum), nullable=True,
                             comment='admin check result',
                             server_default=CoursewareCheckResultEnum.

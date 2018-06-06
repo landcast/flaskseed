@@ -8,7 +8,7 @@ import sys
 sys.path.append(".")
 from unittests.test_base import TestBase, random_username
 from src.service.live_service import create_room, edit_room, delete_room, \
-    enter_room
+    enter_room, upload_doc
 from src.models import db, session_scope, CourseSchedule
 
 
@@ -18,9 +18,8 @@ class DuobeiLiveTest(TestBase):
         '''
         Test for service.live_service.create_room
         '''
-        url = 'http://note.youdao.com/noteshare?' \
-              'id=3906ae488695edb740676e4ebf43a7ae&' \
-              'sub=E295F4AD855D4FE3A4D2864D3C3781B9'
+        url = 'http://docs-aliyun.cn-hangzhou.oss.aliyun-inc.com/pdf/' \
+              'dds-product-introduction-intl-zh-2018-03-30.pdf'
         start_time = datetime.now().isoformat()[:-3] + 'Z'
         self.app.logger.debug(start_time)
         with session_scope(db) as session:
@@ -37,6 +36,12 @@ class DuobeiLiveTest(TestBase):
                 r = enter_room('86-13521273258', room_id, 'Tom')
                 self.app.logger.debug(r)
                 self.assertEqual(0, r['code'], 'enter not return 0 for succ')
+                # test upload course ware
+                r = upload_doc('86-13521273258', room_id, url,
+                               'python-consul.pdf')
+                self.app.logger.debug(r)
+                self.assertEqual(0, r['code'], 'delete not return 0 for succ')
+                # finally delete class room
                 r = delete_room('86-13521273258', room_id)
                 self.app.logger.debug(r)
                 self.assertEqual(0, r['code'], 'delete not return 0 for succ')

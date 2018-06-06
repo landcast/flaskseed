@@ -211,7 +211,11 @@ def upload_doc(username, room_id, file_url, file_name):
         current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             cw = Courseware(
-
+                ware_desc=file_name,
+                ware_url=file_url,
+                ware_uid=r.json()['uuid'],
+                checked_result=CoursewareCheckResultEnum.BEFORE_CHECK,
+                course_schedule_id=course_classroom.course_schedule_id
             )
             session.add(cw)
     return r.json()
