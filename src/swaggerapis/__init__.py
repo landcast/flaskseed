@@ -52,8 +52,7 @@ class SwagAPIManager(object):
         }
     }
 
-    def setup_swagger_blueprint(self, method, url):
-        operation_name = url.split('/')[-1]
+    def setup_swagger_blueprint(self, method, url, model_name):
         self.swagger['paths'][url] = {}
         self.swagger['paths'][url][method.lower()] = {
             'requestBody': {
@@ -61,7 +60,7 @@ class SwagAPIManager(object):
                     'application/json': {
                         'schema': {
                             '$ref': '#/components/schemas/' +
-                                    operation_name + '_req'
+                                    model_name + '_req'
                         }
                     }
                 }
@@ -73,7 +72,7 @@ class SwagAPIManager(object):
                             'schema': {
                                 '$ref':
                                     '#/components/schemas/' +
-                                    operation_name + '_res'
+                                    model_name + '_res'
                             }
                         }
                     },
@@ -96,27 +95,25 @@ class SwagAPIManager(object):
                 app.logger.debug(url_mapping.methods)
                 app.logger.debug(url_mapping.endpoint)
                 app.logger.debug(app.view_functions[url_mapping.endpoint])
-                app.logger.debug(
-                    app.view_functions[url_mapping.endpoint].__doc__)
                 index = doc_string.find('swagger-doc:')
                 if index == -1:
                     continue
                 swagger_doc = doc_string.replace('swagger-doc:', 'description:')
                 swagger_dict = yaml.load(swagger_doc)
-                app.logger.debug(swagger_dict)
-                operation_name = str(url_mapping).split('/')[-1]
+                url = str(url_mapping)
+                model_name = url.replace('/', '_')
                 self.swagger['components']['schemas'][
-                    operation_name + "_req"] = {
+                    model_name + "_req"] = {
                     'properties': swagger_dict['req']
                 }
                 self.swagger['components']['schemas'][
-                    operation_name + "_res"] = {
+                    model_name + "_res"] = {
                     'properties': swagger_dict['res']
                 }
                 if 'POST' in url_mapping.methods:
-                    self.setup_swagger_blueprint('POST', str(url_mapping))
+                    self.setup_swagger_blueprint('POST', url, model_name)
                 if 'GET' in url_mapping.methods:
-                    self.setup_swagger_blueprint('GET', str(url_mapping))
+                    self.setup_swagger_blueprint('GET', url, model_name)
                 if 'PUT' in url_mapping.methods:
                     pass
 
