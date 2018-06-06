@@ -72,6 +72,12 @@ class CourseSchedule(EntityMixin, db.Model):
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
     state = Column(Integer, nullable=False)
+    override_course_type = Column(Integer, nullable=True,
+                                  comment='value used to override course_type '
+                                          'defined in course, e.g. in a 1V4 '
+                                          'course, the teacher want to teach '
+                                          'one of his student due to the '
+                                          'student resorting to help.')
     progress = Column(String(255), nullable=True,
                       comment='after finish this class, the progress desc of '
                               'this course')
@@ -107,7 +113,7 @@ class CourseClassroom(EntityMixin, db.Model):
     room_uid = Column(String(255), nullable=True,
                       comment='room uuid')
     host_code = Column(String(255), nullable=True,
-                      comment='store duobei host_code used as invite code')
+                       comment='store duobei host_code used as invite code')
     state = Column(Integer, nullable=False)
     duration_start = Column(DateTime, nullable=True)
     duration_end = Column(DateTime, nullable=True)
