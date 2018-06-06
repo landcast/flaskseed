@@ -57,7 +57,9 @@ def create_room(username, course_schedule_id, title, length,
                                                duration_start=duration_start,
                                                duration_end=duration_end)
             session.add(course_classroom)
-    return r.json()
+            return r.json()['room']
+    else:
+        raise RuntimeError(r.json()['message'])
 
 
 def edit_room(username, room_id, title=None, length=None,
@@ -73,7 +75,7 @@ def edit_room(username, room_id, title=None, length=None,
     :param start_time: room available time
     :param user_type: preserved for future use
     :param lang: user preferred lang
-    :return: room edited by third-party provider
+    :return: None if succ without error
     '''
     with session_scope(db) as session:
         course_classroom = session.query(CourseClassroom).filter(
@@ -105,7 +107,8 @@ def edit_room(username, room_id, title=None, length=None,
                                                 + timedelta(minutes=length)
             course_classroom.updated_by = username
             session.merge(course_classroom)
-    return r.json()
+        else:
+            raise RuntimeError(r.json()['message'])
 
 
 def delete_room(username, room_id):
@@ -113,7 +116,7 @@ def delete_room(username, room_id):
     Delete living teaching room.
     :param username: user account name
     :param room_id: room id returned by provider after doing room creation
-    :return: room created by third-party provider
+    :return: None if delete succ
     '''
     current_app.logger.debug(room_id)
     with session_scope(db) as session:
@@ -132,7 +135,8 @@ def delete_room(username, room_id):
         if r.json()['code'] == 0:
             course_classroom.state = ClassroomStateEnum.DELETED
             session.merge(course_classroom)
-    return r.json()
+        else:
+            raise RuntimeError(r.json()['message'])
 
 
 def enter_room(username, room_id, nick_name,
@@ -181,7 +185,7 @@ def enter_room(username, room_id, nick_name,
             )
             session.add(c_c_p)
             session.merge(course_classroom)
-    return r.json()
+    return r.json()['url']
 
 
 def upload_doc(username, file_url, file_name, course_id):
@@ -211,7 +215,7 @@ def upload_doc(username, file_url, file_name, course_id):
                 course_id=course_id
             )
             session.add(cw)
-    return r.json()
+    return r.json()['uuid']
 
 
 def attach_doc(username, room_id, ware_uid):
@@ -237,7 +241,12 @@ def attach_doc(username, room_id, ware_uid):
                 }), headers={'Content-type': 'application/json'})
             current_app.logger.debug(r.text)
             if r.json()['code'] == 0:
-                cw.room_id = room_id
+                if cw.room_id:
+                    temp = eval(cw.room_id)
+                    temp.append(room_id)
+                    cw.room_id = str(temp)
+                else:
+                    cw.room_id = '[{}]'.format(room_id)
                 session.merge(cw)
             else:
                 raise RuntimeError('calling attachDocument failed')
@@ -246,9 +255,63 @@ def attach_doc(username, room_id, ware_uid):
                 'can not find course ware, according to ware_uid')
 
 
-def remove_doc():
-    pass
+def remove_doc(username, room_id, ware_uid):
+    '''
+    Remove attached course ware from room
+    :param username:
+    :param room_id: class room created for lecture
+    :param ware_uid: previously uploaded course ware uid returned by provider
+    :return: None
+    '''
+    with session_scope(db) as session:
+        cw = session.query(Courseware).filter(
+                Courseware.ware_uid == ware_uid).one_or_none()
+        if cw:
+            r = requests.post(
+                    current_app.config['EP_LOCATION'] + current_app.config[
+                        'EP_LIVE_PATH'] + '/removeDocument',
+                    data=json.dumps({
+                        'documentId': ware_uid,
+                        'roomId': room_id,
+                        'username': username
+                    }), headers={'Content-type': 'application/json'})
+            current_app.logger.debug(r.text)
+            if r.json()['code'] == 0:
+                if cw.room_id:
+                    temp = eval(cw.room_id)
+                    temp.remove(room_id)
+                    cw.room_id = str(temp)
+                session.merge(cw)
+            else:
+                raise RuntimeError('calling removeDocument failed')
+        else:
+            raise RuntimeError(
+                    'can not find course ware, according to ware_uid')
 
 
-def preview_doc():
-    pass
+def preview_doc(username, ware_uid):
+    '''
+    Get course ware preview url
+    :param username:
+    :param ware_uid:
+    :return: url
+    '''
+    with session_scope(db) as session:
+        cw = session.query(Courseware).filter(
+                Courseware.ware_uid == ware_uid).one_or_none()
+        if cw:
+            r = requests.post(
+                    current_app.config['EP_LOCATION'] + current_app.config[
+                        'EP_LIVE_PATH'] + '/previewDocUrl',
+                    data=json.dumps({
+                        'documentId': ware_uid,
+                        'username': username
+                    }), headers={'Content-type': 'application/json'})
+            current_app.logger.debug(r.text)
+            if r.json()['code'] == 0:
+                return r.json()['url']
+            else:
+                raise RuntimeError('calling previewDocUrl failed')
+        else:
+            raise RuntimeError(
+                    'can not find course ware, according to ware_uid')
