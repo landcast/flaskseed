@@ -71,7 +71,7 @@ def save_attachment(file):
     updated_by = getattr(g, current_app.config['CUR_ID'])
     with session_scope(db) as session:
         attachment = Attachment(file_name=fn, url_path=hashed_fn, size=size,
-                                mime_type=ext, updated_by=updated_by)
+                                mime_type=ext, state=1, updated_by=updated_by)
         result = session.add(attachment)
         current_app.logger.debug(result)
     return hashed_fn

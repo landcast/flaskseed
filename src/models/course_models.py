@@ -1,5 +1,6 @@
+import enum
 from src.models.common_models import db, EntityMixin
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum
 
 
 class Curriculum(EntityMixin, db.Model):
@@ -87,6 +88,21 @@ class CourseSchedule(EntityMixin, db.Model):
                                        lazy=True)
 
 
+class CoursewareCheckResultEnum(enum.IntEnum):
+    '''
+    Using enum.IntEnum instead of enum.Enum
+    because this class instance will be used
+    for json serialization, the enum.Enum
+    not support json.dumps(obj)
+    The start value should be from 1, not 0
+    because generated mysql enum using
+    1 as start value by default
+    '''
+    BEFORE_CHECK = 1
+    CHECK_PASSED = 2
+    CHECK_DENY = 3
+
+
 class Courseware(EntityMixin, db.Model):
     '''
     PPT or something showing in course uploaded by teacher
@@ -94,13 +110,48 @@ class Courseware(EntityMixin, db.Model):
     '''
     ware_desc = Column(String(2000), nullable=False)
     ware_url = Column(String(255), nullable=True)
+    ware_uid = Column(String(255), nullable=True, comment='e.g. duobei use')
     other_desc = Column(String(2000), nullable=False, comment="e.g. duobei use")
-    checked_result = Column(Integer, nullable=True,
-                            comment='admin check result')
+    checked_result = Column(Enum(CoursewareCheckResultEnum), nullable=True,
+                            comment='admin check result',
+                            server_default=CoursewareCheckResultEnum.
+                            BEFORE_CHECK.name)
     course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
                                 nullable=False)
     course_wares = db.relationship('CourseSchedule', backref='course_wares',
                                    lazy=True)
+
+
+class ClassroomStateEnum(enum.IntEnum):
+    '''
+    Using enum.IntEnum instead of enum.Enum
+    because this class instance will be used
+    for json serialization, the enum.Enum
+    not support json.dumps(obj)
+    The start value should be from 1, not 0
+    because generated mysql enum using
+    1 as start value by default
+    '''
+    CREATED = 1
+    DELETED = 2
+    IN_USE = 3
+    USED = 4
+
+
+class ClassroomTypeEnum(enum.IntEnum):
+    '''
+    Using enum.IntEnum instead of enum.Enum
+    because this class instance will be used
+    for json serialization, the enum.Enum
+    not support json.dumps(obj)
+    The start value should be from 1, not 0
+    because generated mysql enum using
+    1 as start value by default
+    '''
+    ONE_VS_ONE = 1
+    ONE_VS_MANY = 2
+    PRIVATE_CLASS = 3
+    PUBLIC_CLASS = 4
 
 
 class CourseClassroom(EntityMixin, db.Model):
@@ -109,12 +160,14 @@ class CourseClassroom(EntityMixin, db.Model):
     video_ready = Column(Integer, nullable=False, comment='0:disable, 1:enable')
     room_url = Column(String(4000), nullable=True)
     room_id = Column(String(255), nullable=True)
-    room_type = Column(Integer, nullable=True)
+    room_type = Column(Enum(ClassroomTypeEnum), nullable=False,
+                   server_default=ClassroomTypeEnum.ONE_VS_ONE.name)
     room_uid = Column(String(255), nullable=True,
                       comment='room uuid')
     host_code = Column(String(255), nullable=True,
                        comment='store duobei host_code used as invite code')
-    state = Column(Integer, nullable=False)
+    state = Column(Enum(ClassroomStateEnum), nullable=False,
+                   server_default=ClassroomStateEnum.CREATED.name)
     duration_start = Column(DateTime, nullable=True)
     duration_end = Column(DateTime, nullable=True)
     course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
@@ -123,13 +176,50 @@ class CourseClassroom(EntityMixin, db.Model):
                                   lazy=True)
 
 
+class ClassroomRoleEnum(enum.IntEnum):
+    '''
+    Using enum.IntEnum instead of enum.Enum
+    because this class instance will be used
+    for json serialization, the enum.Enum
+    not support json.dumps(obj)
+    The start value should be from 1, not 0
+    because generated mysql enum using
+    1 as start value by default
+    1：听众，2:老师，3：学生，4：兼课，5：助教
+    '''
+    AUDIENCE = 1
+    TEACHER = 2
+    STUDENT = 3
+    SIT_IN = 4
+    ASSISTANT = 5
+
+
+class ClassroomDeviceEnum(enum.IntEnum):
+    '''
+    Using enum.IntEnum instead of enum.Enum
+    because this class instance will be used
+    for json serialization, the enum.Enum
+    not support json.dumps(obj)
+    The start value should be from 1, not 0
+    because generated mysql enum using
+    1 as start value by default
+    '''
+    PC = 1
+    PHONE = 2
+
+
 class CourseClassParticipant(EntityMixin, db.Model):
-    role_in_course = Column(Integer, nullable=False)
-    role_id = Column(String(255), nullable=False)
-    role_uid = Column(String(255), nullable=False)
-    role_table = Column(String(60), nullable=False)
-    role_table_id = Column(Integer, nullable=False)
-    role_username = Column(String(60), nullable=False)
+    role_in_course = Column(Enum(ClassroomRoleEnum), nullable=False,
+                   server_default=ClassroomRoleEnum.ASSISTANT.name)
+    role_id = Column(String(255), nullable=True)
+    role_uid = Column(String(255), nullable=True)
+    access_url = Column(String(255), nullable=True)
+    device_type = Column(Enum(ClassroomDeviceEnum), nullable=False,
+                   server_default=ClassroomDeviceEnum.PC.name)
+    role_id = Column(String(255), nullable=True)
+    role_table = Column(String(60), nullable=True)
+    role_table_id = Column(Integer, nullable=True)
+    role_username = Column(String(60), nullable=True)
     attend_start = Column(DateTime, nullable=True)
     attend_end = Column(DateTime, nullable=True)
     assessment = Column(String(2000), nullable=True)

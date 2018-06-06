@@ -3,10 +3,13 @@ from flask import current_app
 import json
 import requests
 
-from src.models import db, session_scope, CourseClassroom
+from src.models import db, session_scope, CourseClassroom, Courseware, \
+    CourseClassParticipant, ClassroomRoleEnum, ClassroomTypeEnum, \
+    ClassroomStateEnum, CoursewareCheckResultEnum, ClassroomDeviceEnum
 
 
-def create_room(username, course_schedule_id, title, length, room_type=1,
+def create_room(username, course_schedule_id, title, length,
+                room_type=ClassroomTypeEnum.ONE_VS_ONE,
                 start_time=datetime.now().isoformat()[:-3] + 'Z', user_type=0,
                 lang='en'):
     '''
@@ -28,7 +31,7 @@ def create_room(username, course_schedule_id, title, length, room_type=1,
             'title': title,
             'startTime': start_time,
             'length': length,
-            'menNum': room_type,
+            'menNum': room_type.value - 1,
             'userName': username,
             'lang': lang,
             'userType': user_type,
@@ -46,7 +49,8 @@ def create_room(username, course_schedule_id, title, length, room_type=1,
                                                course_schedule_id=course_schedule_id,
                                                video_ready=1,
                                                updated_by=username,
-                                               room_type=room_type, state=1,
+                                               room_type=room_type,
+                                               state=ClassroomStateEnum.CREATED,
                                                host_code=j['hostCode'],
                                                room_id=j['roomId'],
                                                room_title=title,
@@ -126,20 +130,21 @@ def delete_room(username, room_id):
             }), headers={'Content-type': 'application/json'})
         current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
-            course_classroom.state = 2
+            course_classroom.state = ClassroomStateEnum.DELETED
             session.merge(course_classroom)
     return r.json()
 
 
-def enter_room(username, room_id, nick_name, role_in_classroom=0,
-               device_type=0):
+def enter_room(username, room_id, nick_name,
+               role_in_classroom=ClassroomRoleEnum.ASSISTANT,
+               device_type=ClassroomDeviceEnum.PC):
     '''
     Get url for classroom by provide nick_name, role and device_type
     :param username:
     :param room_id: class room created before
     :param nick_name: name displayed in class room
-    :param role_in_classroom: （//0：听众，1:老师，2：学生，3：兼课，4：助教）
-    :param device_type: （ //0:PC，1：手机）
+    :param role_in_classroom: ClassroomRoleEnum
+    :param device_type: ClassroomDeviceEnum
     :return: url for class room
     '''
     current_app.logger.debug(room_id)
@@ -155,8 +160,8 @@ def enter_room(username, room_id, nick_name, role_in_classroom=0,
                 'roomId': room_id,
                 'userName': username,
                 'nickname': nick_name,
-                'userRole': role_in_classroom,
-                'deviceType': device_type
+                'userRole': role_in_classroom.value - 1,
+                'deviceType': device_type.value - 1
             }), headers={'Content-type': 'application/json'})
         current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
@@ -166,12 +171,50 @@ def enter_room(username, room_id, nick_name, role_in_classroom=0,
                 course_classroom.room_url = str(temp)
             else:
                 course_classroom.room_url = "['{}']".format(r.json()['url'])
+            c_c_p = CourseClassParticipant(
+                role_in_course=role_in_classroom,
+                access_url=r.json()['url'],
+                device_type=device_type,
+                course_classroom_id=course_classroom.id,
+                role_id=nick_name,
+                updated_by=username
+            )
+            session.add(c_c_p)
             session.merge(course_classroom)
     return r.json()
 
 
-def upload_doc():
-    pass
+def upload_doc(username, room_id, file_url, file_name):
+    '''
+    Upload file as courseware into classroom
+    :param username:
+    :param room_id: class room created before
+    :param file_url: courseware file url
+    :param file_name: courseware file display name
+    :return: uuid refer to uploaded courseware from provider
+    '''
+    current_app.logger.debug(room_id)
+    with session_scope(db) as session:
+        course_classroom = session.query(CourseClassroom).filter(
+            CourseClassroom.room_id == room_id).one_or_none()
+        if not course_classroom:
+            raise RuntimeError('CourseClassroom of room_id passed in not found')
+        r = requests.post(
+            current_app.config['EP_LOCATION'] + current_app.config[
+                'EP_LIVE_PATH'] + '/uploadFileUrl',
+            data=json.dumps({
+                'roomId': room_id,
+                'filename': file_name,
+                'fileUrl': file_url,
+                'username': username
+            }), headers={'Content-type': 'application/json'})
+        current_app.logger.debug(r.text)
+        if r.json()['code'] == 0:
+            cw = Courseware(
+
+            )
+            session.add(cw)
+    return r.json()
 
 
 def attach_doc():

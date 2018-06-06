@@ -18,6 +18,9 @@ class DuobeiLiveTest(TestBase):
         '''
         Test for service.live_service.create_room
         '''
+        url = 'http://note.youdao.com/noteshare?' \
+              'id=3906ae488695edb740676e4ebf43a7ae&' \
+              'sub=E295F4AD855D4FE3A4D2864D3C3781B9'
         start_time = datetime.now().isoformat()[:-3] + 'Z'
         self.app.logger.debug(start_time)
         with session_scope(db) as session:
