@@ -110,7 +110,8 @@ class Courseware(EntityMixin, db.Model):
     '''
     ware_desc = Column(String(2000), nullable=False)
     ware_url = Column(String(255), nullable=True)
-    ware_uid = Column(String(255), nullable=True, comment='e.g. duobei use')
+    ware_uid = Column(String(255), nullable=True, index=True,
+                      comment='e.g. duobei use')
     room_id = Column(String(2000), nullable=True, comment='classroom list')
     other_desc = Column(String(2000), nullable=True, comment="e.g. duobei use")
     checked_result = Column(Enum(CoursewareCheckResultEnum), nullable=True,
@@ -118,7 +119,7 @@ class Courseware(EntityMixin, db.Model):
                             server_default=CoursewareCheckResultEnum.
                             BEFORE_CHECK.name)
     course_id = Column(Integer, ForeignKey('course.id'),
-                                nullable=False)
+                       nullable=False)
     course_wares = db.relationship('Course', backref='course_wares',
                                    lazy=True)
 
@@ -160,7 +161,7 @@ class CourseClassroom(EntityMixin, db.Model):
     room_title = Column(String(255), nullable=False)
     video_ready = Column(Integer, nullable=False, comment='0:disable, 1:enable')
     room_url = Column(String(4000), nullable=True)
-    room_id = Column(String(120), nullable=True, index=True, unique=True,
+    room_id = Column(String(120), nullable=True, index=True,
                      comment='provider returned id after room created')
     room_type = Column(Enum(ClassroomTypeEnum), nullable=False,
                        server_default=ClassroomTypeEnum.ONE_VS_ONE.name)

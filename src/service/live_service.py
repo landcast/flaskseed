@@ -223,7 +223,27 @@ def attach_doc(username, room_id, ware_uid):
     :param ware_uid: previously uploaded course ware uid returned by provider
     :return: None
     '''
-    pass
+    with session_scope(db) as session:
+        cw = session.query(Courseware).filter(
+            Courseware.ware_uid == ware_uid).one_or_none()
+        if cw:
+            r = requests.post(
+                current_app.config['EP_LOCATION'] + current_app.config[
+                    'EP_LIVE_PATH'] + '/attatchDocument',
+                data=json.dumps({
+                    'documentId': ware_uid,
+                    'roomId': room_id,
+                    'username': username
+                }), headers={'Content-type': 'application/json'})
+            current_app.logger.debug(r.text)
+            if r.json()['code'] == 0:
+                cw.room_id = room_id
+                session.merge(cw)
+            else:
+                raise RuntimeError('calling attachDocument failed')
+        else:
+            raise RuntimeError(
+                'can not find course ware, according to ware_uid')
 
 
 def remove_doc():
