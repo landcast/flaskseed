@@ -7,8 +7,8 @@ from enum import IntFlag
 class Certificate(EntityMixin, db.Model):
     cert_name = Column(db.String(120), nullable=False)
     cert_desc = Column(db.String(120), nullable=True)
-    cert_name_en = Column(db.String(120), nullable=False)
-    cert_desc_en = Column(db.String(120), nullable=True)
+    cert_name_zh = Column(db.String(120), nullable=False)
+    cert_desc_zh = Column(db.String(120), nullable=False)
     cert_level = Column(db.String(120), nullable=True)
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
@@ -18,8 +18,8 @@ class Certificate(EntityMixin, db.Model):
 class TeacherSubject(EntityMixin, db.Model):
     advantage = Column(String(120), nullable=False)
     desc = Column(String(255), nullable=True)
-    advantage_en = Column(String(120), nullable=False)
-    desc_en = Column(String(255), nullable=True)
+    advantage_zh = Column(String(120), nullable=False)
+    desc_zh = Column(String(255), nullable=True)
     teacher_id = Column(Integer, ForeignKey('teacher.id'),
                         nullable=False)
     subjects = db.relationship('Teacher', backref='subjects', lazy=True)

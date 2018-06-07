@@ -74,7 +74,7 @@ class Region(EntityMixin, db.Model):
     path = Column(String(255), nullable=True)
     level = Column(Integer, nullable=True)
     name = Column(String(255), nullable=True)
-    name_en = Column(String(255), nullable=True)
+    name_zh = Column(String(255), nullable=True)
     name_pinyin = Column(String(255), nullable=True)
     code = Column(String(255), nullable=True)
     region = Column(String(255), nullable=True)
@@ -94,7 +94,7 @@ class SmsLog(EntityMixin, db.Model):
 
 class Menu(EntityMixin, db.Model):
     menu_name = Column(String(255), nullable=True)
-    menu_name_en = Column(String(255), nullable=True)
+    menu_name_zh = Column(String(255), nullable=True)
     state = Column(Integer, nullable=False)
     parent_id = Column(Integer, nullable=False)
     menu_type = Column(Integer, nullable=False)

@@ -12,7 +12,7 @@ class Curriculum(EntityMixin, db.Model):
 
 class SubjectCategory(EntityMixin, db.Model):
     subject_category = Column(String(120), nullable=False)
-    subject_category_en = Column(String(120), nullable=False)
+    subject_category_zh = Column(String(120), nullable=False)
 
 
 class Subject(EntityMixin, db.Model):
@@ -21,10 +21,10 @@ class Subject(EntityMixin, db.Model):
     subject_open_grade = Column(String(120), nullable=True)
     subject_requirements = Column(String(120), nullable=True)
 
-    subject_name_en = Column(String(120), nullable=False)
-    subject_desc_en = Column(String(120), nullable=True)
-    subject_open_grade_en = Column(String(120), nullable=True)
-    subject_requirements_en = Column(String(120), nullable=True)
+    subject_name_zh = Column(String(120), nullable=False)
+    subject_desc_zh = Column(String(120), nullable=False)
+    subject_open_grade_zh = Column(String(120), nullable=False)
+    subject_requirements_zh = Column(String(120), nullable=False)
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                            nullable=True)
     subject_of_curriculum = db.relationship('Curriculum',
@@ -39,16 +39,16 @@ class Subject(EntityMixin, db.Model):
 
 class Course(EntityMixin, db.Model):
     course_name = Column(String(120), nullable=False)
-    course_name_en = Column(String(120), nullable=False)
+    course_name_zh = Column(String(120), nullable=False)
     course_type = Column(Integer, nullable=False,
                          comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
     open_grade = Column(String(120), nullable=True)
     course_desc = Column(String(120), nullable=True)
-    course_desc_en = Column(String(120), nullable=True)
+    course_desc_zh = Column(String(120), nullable=False)
     difficult_level = Column(Integer, nullable=True)
     critical_level = Column(Integer, nullable=True)
     course_requirements = Column(String(120), nullable=True)
-    course_requirements_en = Column(String(120), nullable=True)
+    course_requirements_zh = Column(String(120), nullable=False)
     state = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)
     primary_teacher_id = Column(Integer, ForeignKey('teacher.id'),
