@@ -31,7 +31,7 @@ def create_room(username, course_schedule_id, title, length=60,
                 'title': title,
                 'startTime': start_time,
                 'length': length,
-                'menNum': room_type.value - 1,
+                'menNum': ClassroomTypeEnum[room_type].value - 1,
                 'userName': username,
                 'lang': lang,
                 'userType': user_type,
@@ -165,8 +165,8 @@ def enter_room(username, room_id, nick_name,
                     'roomId': room_id,
                     'userName': username,
                     'nickname': nick_name,
-                    'userRole': role_in_classroom.value - 1,
-                    'deviceType': device_type.value - 1
+                    'userRole': ClassroomRoleEnum[role_in_classroom].value - 1,
+                    'deviceType': ClassroomDeviceEnum[device_type].value - 1
                 }), headers={'Content-type': 'application/json'})
         current_app.logger.debug(r.text)
         if r.json()['code'] == 0:

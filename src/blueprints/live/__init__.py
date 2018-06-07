@@ -103,8 +103,8 @@ def edit_room():
     """
     j = request.json
     username = retrieve_username()
-    r = live_service.edit_room(username, j['room_id'], j['title'],
-                                 j['length'], j['start_time'])
+    live_service.edit_room(username, j['room_id'], j['title'],
+                           j['length'], j['start_time'])
     return jsonify({})
 
 
@@ -122,6 +122,9 @@ def delete_room():
         type: 'string'
     res:
     """
+    j = request.json
+    username = retrieve_username()
+    live_service.delete_room(username, j['room_id'])
     return jsonify({})
 
 
@@ -155,7 +158,11 @@ def enter_room():
         description: 'url for entering room'
         type: 'string'
     """
-    return jsonify({})
+    j = request.json
+    username = retrieve_username()
+    r = live_service.enter_room(username, j['room_id'], j['nick_name'],
+                                j['role_in_classroom'], j['device_type'])
+    return jsonify({'room_url': r})
 
 
 @live.route('/upload_doc', methods=['POST'])
@@ -173,12 +180,19 @@ def upload_doc():
       file_name:
         description: 'courseware file display name'
         type: 'string'
+      course_id:
+        description: 'course id'
+        type: 'integer'
     res:
       ware_uid:
         description: 'url for entering room'
         type: 'string'
     """
-    return jsonify({})
+    j = request.json
+    username = retrieve_username()
+    r = live_service.upload_doc(username, j['file_url'], j['file_name'],
+                                j['course_id'])
+    return jsonify({'ware_uid': r})
 
 
 @live.route('/attach_doc', methods=['POST'])
@@ -199,6 +213,9 @@ def attach_doc():
         type: 'string'
     res:
     """
+    j = request.json
+    username = retrieve_username()
+    live_service.attach_doc(username, j['room_id'], j['ware_uid'])
     return jsonify({})
 
 
@@ -219,6 +236,9 @@ def remove_doc():
         type: 'string'
     res:
     """
+    j = request.json
+    username = retrieve_username()
+    live_service.remove_doc(username, j['room_id'], j['ware_uid'])
     return jsonify({})
 
 
@@ -239,4 +259,7 @@ def preview_doc():
         description: 'preview course ware url'
         type: 'string'
     """
-    return jsonify({})
+    j = request.json
+    username = retrieve_username()
+    r = live_service.upload_doc(username, j['ware_uid'])
+    return jsonify({'ware_url': r})
