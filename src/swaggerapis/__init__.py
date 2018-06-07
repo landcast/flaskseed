@@ -1,9 +1,8 @@
 import json
 import yaml
-from flask import jsonify, request, Blueprint, redirect
+from flask import jsonify, Blueprint, redirect
 from flask_restless import APIManager
 from flask_restless.helpers import *
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum
 
 
 sqlalchemy_swagger_type = {

@@ -45,10 +45,10 @@ class EntityMixin(object):
     id = Column(Integer, primary_key=True)
     delete_flag = Column(Enum(DeleteEnum), nullable=False,
                          server_default=DeleteEnum.IN_FORCE.name)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow,
+    created_at = Column(DateTime, nullable=False, default=datetime.now,
                         comment='created time')
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow,
-                        onupdate=datetime.utcnow,
+    updated_at = Column(DateTime, nullable=False, default=datetime.now,
+                        onupdate=datetime.now,
                         comment='last updated time')
     updated_by = Column(String(60), nullable=True,
                         comment='last updated operator name')

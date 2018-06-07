@@ -3,7 +3,7 @@
 import json
 import unittest
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 sys.path.append(".")
 from unittests.test_base import TestBase, random_username
@@ -21,7 +21,7 @@ class RestLessTest(TestBase):
         super().setUp()
         test_user = random_username()
         self.auth_header = json.loads(
-                super().register(test_user, 'Student').get_data(as_text=True))
+            super().register(test_user, 'Student').get_data(as_text=True))
         self.token = self.auth_header[self.config['JWT_HEADER']]
         self.app.logger.debug("jwt:" + self.token)
 
@@ -31,8 +31,24 @@ class RestLessTest(TestBase):
         self.app.logger.debug("status = " + str(r.status_code))
         self.assertEqual(200, r.status_code, 'get students failed')
         students = json.loads(r.get_data(as_text=True))['objects']
+        self.app.logger.debug(len(students))
         self.assertGreater(len(students), 0, 'get students empty')
         # self.app.logger.debug(json.loads(r.get_data(as_text=True)))
+        end = (datetime.now() + timedelta(days=1)).isoformat()[:-3] + 'Z'
+        start = (datetime.now() + timedelta(days=-1)).isoformat()[:-3] + 'Z'
+        r = self.client.get('/api/v1/student', query_string="q=" + json.dumps({
+            "filter": [
+                {"name": "created_at", "op": "<=", "val": end},
+                {"name": "created_at", "op": ">=", "val": start},
+            ]
+        }),
+                            content_type='application/json',
+                            headers={self.config['JWT_HEADER']: self.token})
+        self.app.logger.debug("status = " + str(r.status_code))
+        self.assertEqual(200, r.status_code, 'get students failed')
+        students = json.loads(r.get_data(as_text=True))['objects']
+        self.app.logger.debug(len(students))
+        self.assertGreater(len(students), 0, 'get students empty')
         self.app.logger.debug('student.id = ' + str(students[0]['id']))
         self.student_id = students[0]['id']
 
@@ -78,8 +94,8 @@ class RestLessTest(TestBase):
         channels = json.loads(r.get_data(as_text=True))['objects']
         self.assertGreater(len(channels), 0, 'get channels empty')
         self.app.logger.debug(
-                'channel.id = ' + str(channels[0]['id']) + ' channel.name = ' +
-                channels[0]['channel_name'])
+            'channel.id = ' + str(channels[0]['id']) + ' channel.name = ' +
+            channels[0]['channel_name'])
         self.channel_id = channels[0]['id']
         self.enrollment_id = channels[0]['channel_enrollments'][0]['id']
 
