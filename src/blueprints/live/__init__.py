@@ -10,9 +10,16 @@ import requests
 
 from src.models import db, session_scope, user_source, SmsLog
 from src.service import send_email, redis_store
-from src.service.live_service import *
+from src.service import live_service
 
 live = Blueprint('live', __name__)
+
+
+def retrieve_username():
+    username = getattr(g, current_app.config['CUR_ID'])
+    if not username and current_app.debug:
+        username = request.json['username']
+    return username
 
 
 @live.route('/create_room', methods=['POST'])
@@ -61,7 +68,11 @@ def create_room():
         description: 'room enabled video'
         type: 'boolean'
     """
-    return jsonify({})
+    j = request.json
+    username = retrieve_username()
+    r = live_service.create_room(username, j['course_schedule_id'], j['title'],
+                                 j['length'], j['room_type'], j['start_time'])
+    return jsonify(r)
 
 
 @live.route('/edit_room', methods=['POST'])
@@ -90,6 +101,10 @@ def edit_room():
         type: 'string'
     res:
     """
+    j = request.json
+    username = retrieve_username()
+    r = live_service.edit_room(username, j['room_id'], j['title'],
+                                 j['length'], j['start_time'])
     return jsonify({})
 
 

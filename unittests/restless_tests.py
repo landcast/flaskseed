@@ -34,10 +34,10 @@ class RestLessTest(TestBase):
         self.app.logger.debug(len(students))
         self.assertGreater(len(students), 0, 'get students empty')
         # self.app.logger.debug(json.loads(r.get_data(as_text=True)))
-        end = (datetime.now() + timedelta(days=1)).isoformat()[:-3] + 'Z'
-        start = (datetime.now() + timedelta(days=-1)).isoformat()[:-3] + 'Z'
+        end = (datetime.now() + timedelta(seconds=30)).isoformat()[:-3] + 'Z'
+        start = (datetime.now() + timedelta(seconds=-30)).isoformat()[:-3] + 'Z'
         r = self.client.get('/api/v1/student', query_string="q=" + json.dumps({
-            "filter": [
+            "filters": [
                 {"name": "created_at", "op": "<=", "val": end},
                 {"name": "created_at", "op": ">=", "val": start},
             ]

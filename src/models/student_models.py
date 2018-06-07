@@ -7,7 +7,7 @@ from enum import IntFlag
 class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False)
     desc = Column(String(2000), nullable=True)
-    desc_zh = Column(String(2000), nullable=False)
+    desc_zh = Column(String(2000), nullable=True)
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
@@ -24,10 +24,10 @@ class StudySchedule(EntityMixin, db.Model):
     result = Column(String(255), nullable=True)
     homework = Column(String(255), nullable=True)
     test = Column(String(255), nullable=True)
-    evaluation_zh = Column(String(255), nullable=False)
-    result_zh = Column(String(255), nullable=False)
-    homework_zh = Column(String(255), nullable=False)
-    test_zh = Column(String(255), nullable=False)
+    evaluation_zh = Column(String(255), nullable=True)
+    result_zh = Column(String(255), nullable=True)
+    homework_zh = Column(String(255), nullable=True)
+    test_zh = Column(String(255), nullable=True)
 
 
     order_id = Column(Integer, ForeignKey('order.id'),
@@ -81,9 +81,9 @@ class StudentAppraisal(EntityMixin, db.Model):
     form_submitted = Column(String(255), nullable=True)
     provider = Column(String(255), nullable=True)
     result = Column(String(4000), nullable=True)
-    form_submitted_zh = Column(String(255), nullable=False)
-    provider_zh = Column(String(255), nullable=False)
-    result_zh = Column(String(4000), nullable=False)
+    form_submitted_zh = Column(String(255), nullable=True)
+    provider_zh = Column(String(255), nullable=True)
+    result_zh = Column(String(4000), nullable=True)
     subject_id = Column(Integer, ForeignKey('subject.id'),
                         nullable=True)
     subjects = db.relationship('Subject', backref='appraisals', lazy=True)
@@ -97,7 +97,7 @@ class CourseAppraisal(EntityMixin, db.Model):
     After study the whole course, record the study result and credit
     """
     course_study_result = Column(String(255), nullable=True)
-    course_study_result_zh = Column(String(255), nullable=False)
+    course_study_result_zh = Column(String(255), nullable=True)
     course_credit = Column(Float, nullable=True)
     course_id = Column(Integer, ForeignKey('course.id'),
                        nullable=False)
@@ -152,7 +152,7 @@ class Student(UserBaseMixin, db.Model):
     cur_school = Column(String(50), nullable=True)
     grade = Column(Integer, nullable=True)
     requirements = Column(String(2000), nullable=True)
-    requirements_zh = Column(String(2000), nullable=False)
+    requirements_zh = Column(String(2000), nullable=True)
     parent = Column(String(50), nullable=True)
     parent_mobile = Column(String(20), nullable=True)
     parent_email = Column(String(60), nullable=True)
