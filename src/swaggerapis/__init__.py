@@ -3,6 +3,8 @@ import yaml
 from flask import jsonify, request, Blueprint, redirect
 from flask_restless import APIManager
 from flask_restless.helpers import *
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum
+
 
 sqlalchemy_swagger_type = {
     'INTEGER': ('integer', 'int32'),
@@ -351,6 +353,9 @@ class SwagAPIManager(object):
                 column_val = {'type': column_defn[0]}
                 if column_defn[1]:
                     column_val['format'] = column_defn[1]
+                t = column.type
+                if hasattr(t, 'native_enum') and t.native_enum:
+                    column_val['enum'] = t.enums
                 if not column.nullable:
                     required.append(column_name)
                 if hasattr(column, 'comment'):

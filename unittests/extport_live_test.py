@@ -49,10 +49,10 @@ class DuobeiLiveTest(TestBase):
                 self.app.logger.debug('ware_uid: ' + ware_uid)
                 r = preview_doc('86-13521273258', ware_uid)
                 self.app.logger.debug(r)
-                # self.assertIsNotNone(r, 'preview_doc not return url for succ')
+                self.assertIsNotNone(r, 'preview_doc not return url for succ')
                 # remove document from room
-                # r = remove_doc('86-13521273258', room_id, ware_uid)
-                # self.app.logger.debug(r)
+                r = remove_doc('86-13521273258', room_id, ware_uid)
+                self.app.logger.debug(r)
                 # self.assertEqual(None, r, 'remove_doc not return None for succ')
                 # finally delete class room
                 r = delete_room('86-13521273258', room_id)
