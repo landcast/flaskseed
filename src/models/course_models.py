@@ -12,6 +12,7 @@ class Curriculum(EntityMixin, db.Model):
 
 class SubjectCategory(EntityMixin, db.Model):
     subject_category = Column(String(120), nullable=False)
+    subject_category_en = Column(String(120), nullable=False)
 
 
 class Subject(EntityMixin, db.Model):
@@ -19,6 +20,11 @@ class Subject(EntityMixin, db.Model):
     subject_desc = Column(String(120), nullable=True)
     subject_open_grade = Column(String(120), nullable=True)
     subject_requirements = Column(String(120), nullable=True)
+
+    subject_name_en = Column(String(120), nullable=False)
+    subject_desc_en = Column(String(120), nullable=True)
+    subject_open_grade_en = Column(String(120), nullable=True)
+    subject_requirements_en = Column(String(120), nullable=True)
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                            nullable=True)
     subject_of_curriculum = db.relationship('Curriculum',
@@ -33,13 +39,16 @@ class Subject(EntityMixin, db.Model):
 
 class Course(EntityMixin, db.Model):
     course_name = Column(String(120), nullable=False)
+    course_name_en = Column(String(120), nullable=False)
     course_type = Column(Integer, nullable=False,
                          comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
     open_grade = Column(String(120), nullable=True)
     course_desc = Column(String(120), nullable=True)
+    course_desc_en = Column(String(120), nullable=True)
     difficult_level = Column(Integer, nullable=True)
     critical_level = Column(Integer, nullable=True)
     course_requirements = Column(String(120), nullable=True)
+    course_requirements_en = Column(String(120), nullable=True)
     state = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)
     primary_teacher_id = Column(Integer, ForeignKey('teacher.id'),
@@ -101,6 +110,15 @@ class CoursewareCheckResultEnum(enum.IntEnum):
     BEFORE_CHECK = 1
     CHECK_PASSED = 2
     CHECK_DENY = 3
+
+
+class CourseStatueEnum(enum.IntEnum):
+    """
+    EFFECTIVE:有效
+    INVALID:无效
+    """
+    EFFECTIVE = 98
+    INVALID = 99
 
 
 class Courseware(EntityMixin, db.Model):

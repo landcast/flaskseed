@@ -6,7 +6,8 @@ from enum import IntFlag
 
 class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False)
-    desc = Column(String(255), nullable=True)
+    desc = Column(String(2000), nullable=True)
+    desc_en = Column(String(2000), nullable=True)
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
@@ -23,6 +24,12 @@ class StudySchedule(EntityMixin, db.Model):
     result = Column(String(255), nullable=True)
     homework = Column(String(255), nullable=True)
     test = Column(String(255), nullable=True)
+    evaluation_en = Column(String(255), nullable=True)
+    result_en = Column(String(255), nullable=True)
+    homework_en = Column(String(255), nullable=True)
+    test_en = Column(String(255), nullable=True)
+
+
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
     order_studys = db.relationship('Order', backref='order_studys', lazy=True)
@@ -74,6 +81,9 @@ class StudentAppraisal(EntityMixin, db.Model):
     form_submitted = Column(String(255), nullable=True)
     provider = Column(String(255), nullable=True)
     result = Column(String(4000), nullable=True)
+    form_submitted_en = Column(String(255), nullable=True)
+    provider_en = Column(String(255), nullable=True)
+    result_en = Column(String(4000), nullable=True)
     subject_id = Column(Integer, ForeignKey('subject.id'),
                         nullable=True)
     subjects = db.relationship('Subject', backref='appraisals', lazy=True)
@@ -87,6 +97,7 @@ class CourseAppraisal(EntityMixin, db.Model):
     After study the whole course, record the study result and credit
     """
     course_study_result = Column(String(255), nullable=True)
+    course_study_result_en = Column(String(255), nullable=True)
     course_credit = Column(Float, nullable=True)
     course_id = Column(Integer, ForeignKey('course.id'),
                        nullable=False)
@@ -118,6 +129,7 @@ class StudentState(IntFlag):
     NOORDER:未下订单
     INSTUDY: 付费上课
     GRADUATED: 已经毕业
+    INVALID:无效
     """
     FRESH = 1
     BASIC_INFO = 2
@@ -129,7 +141,7 @@ class StudentState(IntFlag):
     INSTUDY = 8
     GRADUATED = 9
 
-
+    INVALID=99
 
 class Student(UserBaseMixin, db.Model):
     state = Column(Enum(StudentState), nullable=False,
@@ -140,6 +152,7 @@ class Student(UserBaseMixin, db.Model):
     cur_school = Column(String(50), nullable=True)
     grade = Column(Integer, nullable=True)
     requirements = Column(String(2000), nullable=True)
+    requirements_en = Column(String(2000), nullable=True)
     parent = Column(String(50), nullable=True)
     parent_mobile = Column(String(20), nullable=True)
     parent_email = Column(String(60), nullable=True)
@@ -159,3 +172,21 @@ class Student(UserBaseMixin, db.Model):
                                       backref='student_helpers',
                                       lazy=True,
                                       foreign_keys=student_helper_id)
+
+
+
+class StudentSubjectOptional(IntFlag):
+    """
+    ELECTIVE_COURSE：选修课程
+    COMPULSORY_COURSE:必修课程
+     """
+    ELECTIVE_COURSE = 1
+    COMPULSORY_COURSE = 2
+
+class StudyScheduleStudyState(IntFlag):
+    """
+   ONGOING：进行中
+   COMPLETED:已经完成
+    """
+    ONGOING = 1
+    COMPLETED = 2

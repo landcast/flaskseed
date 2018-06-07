@@ -140,3 +140,12 @@ class RoleAuth(EntityMixin, db.Model):
 
 class SysControl(EntityMixin, db.Model):
     current_pid = Column(Integer, nullable=False)
+
+class SysUserStateEnum(IntFlag):
+    """
+    EFFECTIVE:有效
+    INVALID:无效
+    """
+    EFFECTIVE = 98
+    INVALID = 99
+

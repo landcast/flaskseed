@@ -1,5 +1,6 @@
 from src.models.common_models import db, EntityMixin
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
+from enum import IntFlag
 
 
 class Order(EntityMixin, db.Model):
@@ -50,3 +51,12 @@ class Account(EntityMixin, db.Model):
     account_no = Column(String(50), nullable=False)
     owner_role = Column(Integer, nullable=True)
     owner_id = Column(Integer, nullable=True)
+
+
+class OrderStateEnum(IntFlag):
+    """
+    EFFECTIVE:有效
+    INVALID:无效
+    """
+    EFFECTIVE = 98
+    INVALID = 99
