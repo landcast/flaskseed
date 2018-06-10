@@ -4,27 +4,27 @@ from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum
 
 
 class Curriculum(EntityMixin, db.Model):
-    full_name = Column(String(120), nullable=False)
-    desc = Column(String(255), nullable=True)
-    prerequisite = Column(String(255), nullable=True)
-    language_requirement = Column(String(255), nullable=True)
+    full_name = Column(String(120), nullable=False, comment='课程全名')
+    desc = Column(String(255), nullable=True, comment='课程描述')
+    prerequisite = Column(String(255), nullable=True, comment='学习本门课程先决条件')
+    language_requirement = Column(String(255), nullable=True, comment='语言条件')
 
 
 class SubjectCategory(EntityMixin, db.Model):
-    subject_category = Column(String(120), nullable=False)
-    subject_category_zh = Column(String(120), nullable=True)
+    subject_category = Column(String(120), nullable=False, comment='科目类别英文名称')
+    subject_category_zh = Column(String(120), nullable=True, comment='科目类别中文名称')
 
 
 class Subject(EntityMixin, db.Model):
-    subject_name = Column(String(120), nullable=False)
-    subject_desc = Column(String(120), nullable=True)
-    subject_open_grade = Column(String(120), nullable=True)
-    subject_requirements = Column(String(120), nullable=True)
+    subject_name = Column(String(120), nullable=False, comment='学科名称-英文')
+    subject_desc = Column(String(120), nullable=True, comment='学科描述-英文')
+    subject_open_grade = Column(String(120), nullable=True, comment='学科年级-英文')
+    subject_requirements = Column(String(120), nullable=True, comment='学科要求-英文')
 
-    subject_name_zh = Column(String(120), nullable=True)
-    subject_desc_zh = Column(String(120), nullable=True)
-    subject_open_grade_zh = Column(String(120), nullable=True)
-    subject_requirements_zh = Column(String(120), nullable=True)
+    subject_name_zh = Column(String(120), nullable=True, comment='学科名称-中文')
+    subject_desc_zh = Column(String(120), nullable=True, comment='学科描述-中文')
+    subject_open_grade_zh = Column(String(120), nullable=True, comment='学科年级-中文')
+    subject_requirements_zh = Column(String(120), nullable=True, comment='学科要求-中文')
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                            nullable=True)
     subject_of_curriculum = db.relationship('Curriculum',
@@ -38,19 +38,19 @@ class Subject(EntityMixin, db.Model):
 
 
 class Course(EntityMixin, db.Model):
-    course_name = Column(String(120), nullable=False)
-    course_name_zh = Column(String(120), nullable=True)
+    course_name = Column(String(120), nullable=False,comment='课程名称-英文')
+    course_name_zh = Column(String(120), nullable=True,comment='课程名称-中文')
     course_type = Column(Integer, nullable=False,
                          comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
-    open_grade = Column(String(120), nullable=True)
-    course_desc = Column(String(120), nullable=True)
-    course_desc_zh = Column(String(120), nullable=True)
-    difficult_level = Column(Integer, nullable=True)
-    critical_level = Column(Integer, nullable=True)
-    course_requirements = Column(String(120), nullable=True)
-    course_requirements_zh = Column(String(120), nullable=True)
-    state = Column(Integer, nullable=False)
-    price = Column(Integer, nullable=False)
+    open_grade = Column(String(120), nullable=True,comment='开设年级')
+    course_desc = Column(String(120), nullable=True,comment='课程描述-英文')
+    course_desc_zh = Column(String(120), nullable=True,comment='课程描述-中文')
+    difficult_level = Column(Integer, nullable=True,comment='困难级别')
+    critical_level = Column(Integer, nullable=True,comment='')
+    course_requirements = Column(String(120), nullable=True,comment='课程要求-英文')
+    course_requirements_zh = Column(String(120), nullable=True,comment='课程要求-中文')
+    state = Column(Integer, nullable=False,comment='装填参考枚举值')
+    price = Column(Integer, nullable=False,comment='金额')
     primary_teacher_id = Column(Integer, ForeignKey('teacher.id'),
                                 nullable=False)
     primary_teacher = db.relationship('Teacher', backref='primary_courses',
@@ -67,11 +67,11 @@ class Course(EntityMixin, db.Model):
 
 
 class CourseExam(EntityMixin, db.Model):
-    start = Column(DateTime, nullable=False)
-    end = Column(DateTime, nullable=False)
-    state = Column(Integer, nullable=False)
-    exam_form = Column(String(255), nullable=True)
-    exam_desc = Column(String(255), nullable=False)
+    start = Column(DateTime, nullable=False,comment='考试开始见')
+    end = Column(DateTime, nullable=False,comment='考试结束时间')
+    state = Column(Integer, nullable=False,comment='状态参考枚举值')
+    exam_form = Column(String(255), nullable=True,comment='考试来源')
+    exam_desc = Column(String(255), nullable=False,comment='考试描述')
     course_id = Column(Integer, ForeignKey('course.id'),
                        nullable=False)
     course_schedules = db.relationship('Course', backref='course_exams',
@@ -79,9 +79,9 @@ class CourseExam(EntityMixin, db.Model):
 
 
 class CourseSchedule(EntityMixin, db.Model):
-    start = Column(DateTime, nullable=False)
-    end = Column(DateTime, nullable=False)
-    state = Column(Integer, nullable=False)
+    start = Column(DateTime, nullable=False,comment='开始时间')
+    end = Column(DateTime, nullable=False,comment='结束时间')
+    state = Column(Integer, nullable=False,comment='状态参考枚举值')
     override_course_type = Column(Integer, nullable=True,
                                   comment='value used to override course_type '
                                           'defined in course, e.g. in a 1V4 '
@@ -126,8 +126,8 @@ class Courseware(EntityMixin, db.Model):
     PPT or something showing in course uploaded by teacher
     before course study, needs to be checked by admin
     """
-    ware_desc = Column(String(2000), nullable=False)
-    ware_url = Column(String(255), nullable=True)
+    ware_desc = Column(String(2000), nullable=False,comment='课件描述')
+    ware_url = Column(String(255), nullable=True,comment='课件存储地址，JSON')
     ware_uid = Column(String(120), nullable=True, index=True,
                       comment='e.g. duobei use')
     room_id = Column(String(2000), nullable=True, comment='classroom list')
@@ -253,8 +253,8 @@ class CourseClassParticipant(EntityMixin, db.Model):
 
 
 class CourseAppointment(EntityMixin, db.Model):
-    open_time_start = Column(DateTime, nullable=False)
-    open_time_end = Column(DateTime, nullable=False)
+    open_time_start = Column(DateTime, nullable=False,comment='试听开始时间')
+    open_time_end = Column(DateTime, nullable=False,comment='试听结束时间')
     teacher_id = Column(Integer, ForeignKey('teacher.id'),
                         nullable=False)
     appointments = db.relationship('Teacher',

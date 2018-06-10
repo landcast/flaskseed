@@ -5,9 +5,9 @@ from enum import IntFlag
 
 
 class StudentSubject(EntityMixin, db.Model):
-    optional = Column(Integer, nullable=False)
-    desc = Column(String(2000), nullable=True)
-    desc_zh = Column(String(2000), nullable=True)
+    optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
+    desc = Column(String(2000), nullable=True, comment='英文描述信息')
+    desc_zh = Column(String(2000), nullable=True, comment='中文描述信息')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
@@ -17,19 +17,13 @@ class StudentSubject(EntityMixin, db.Model):
 
 
 class StudySchedule(EntityMixin, db.Model):
-    actual_start = Column(DateTime, nullable=False)
-    actual_end = Column(DateTime, nullable=False)
-    study_state = Column(Integer, nullable=False)
-    evaluation = Column(String(255), nullable=True)
-    result = Column(String(255), nullable=True)
-    homework = Column(String(255), nullable=True)
-    test = Column(String(255), nullable=True)
-    evaluation_zh = Column(String(255), nullable=True)
-    result_zh = Column(String(255), nullable=True)
-    homework_zh = Column(String(255), nullable=True)
-    test_zh = Column(String(255), nullable=True)
-
-
+    actual_start = Column(DateTime, nullable=False, comment='实际上课开始时间')
+    actual_end = Column(DateTime, nullable=False, comment='实际上课结束时间')
+    study_state = Column(Integer, nullable=False, comment='学习状态，1：进行中，2：已经学完')
+    evaluation = Column(String(255), nullable=True, comment='评价')
+    result = Column(String(255), nullable=True, comment='结果反馈')
+    homework = Column(String(255), nullable=True, comment='作业')
+    test = Column(String(255), nullable=True, comment='课后测试')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
     order_studys = db.relationship('Order', backref='order_studys', lazy=True)
@@ -44,14 +38,14 @@ class StudySchedule(EntityMixin, db.Model):
 
 
 class Homework(EntityMixin, db.Model):
-    homework_type = Column(Integer, nullable=False)
-    question_text = Column(String(2000), nullable=True)
-    question_attachment_url = Column(String(255), nullable=True)
-    answer_text = Column(String(2000), nullable=True)
-    answer_attachment_url = Column(String(255), nullable=True)
-    score = Column(Float, nullable=True)
-    score_remark = Column(String(2000), nullable=True)
-    score_reason = Column(String(2000), nullable=True)
+    homework_type = Column(Integer, nullable=False, comment='作业类型1：教师留作业，2：学生完成作业')
+    question_text = Column(String(2000), nullable=True, comment='问题')
+    question_attachment_url = Column(String(255), nullable=True, comment='问题附件地址可以多个，JSON')
+    answer_text = Column(String(2000), nullable=True, comment='答案')
+    answer_attachment_url = Column(String(255), nullable=True, comment='答案附件地址可以多个json')
+    score = Column(Float, nullable=True, Comment='分数')
+    score_remark = Column(String(2000), nullable=True, comment='分数标记')
+    score_reason = Column(String(2000), nullable=True, comment='分数得分原因')
     study_schedule_id = Column(Integer, ForeignKey('study_schedule.id'),
                                nullable=False)
     homeworks = db.relationship('StudySchedule', backref='homeworks',
@@ -59,12 +53,12 @@ class Homework(EntityMixin, db.Model):
 
 
 class StudyResult(EntityMixin, db.Model):
-    score = Column(Float, nullable=True)
-    score_type = Column(String(60), nullable=True)
+    score = Column(Float, nullable=True, comment='分数')
+    score_type = Column(String(60), nullable=True, comment='得分类型')
     score_full_mark = Column(Float, nullable=True, comment="满分")
-    score_reason = Column(String(2000), nullable=True)
-    score_remark = Column(String(2000), nullable=True)
-    score_comment = Column(String(2000), nullable=True)
+    score_reason = Column(String(2000), nullable=True, comment='得分原因')
+    score_remark = Column(String(2000), nullable=True, comment='分数标记')
+    score_comment = Column(String(2000), nullable=True, comment='分数确认')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     student_study_results = db.relationship('Student', backref='study_results',
@@ -77,13 +71,13 @@ class StudyResult(EntityMixin, db.Model):
 
 
 class StudentAppraisal(EntityMixin, db.Model):
-    form_no = Column(Integer, primary_key=True)
-    form_submitted = Column(String(255), nullable=True)
-    provider = Column(String(255), nullable=True)
-    result = Column(String(4000), nullable=True)
-    form_submitted_zh = Column(String(255), nullable=True)
-    provider_zh = Column(String(255), nullable=True)
-    result_zh = Column(String(4000), nullable=True)
+    form_no = Column(Integer, primary_key=True, comment='')
+    form_submitted = Column(String(255), nullable=True, comment='')
+    provider = Column(String(255), nullable=True, comment='')
+    result = Column(String(4000), nullable=True, comment='')
+    form_submitted_zh = Column(String(255), nullable=True, comment='')
+    provider_zh = Column(String(255), nullable=True, comment='')
+    result_zh = Column(String(4000), nullable=True, comment='')
     subject_id = Column(Integer, ForeignKey('subject.id'),
                         nullable=True)
     subjects = db.relationship('Subject', backref='appraisals', lazy=True)
@@ -96,9 +90,9 @@ class CourseAppraisal(EntityMixin, db.Model):
     """
     After study the whole course, record the study result and credit
     """
-    course_study_result = Column(String(255), nullable=True)
-    course_study_result_zh = Column(String(255), nullable=True)
-    course_credit = Column(Float, nullable=True)
+    course_study_result = Column(String(255), nullable=True, comment='试听英文反馈')
+    course_study_result_zh = Column(String(255), nullable=True, comment='试听中文反馈')
+    course_credit = Column(Float, nullable=True, comment='')
     course_id = Column(Integer, ForeignKey('course.id'),
                        nullable=False)
     course_appraisals = db.relationship('Course', backref='study_results',
@@ -110,7 +104,7 @@ class CourseAppraisal(EntityMixin, db.Model):
 
 
 class StudyAppointment(EntityMixin, db.Model):
-    student_requirements = Column(String(2000), nullable=False)
+    student_requirements = Column(String(2000), nullable=False, comment='学生需求')
     course_appointment_id = Column(Integer, ForeignKey('course_appointment.id'),
                                    nullable=False)
     course_appointments = db.relationship('CourseAppointment',
@@ -146,17 +140,17 @@ class StudentState(IntFlag):
 class Student(UserBaseMixin, db.Model):
     state = Column(Enum(StudentState), nullable=False,
                    server_default=StudentState.FRESH.name)
-    level = Column(String(50), nullable=True)
-    nation = Column(String(50), nullable=True)
-    city = Column(String(50), nullable=True)
-    cur_school = Column(String(50), nullable=True)
-    grade = Column(Integer, nullable=True)
-    requirements = Column(String(2000), nullable=True)
-    requirements_zh = Column(String(2000), nullable=True)
-    parent = Column(String(50), nullable=True)
-    parent_mobile = Column(String(20), nullable=True)
-    parent_email = Column(String(60), nullable=True)
-    parent_role = Column(String(20), nullable=True)
+    level = Column(String(50), nullable=True, comment='等级')
+    nation = Column(String(50), nullable=True, comment='国家')
+    city = Column(String(50), nullable=True, comment='城市')
+    cur_school = Column(String(50), nullable=True, comment='当前学校')
+    grade = Column(Integer, nullable=True, comment='当前学校班级')
+    requirements = Column(String(2000), nullable=True, comment='学生需求英文，可能是JSON需注意')
+    requirements_zh = Column(String(2000), nullable=True, comment='学生徐需求中文，可能是JSON需注意')
+    parent = Column(String(50), nullable=True, comment='')
+    parent_mobile = Column(String(20), nullable=True, comment='')
+    parent_email = Column(String(60), nullable=True, comment='')
+    parent_role = Column(String(20), nullable=True, comment='')
     consultant_id = Column(Integer, ForeignKey('sys_user.id'),
                            nullable=True,
                            comment='sales person provide consultant'

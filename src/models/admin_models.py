@@ -14,13 +14,13 @@ class Enrollment(EntityMixin, db.Model):
 
 
 class Channel(EntityMixin, db.Model):
-    channel_name = Column(String(255), nullable=False)
-    channel_desc = Column(String(255), nullable=True)
-    contact_tel = Column(String(255), nullable=True)
-    contact_email = Column(String(255), nullable=True)
-    contact_address = Column(String(255), nullable=True)
-    logo_url = Column(String(255), nullable=True)
-    domain_address = Column(String(255), nullable=True)
+    channel_name = Column(String(255), nullable=False,comment='渠道名称')
+    channel_desc = Column(String(255), nullable=True,comment='渠道描述')
+    contact_tel = Column(String(255), nullable=True,comment='联系电话')
+    contact_email = Column(String(255), nullable=True,comment='联系人邮件')
+    contact_address = Column(String(255), nullable=True,comment='联系地址')
+    logo_url = Column(String(255), nullable=True,comment='logourl')
+    domain_address = Column(String(255), nullable=True,comment='主页地址')
     service_helper = Column(Integer, ForeignKey('sys_user.id'),
                             nullable=True)
     channels = db.relationship('SysUser',
@@ -38,11 +38,11 @@ class SysUserState(IntFlag):
 
 
 class SysUser(UserBaseMixin, db.Model):
-    menus = Column(String(2000), nullable=True)
+    menus = Column(String(2000), nullable=True,comment='菜单')
     state = Column(Enum(SysUserState), nullable=False,
                    server_default=SysUserState.WORKING.name)
-    user_type = Column(Integer, nullable=True)
-    level = Column(String(50), nullable=True)
+    user_type = Column(Integer, nullable=True,comment='用户类别')
+    level = Column(String(50), nullable=True,comment='级别')
 
 
 class Notification(EntityMixin, db.Model):

@@ -5,21 +5,21 @@ from enum import IntFlag
 
 
 class Certificate(EntityMixin, db.Model):
-    cert_name = Column(db.String(120), nullable=False)
-    cert_desc = Column(db.String(120), nullable=True)
-    cert_name_zh = Column(db.String(120), nullable=True)
-    cert_desc_zh = Column(db.String(120), nullable=True)
-    cert_level = Column(db.String(120), nullable=True)
+    cert_name = Column(db.String(120), nullable=False, comment='证书英文名称')
+    cert_desc = Column(db.String(120), nullable=True, comment='证书英文描述')
+    cert_name_zh = Column(db.String(120), nullable=True, comment='证书中文名称')
+    cert_desc_zh = Column(db.String(120), nullable=True, comment='证书中文描述')
+    cert_level = Column(db.String(120), nullable=True, comment='证书级别')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
     teachers = db.relationship('Teacher', backref='certificates', lazy=True)
 
 
 class TeacherSubject(EntityMixin, db.Model):
-    advantage = Column(String(120), nullable=False)
-    desc = Column(String(255), nullable=True)
-    advantage_zh = Column(String(120), nullable=True)
-    desc_zh = Column(String(255), nullable=True)
+    advantage = Column(String(120), nullable=False, comment='教师特点英文')
+    desc = Column(String(255), nullable=True, comment='教师描述英文')
+    advantage_zh = Column(String(120), nullable=True, comment='教师特点英文')
+    desc_zh = Column(String(255), nullable=True, comment='教师描述中文')
     teacher_id = Column(Integer, ForeignKey('teacher.id'),
                         nullable=False)
     subjects = db.relationship('Teacher', backref='subjects', lazy=True)
@@ -29,12 +29,12 @@ class TeacherSubject(EntityMixin, db.Model):
 
 
 class Interview(EntityMixin, db.Model):
-    start = Column(DateTime, nullable=False)
-    end = Column(DateTime, nullable=False)
-    state = Column(Integer, nullable=False)
+    start = Column(DateTime, nullable=False, comment='预计面试开始时间')
+    end = Column(DateTime, nullable=False, comment='预计面试结束时间')
+    state = Column(Integer, nullable=False, comment='面试状态，4：已预约，10，待面试')
     reason = Column(String(2000), nullable=True,
                     comment="state change to history, record change reason")
-    result = Column(String(2000), nullable=True)
+    result = Column(String(2000), nullable=True, comment='面试结果')
     interviewer_id = Column(db.Integer, db.ForeignKey('sys_user.id'),
                             nullable=False)
     interviewers = db.relationship('SysUser', backref='interviewers', lazy=True)
@@ -81,16 +81,16 @@ class TeacherState(IntFlag):
 class Teacher(UserBaseMixin, db.Model):
     state = Column(Enum(TeacherState), nullable=False,
                    server_default=TeacherState.RECRUIT.name)
-    level = Column(String(50), nullable=True)
-    nation = Column(String(50), nullable=True)
-    city = Column(String(50), nullable=True)
-    timezone = Column(Integer, nullable=True)
-    contract = Column(String(255), nullable=True)
-    cur_school = Column(String(50), nullable=True)
-    race = Column(String(120), nullable=True)
+    level = Column(String(50), nullable=True, comment='教师级别')
+    nation = Column(String(50), nullable=True, comment='国家')
+    city = Column(String(50), nullable=True, comment='城市')
+    timezone = Column(Integer, nullable=True, comment='时区')
+    contract = Column(String(255), nullable=True, comment='合同信息')
+    cur_school = Column(String(50), nullable=True, comment='当前工作学校')
+    race = Column(String(120), nullable=True, comment='')
     ancestral = Column(String(120), nullable=True,
                        comment="e.g. egyptian american")
-    contract_url = Column(String(255), nullable=True)
+    contract_url = Column(String(255), nullable=True, comment='合同下载地址')
     contract_dollar_price = Column(Float, nullable=True,
                                    comment="dollar price for this teacher")
 
