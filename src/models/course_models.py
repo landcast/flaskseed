@@ -46,7 +46,7 @@ class Course(EntityMixin, db.Model):
     course_desc = Column(String(120), nullable=True,comment='课程描述-英文')
     course_desc_zh = Column(String(120), nullable=True,comment='课程描述-中文')
     difficult_level = Column(Integer, nullable=True,comment='困难级别')
-    critical_level = Column(Integer, nullable=True,comment='')
+    critical_level = Column(Integer, nullable=True,comment='重要程度')
     course_requirements = Column(String(120), nullable=True,comment='课程要求-英文')
     course_requirements_zh = Column(String(120), nullable=True,comment='课程要求-中文')
     state = Column(Integer, nullable=False,comment='装填参考枚举值')

@@ -87,7 +87,7 @@ class Teacher(UserBaseMixin, db.Model):
     timezone = Column(Integer, nullable=True, comment='时区')
     contract = Column(String(255), nullable=True, comment='合同信息')
     cur_school = Column(String(50), nullable=True, comment='当前工作学校')
-    race = Column(String(120), nullable=True, comment='')
+    race = Column(String(120), nullable=True, comment='种族')
     ancestral = Column(String(120), nullable=True,
                        comment="e.g. egyptian american")
     contract_url = Column(String(255), nullable=True, comment='合同下载地址')

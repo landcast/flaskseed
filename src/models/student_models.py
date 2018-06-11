@@ -71,13 +71,13 @@ class StudyResult(EntityMixin, db.Model):
 
 
 class StudentAppraisal(EntityMixin, db.Model):
-    form_no = Column(Integer, primary_key=True, comment='')
-    form_submitted = Column(String(255), nullable=True, comment='')
-    provider = Column(String(255), nullable=True, comment='')
-    result = Column(String(4000), nullable=True, comment='')
-    form_submitted_zh = Column(String(255), nullable=True, comment='')
-    provider_zh = Column(String(255), nullable=True, comment='')
-    result_zh = Column(String(4000), nullable=True, comment='')
+    form_no = Column(Integer, primary_key=True, comment='表单编号')
+    form_submitted = Column(String(255), nullable=True, comment='表单提交内容-英文')
+    provider = Column(String(255), nullable=True, comment='评估机构-英文')
+    result = Column(String(4000), nullable=True, comment='评估结果-英文')
+    form_submitted_zh = Column(String(255), nullable=True, comment='表单提交内容-中文')
+    provider_zh = Column(String(255), nullable=True, comment='评估机构-中文')
+    result_zh = Column(String(4000), nullable=True, comment='评估结果-中文')
     subject_id = Column(Integer, ForeignKey('subject.id'),
                         nullable=True)
     subjects = db.relationship('Subject', backref='appraisals', lazy=True)
