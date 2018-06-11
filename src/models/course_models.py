@@ -4,15 +4,26 @@ from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum
 
 
 class Curriculum(EntityMixin, db.Model):
-    full_name = Column(String(120), nullable=False, comment='课程全名')
-    desc = Column(String(255), nullable=True, comment='课程描述')
-    prerequisite = Column(String(255), nullable=True, comment='学习本门课程先决条件')
-    language_requirement = Column(String(255), nullable=True, comment='语言条件')
+    full_name = Column(String(120), nullable=False, comment='课程全名-英文')
+    desc = Column(String(255), nullable=True, comment='课程描述-英文')
+    cover_url = Column(String(255), nullable=True, comment='封面地址')
+    prerequisite = Column(String(255), nullable=True, comment='学习本门课程先决条件-英文')
+    language_requirement = Column(String(255), nullable=True, comment='语言条件-英文')
+
+    full_name_zh = Column(String(120), nullable=False, comment='课程全名-中文')
+    desc_zh = Column(String(255), nullable=True, comment='课程描述-中文')
+    prerequisite_zh = Column(String(255), nullable=True, comment='学习本门课程先决条件-中文')
+    language_requirement_zh = Column(String(255), nullable=True, comment='语言条件-中文')
 
 
 class SubjectCategory(EntityMixin, db.Model):
-    subject_category = Column(String(120), nullable=False, comment='科目类别英文名称')
-    subject_category_zh = Column(String(120), nullable=True, comment='科目类别中文名称')
+    subject_category = Column(String(120), nullable=False, comment='科目类别英文名称-英文')
+    subject_category_zh = Column(String(120), nullable=True, comment='科目类别中文名称-中文')
+    desc = Column(String(255), nullable=True, comment='课程描述-英文')
+    desc_zh = Column(String(255), nullable=True, comment='课程描述-中文')
+    cover_url = Column(String(255), nullable=True, comment='封面地址')
+    curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
+                                 nullable=True)
 
 
 class Subject(EntityMixin, db.Model):
@@ -25,6 +36,7 @@ class Subject(EntityMixin, db.Model):
     subject_desc_zh = Column(String(120), nullable=True, comment='学科描述-中文')
     subject_open_grade_zh = Column(String(120), nullable=True, comment='学科年级-中文')
     subject_requirements_zh = Column(String(120), nullable=True, comment='学科要求-中文')
+    cover_url = Column(String(255), nullable=True, comment='封面地址')
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                            nullable=True)
     subject_of_curriculum = db.relationship('Curriculum',
