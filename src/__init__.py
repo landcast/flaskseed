@@ -195,7 +195,8 @@ def create_app(config):
         if request.is_json:
             current_app.logger.debug(
                 "\n" + request.method + ': ' + request.url + "\nreq: ------\n" +
-                str(request.json) + "\nres: ------\n" + str(response.json))
+                request.get_data().decode('utf-8') + "\nres: ------\n" +
+                response.get_data().decode('utf-8'))
         return response
 
     @app.teardown_request
