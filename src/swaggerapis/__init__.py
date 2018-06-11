@@ -43,7 +43,52 @@ class SwagAPIManager(object):
         },
         'servers': [{'url': 'http://localhost:5000/'}],
         'tags': [],
-        'paths': {},
+        'paths': {
+            '/upload': {
+                'post': {
+                    'requestBody': {
+                        'content': {
+                            'multipart/form-data': {
+                                'schema': {
+                                    'type': 'object',
+                                    'properties': {
+                                        'file': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'string',
+                                                'format': 'binary'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    'responses': {
+                        '200': {
+                            'content': {
+                                'application/json': {
+                                    'schema': {
+                                        'items': {
+                                            'upload_file': {
+                                                'type': 'string'
+                                            },
+                                            'download_file': {
+                                                'type': 'string'
+                                            }
+                                        },
+                                        'type': 'array'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "tags": [
+                        "upload_file"
+                    ]
+                }
+            }
+        },
         # global security setting enabled for all endpoints
         # 'security': {
         #     'bearerAuth': []
