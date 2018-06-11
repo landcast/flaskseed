@@ -1,7 +1,8 @@
 import logging
 import os
 from logging import FileHandler, Formatter
-from flask import Flask, current_app, abort, request, g
+from flask import Flask, current_app, abort, request, g, jsonify
+from flask_debugtoolbar import DebugToolbarExtension
 import json
 import jwt
 from src.swaggerapis import SwagAPIManager
@@ -133,6 +134,8 @@ def create_app(config):
     migrate.init_app(app, db)
     redis_store.init_app(app)
 
+    toolbar = DebugToolbarExtension()
+    toolbar.init_app(app)
     # create needed folders
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -174,7 +177,7 @@ def create_app(config):
             setattr(g, current_app.config['CUR_ID'],
                     'visitor_' + str(request.remote_addr))
             current_app.logger.debug(
-                'visitor comming ' + request.method + ': ' + request.url)
+                'visitor comming')
 
     @app.after_request
     def request_postprocess(response):
@@ -189,6 +192,10 @@ def create_app(config):
         if language:
             response.headers['Content-Langauge'] = language
             response.set_cookie('user_lang', language)
+        if request.is_json:
+            current_app.logger.debug(
+                "\n" + request.method + ': ' + request.url + "\nreq: ------\n" +
+                str(request.json) + "\nres: ------\n" + str(response.json))
         return response
 
     @app.teardown_request

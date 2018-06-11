@@ -60,6 +60,7 @@ def set_properties(project):
 
     project.depends_on('flask')
     project.depends_on('flask-restful')
+    project.depends_on('flask-debugtoolbar')
     project.depends_on('flask-restless')
     project.depends_on('flask-sqlalchemy')
     project.depends_on('flask-redis')

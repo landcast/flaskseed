@@ -144,11 +144,11 @@ class SwagAPIManager(object):
         for url_mapping in app.url_map.iter_rules():
             doc_string = app.view_functions[url_mapping.endpoint].__doc__
             if doc_string:
-                app.logger.debug('-----------------------')
-                app.logger.debug(url_mapping)
-                app.logger.debug(url_mapping.methods)
-                app.logger.debug(url_mapping.endpoint)
-                app.logger.debug(app.view_functions[url_mapping.endpoint])
+                # app.logger.debug('-----------------------')
+                # app.logger.debug(url_mapping)
+                # app.logger.debug(url_mapping.methods)
+                # app.logger.debug(url_mapping.endpoint)
+                # app.logger.debug(app.view_functions[url_mapping.endpoint])
                 index = doc_string.find('swagger-doc:')
                 if index == -1:
                     continue
