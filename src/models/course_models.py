@@ -10,7 +10,7 @@ class Curriculum(EntityMixin, db.Model):
     prerequisite = Column(String(255), nullable=True, comment='学习本门课程先决条件-英文')
     language_requirement = Column(String(255), nullable=True, comment='语言条件-英文')
 
-    full_name_zh = Column(String(120), nullable=False, comment='课程全名-中文')
+    full_name_zh = Column(String(120), nullable=True, comment='课程全名-中文')
     desc_zh = Column(String(255), nullable=True, comment='课程描述-中文')
     prerequisite_zh = Column(String(255), nullable=True, comment='学习本门课程先决条件-中文')
     language_requirement_zh = Column(String(255), nullable=True, comment='语言条件-中文')
