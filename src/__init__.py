@@ -105,9 +105,9 @@ def init_logging(app):
         os.makedirs(basedir)
     open(app.config['DEBUG_LOGPATH'], 'a').close()
     # pass config log path to handler
-    file_handler = TimedRotatingFileHandler(app.config['DEBUG_LOGPATH'],
+    file_handler = TimedRotatingFileHandler(app.config['DEBUG_LOGPATH'] + '.log',
                                             when='D', interval=1)
-    file_handler.suffix = "%Y-%m-%d"
+    file_handler.suffix = "%Y%m%d-%H%M.log"
     file_handler.setLevel(logging.DEBUG)
     format = '[%(asctime)s] %(levelname)s %(name)s [%(filename)s:%(' \
              'funcName)s:%(lineno)d]: %(message)s'

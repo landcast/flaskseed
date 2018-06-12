@@ -4,7 +4,7 @@ SECRET_KEY = '123'
 
 DEBUG = True
 
-DEBUG_LOGPATH = '/var/log/flaskseed-debug.log'
+DEBUG_LOGPATH = '/var/log/flaskseed-debug'
 
 PID_FILE = 'flaskseed'
 
