@@ -19,17 +19,7 @@ from src.service import mail, redis_store
 
 from src.dbmigrate import migrate
 from sqlalchemy.sql.expression import *
-
-
-def setup_api(manager):
-    for k, v in globals().items():
-        if inspect.isclass(v) and issubclass(v, EntityMixin) \
-                and hasattr(v, '__tablename__'):
-            # print(getattr(v, '__tablename__'))
-            manager.create_api(v, url_prefix='/api/v1',
-                               methods=['GET', 'DELETE', 'PUT', 'POST'],
-                               allow_patch_many=True,
-                               primary_key='id')
+from sqlalchemy.orm.properties import ColumnProperty
 
 
 def guess_language_from_request(request):
@@ -150,7 +140,7 @@ def create_app(config):
     app.register_blueprint(admin, url_prefix='/admin')
 
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
-    setup_api(manager)
+    app.manager = manager
 
     @app.before_request
     def request_preprocess():
@@ -206,5 +196,29 @@ def create_app(config):
     def request_teardown(exc=None):
         if exc:
             app.log_exception(repr(exc))
+
+    @app.before_first_request
+    def setup_api():
+        for k, v in globals().items():
+            if not (inspect.isclass(v) and issubclass(v, EntityMixin) \
+                    and hasattr(v, '__tablename__')):
+                continue
+            # create endpoint for CRUD and with cascading support for GET
+            current_app.manager.create_api(v, url_prefix='/api/v1',
+                               methods=['GET', 'DELETE', 'PUT', 'POST'],
+                               allow_patch_many=True,
+                               primary_key='id')
+            # create bare endpoint for GET without cascading query to improve
+            # performance by exclude relation columns
+            include_columns = []
+            for x in dir(v):
+                if (not x.startswith('_')) and isinstance(
+                        getattr(getattr(v, x), 'property', None),
+                        ColumnProperty):
+                    include_columns.append(x)
+            current_app.manager.create_api(v, url_prefix='/api/v1/_bare',
+                               methods=['GET'],
+                               include_columns=include_columns,
+                               primary_key='id')
 
     return app
