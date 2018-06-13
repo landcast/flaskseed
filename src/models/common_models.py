@@ -89,6 +89,6 @@ class UserBaseMixin(EntityMixin):
     location_lat = Column(Float, nullable=True, comment='latitude value of GPS')
     social_token = Column(String(255), nullable=True, comment='oauth token')
     im_token = Column(String(255), nullable=True,
-                      comment='im saas service token')
+                      comment='im saas services token')
     class_token = Column(String(255), nullable=True,
-                         comment='class-room service user token')
+                         comment='class-room services user token')

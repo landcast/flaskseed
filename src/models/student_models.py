@@ -154,14 +154,14 @@ class Student(UserBaseMixin, db.Model):
     consultant_id = Column(Integer, ForeignKey('sys_user.id'),
                            nullable=True,
                            comment='sales person provide consultant'
-                                   ' service or other customer '
-                                   'service')
+                                   ' services or other customer '
+                                   'services')
     consultants = db.relationship('SysUser',
                                   backref='sales_customers',
                                   lazy=True, foreign_keys=consultant_id)
     student_helper_id = Column(Integer, ForeignKey('sys_user.id'),
                                nullable=True,
-                               comment='customer service providers')
+                               comment='customer services providers')
     student_helpers = db.relationship('SysUser',
                                       backref='student_helpers',
                                       lazy=True,

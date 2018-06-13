@@ -9,7 +9,7 @@ import random
 import requests
 
 from src.models import db, session_scope, user_source, SmsLog
-from src.service import send_email, redis_store
+from src.services import send_email, redis_store
 
 BEARER_TOKEN = ' Bearer '
 

@@ -9,8 +9,8 @@ import random
 import requests
 
 from src.models import db, session_scope, user_source, SmsLog
-from src.service import send_email, redis_store
-from src.service import live_service
+from src.services import send_email, redis_store
+from src.services import live_service
 
 live = Blueprint('live', __name__)
 
@@ -38,7 +38,7 @@ def create_room():
         description: 'room title displayed'
         type: 'string'
       length:
-        description: 'lecture room service time duration in minutes, default=60'
+        description: 'lecture room services time duration in minutes, default=60'
         type: 'integer'
       room_type:
         description: 'ONE_VS_ONE, ONE_VS_MANY, PRIVATE_CLASS, PUBLIC_CLASS,
@@ -91,7 +91,7 @@ def edit_room():
         description: 'room title displayed'
         type: 'string'
       length:
-        description: 'lecture room service time duration in minutes, default=60'
+        description: 'lecture room services time duration in minutes, default=60'
         type: 'integer'
       room_id:
         description: 'room id returned after creation'

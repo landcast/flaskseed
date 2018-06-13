@@ -15,7 +15,7 @@ from src.blueprints.live import live
 from src.blueprints.upload import upload
 from src.resources.api import api, admin
 from src.models import *
-from src.service import mail, redis_store
+from src.services import mail, redis_store
 
 from src.dbmigrate import migrate
 from sqlalchemy.sql.expression import *

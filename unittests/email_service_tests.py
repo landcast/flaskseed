@@ -9,7 +9,7 @@ from datetime import datetime
 
 sys.path.append(".")
 from unittests.test_base import TestBase, random_username
-from src.service.email_service import create_email_attachment, send_email
+from src.services.email_service import create_email_attachment, send_email
 
 
 class EmailServiceTest(TestBase):

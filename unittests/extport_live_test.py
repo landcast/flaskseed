@@ -7,7 +7,7 @@ import sys
 
 sys.path.append(".")
 from unittests.test_base import TestBase
-from src.service.live_service import create_room, edit_room, delete_room, \
+from src.services.live_service import create_room, edit_room, delete_room, \
     enter_room, upload_doc, attach_doc, preview_doc, remove_doc
 from src.models import db, session_scope, CourseSchedule
 
@@ -16,7 +16,7 @@ class DuobeiLiveTest(TestBase):
 
     def test_duobei_live(self):
         '''
-        Test for service.live_service.create_room
+        Test for services.live_service
         '''
         url = 'http://docs-aliyun.cn-hangzhou.oss.aliyun-inc.com/pdf/' \
               'dds-product-introduction-intl-zh-2018-03-30.pdf'

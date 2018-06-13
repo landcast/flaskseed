@@ -17,7 +17,7 @@ def create_room(username, course_schedule_id, title, length=60,
     :param username: user account name
     :param course_schedule_id: course schedule id
     :param title: room title displayed
-    :param length: lecture room service time duration
+    :param length: lecture room services time duration
     :param room_type: 1: 1V1, 2:1VMany, 3:Public-lecture
     :param start_time: room available time
     :param user_type: preserved for future use
@@ -71,7 +71,7 @@ def edit_room(username, room_id, title=None, length=None,
     :param username: user account name
     :param room_id: room id returned by provider after doing room creation
     :param title: room title displayed
-    :param length: lecture room service time duration
+    :param length: lecture room services time duration
     :param start_time: room available time
     :param user_type: preserved for future use
     :param lang: user preferred lang

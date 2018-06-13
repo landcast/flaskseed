@@ -1,10 +1,10 @@
 import json
 import os
 import sys
-import socket
+
 import unittest
 from datetime import datetime, timedelta
-from src.service import redis_store
+from src.services import redis_store
 from src.models import db, session_scope, SysControl, Curriculum, Subject, \
     SubjectCategory, Course, CourseSchedule, CourseClassroom, Courseware, \
     Teacher
