@@ -47,10 +47,7 @@ def login():
         if check_password_hash(getattr(user, 'password', ''), password):
             token = generate_jwt_token(current_app.config['JWT_HEADER'],
                                        user_name)
-            print('token----'+token)
-            value = json.loads(json.dumps(token))
-            print('value-----'+value)
-            return jsonify({'Authorization':value["Authorization"],'id': getattr(user, 'id')});
+            return jsonify({'Authorization': json.loads(token)['Authorization'],'id': getattr(user, 'id')});
         else:
             return jsonify({'message': 'password check failed!'}), 401
     else:
