@@ -48,7 +48,7 @@ def login():
             token = generate_jwt_token(current_app.config['JWT_HEADER'],
                                        user_name)
             #return jsonify(token)
-            return jsonify({'Authorization:'+token+",id:"+ getattr(user, 'id')})
+            return jsonify({"id:"+ getattr(user, 'id')})
         else:
             return jsonify({'message': 'password check failed!'}), 401
     else:
