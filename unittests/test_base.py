@@ -66,24 +66,24 @@ class TestBase(unittest.TestCase):
                 # one process only run once
                 return
 
-            c_ap = Curriculum(full_name='AP', updated_by=str(pid))
+            c_ap = Curriculum(full_name='AP', updated_by=str(pid), state=98)
             session.add(c_ap)
-            c_ib = Curriculum(full_name='IB', updated_by=str(pid))
+            c_ib = Curriculum(full_name='IB', updated_by=str(pid), state=98)
             session.add(c_ib)
             session.flush()
             self.logger.debug(c_ap)
             self.logger.debug(c_ib)
             sc = SubjectCategory(subject_category='history',
-                                 updated_by=str(pid))
+                                 updated_by=str(pid), state=98)
             session.add(sc)
             session.flush()
             self.logger.debug(sc)
             s_ap_history = Subject(subject_name='AP_history_grade_9',
-                    curriculum_id=c_ap.id,
+                    curriculum_id=c_ap.id, state=98,
                     subject_category_id=sc.id, updated_by=str(pid))
             session.add(s_ap_history)
             s_ib_history = Subject(subject_name='IB_history_grade_9',
-                                   curriculum_id=c_ib.id,
+                                   curriculum_id=c_ib.id, state=98,
                                    subject_category_id=sc.id,
                                    updated_by=str(pid))
             session.add(s_ib_history)
@@ -96,15 +96,17 @@ class TestBase(unittest.TestCase):
                     Teacher.username == teacher_name).one_or_none()
             self.logger.debug(t)
             cs_ap_history = Course(course_name='T1_AP_history_grade_9',
-                                   course_type=1,
-                                   state=1, price=900000,
+                                   course_type=1, project_type=1,
+                                   class_type=1, classes_number=80,
+                                   state=98, price=900000,
                                    primary_teacher_id=t.id,
                                    subject_id=s_ap_history.id,
                                    updated_by=str(pid))
             session.add(cs_ap_history)
             cs_ib_history = Course(course_name='T1_IB_history_grade_9',
-                                   course_type=2,
-                                   state=1, price=800000,
+                                   course_type=2, project_type=1,
+                                   class_type=1, classes_number=60,
+                                   state=98, price=800000,
                                    primary_teacher_id=t.id,
                                    subject_id=s_ib_history.id,
                                    updated_by=str(pid))
@@ -113,12 +115,12 @@ class TestBase(unittest.TestCase):
             self.logger.debug(cs_ap_history)
             self.logger.debug(cs_ib_history)
             cs_s_ap = CourseSchedule(start=datetime.now(), end=(
-                    datetime.now() + timedelta(days=90)), state=1,
+                    datetime.now() + timedelta(days=90)), state=98,
                                      course_id=cs_ap_history.id,
                                      updated_by=str(pid))
             session.add(cs_s_ap)
             cs_s_ib = CourseSchedule(start=datetime.now(), end=(
-                    datetime.now() + timedelta(days=90)), state=1,
+                    datetime.now() + timedelta(days=90)), state=98,
                                      course_id=cs_ib_history.id,
                                      updated_by=str(pid))
             session.add(cs_s_ib)

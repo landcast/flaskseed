@@ -47,8 +47,7 @@ def login():
         if check_password_hash(getattr(user, 'password', ''), password):
             token = generate_jwt_token(current_app.config['JWT_HEADER'],
                                        user_name)
-          #  return jsonify({'Authorization': json.loads(token)['Authorization'],'id': getattr(user, 'id')});
-            return jsonify(token);
+            return jsonify({**token, **{'id': getattr(user, 'id')}})
         else:
             return jsonify({'message': 'password check failed!'}), 401
     else:
@@ -151,8 +150,8 @@ def register():
         current_app.logger.debug('encrypted password:' + user.password)
         result = session.add(user)
         current_app.logger.debug(result)
-
     token = generate_jwt_token(current_app.config['JWT_HEADER'], user.username)
+    token.update({'id': getattr(user, 'id')})
     return jsonify(token)
 
 
