@@ -56,7 +56,7 @@ class Course(EntityMixin, db.Model):
     course_name = Column(String(120), nullable=False,comment='课程名称-英文')
     course_name_zh = Column(String(120), nullable=True,comment='课程名称-中文')
     course_type = Column(Integer, nullable=False,
-                         comment='全部：1，在线：2，公家：3')
+                         comment='全部：1，在线：2，公开：3')
     class_type = Column(Integer, nullable=False,
                          comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
     project_type = Column(Integer, nullable=False,
