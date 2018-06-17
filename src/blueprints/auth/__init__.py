@@ -49,7 +49,7 @@ def login():
                                        user_name)
             #return jsonify(token)
             #return jsonify({"id:"+ getattr(user, 'id')})
-            return jsonify({'Authorization':token,'id': getattr(user, 'id')});
+            return jsonify({token+'id': getattr(user, 'id')});
         else:
             return jsonify({'message': 'password check failed!'}), 401
     else:
