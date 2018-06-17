@@ -56,7 +56,12 @@ class Course(EntityMixin, db.Model):
     course_name = Column(String(120), nullable=False,comment='课程名称-英文')
     course_name_zh = Column(String(120), nullable=True,comment='课程名称-中文')
     course_type = Column(Integer, nullable=False,
+                         comment='全部：1，在线：2，公家：3')
+    class_type = Column(Integer, nullable=False,
                          comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
+    project_type = Column(Integer, nullable=False,
+                        comment='全部：1，美高：2，学分：3，ap：4，其他：5')
+    classes_number = Column(Integer, nullable=False,comment='课节数')
     open_grade = Column(String(120), nullable=True,comment='开设年级')
     course_desc = Column(String(120), nullable=True,comment='课程描述-英文')
     course_desc_zh = Column(String(120), nullable=True,comment='课程描述-中文')
@@ -64,7 +69,7 @@ class Course(EntityMixin, db.Model):
     critical_level = Column(Integer, nullable=True,comment='重要程度')
     course_requirements = Column(String(120), nullable=True,comment='课程要求-英文')
     course_requirements_zh = Column(String(120), nullable=True,comment='课程要求-中文')
-    state = Column(Integer, nullable=False,comment='装填参考枚举值')
+    state = Column(Integer, nullable=False,comment='有效：98，无效：99')
     price = Column(Integer, nullable=False,comment='金额')
     primary_teacher_id = Column(Integer, ForeignKey('teacher.id'),
                                 nullable=False)
