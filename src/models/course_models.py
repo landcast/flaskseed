@@ -14,6 +14,7 @@ class Curriculum(EntityMixin, db.Model):
     desc_zh = Column(String(255), nullable=True, comment='课程描述-中文')
     prerequisite_zh = Column(String(255), nullable=True, comment='学习本门课程先决条件-中文')
     language_requirement_zh = Column(String(255), nullable=True, comment='语言条件-中文')
+    state = Column(Integer, nullable=False, comment='有效：98，无效：99')
 
 
 class SubjectCategory(EntityMixin, db.Model):
@@ -22,6 +23,7 @@ class SubjectCategory(EntityMixin, db.Model):
     desc = Column(String(255), nullable=True, comment='课程描述-英文')
     desc_zh = Column(String(255), nullable=True, comment='课程描述-中文')
     cover_url = Column(String(255), nullable=True, comment='封面地址')
+    state = Column(Integer, nullable=False, comment='有效：98，无效：99')
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                                  nullable=True)
 
@@ -37,6 +39,7 @@ class Subject(EntityMixin, db.Model):
     subject_open_grade_zh = Column(String(120), nullable=True, comment='学科年级-中文')
     subject_requirements_zh = Column(String(120), nullable=True, comment='学科要求-中文')
     cover_url = Column(String(255), nullable=True, comment='封面地址')
+    state = Column(Integer, nullable=False, comment='有效：98，无效：99')
     curriculum_id = Column(Integer, ForeignKey('curriculum.id'),
                            nullable=True)
     subject_of_curriculum = db.relationship('Curriculum',
