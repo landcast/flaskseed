@@ -24,6 +24,8 @@ class StudySchedule(EntityMixin, db.Model):
     result = Column(String(255), nullable=True, comment='结果反馈')
     homework = Column(String(255), nullable=True, comment='作业')
     test = Column(String(255), nullable=True, comment='课后测试')
+    class_score = Column(Float, nullable=True, comment='课程评分')
+    teacher_score = Column(Float, nullable=True, comment='教师评分')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
     order_studys = db.relationship('Order', backref='order_studys', lazy=True)
