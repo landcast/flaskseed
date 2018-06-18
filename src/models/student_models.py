@@ -153,6 +153,7 @@ class Student(UserBaseMixin, db.Model):
     parent_mobile = Column(String(20), nullable=True, comment='')
     parent_email = Column(String(60), nullable=True, comment='')
     parent_role = Column(String(20), nullable=True, comment='')
+    birth = Column(DateTime, nullable=False, comment='生日')
     consultant_id = Column(Integer, ForeignKey('sys_user.id'),
                            nullable=True,
                            comment='sales person provide consultant'
