@@ -152,7 +152,8 @@ def register():
         current_app.logger.debug(result)
     token = generate_jwt_token(current_app.config['JWT_HEADER'], user.username)
     token.update({'id': getattr(user, 'id')})
-    return jsonify(token)
+    #return jsonify(token)
+    return jsonify({**token, **{'id': getattr(user, 'id')}})
 
 
 @auth.route('/smsverify', methods=['POST'])

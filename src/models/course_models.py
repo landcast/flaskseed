@@ -69,8 +69,8 @@ class Course(EntityMixin, db.Model):
                          comment='全部：1，在线：2，公开：3')
     class_type = Column(Integer, nullable=False,
                         comment='enum, e.g. 1 v 1, 1 v 4, 1 v n')
-    project_type = Column(Integer, nullable=False,
-                          comment='全部：1，美高：2，学分：3，ap：4，其他：5')
+#    project_type = Column(Integer, nullable=False,
+#                          comment='全部：1，美高：2，学分：3，ap：4，其他：5')
     classes_number = Column(Integer, nullable=False, comment='课节数')
     open_grade = Column(String(120), nullable=True, comment='开设年级')
     course_desc = Column(String(120), nullable=True, comment='课程描述-英文')
