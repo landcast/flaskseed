@@ -126,17 +126,17 @@ def acl_control(request, response):
             return
     else:
         return
-    result = response.get_data().decode('utf-8')
     parsed = urllib.parse.urlparse(request.url)
     path_atoms = parsed.path.split('/')
     if path_atoms[0] != 'api':
         return
-    o_type = path_atoms[-1]
+    o_type = path_atoms[2]
     user_id = getattr(g, current_app.config['CUR_ID'])
     if request.method.lower() == 'get':
+        result = response.get_data().decode('utf-8')
+        res_dict = json.loads(result)
         # check acl for student and teacher, if not obey, return 401
         try:
-            res_dict = json.loads(result)
             if res_dict['objects']:
                 for o in res_dict['objects']:
                     if not o['id']:
@@ -152,19 +152,18 @@ def acl_control(request, response):
         else:
             pass
     elif request.method.lower() == 'post':
+        result = response.get_data().decode('utf-8')
         res_dict = json.loads(result)
         redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
             res_dict['id'])
         value = hashlib.md5(str(res_dict).encode('utf-8')).hexdigest()
         redis_store.set(redis_key, value)
     elif request.method.lower() == 'put':
-        # TODO check for object in request belong to user in jwt auth header
-        # add acl record to redis
-        res_dict = json.loads(result)
-        redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
-            res_dict['id'])
-        value = hashlib.md5(str(res_dict).encode('utf-8')).hexdigest()
-        redis_store.set(redis_key, value)
+        # check for object in request path var belong to user in jwt auth header
+        redis_key = 'ACL:' + user_id + ':' + o_type + ':' + path_atoms[3]
+        acl = redis_store.get(redis_key)
+        if not acl:
+            abort(401, redis_key + ' not in redis acl')
     else:
         pass
 
