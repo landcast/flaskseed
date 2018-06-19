@@ -96,7 +96,7 @@ class TestBase(unittest.TestCase):
                     Teacher.username == teacher_name).one_or_none()
             self.logger.debug(t)
             cs_ap_history = Course(course_name='T1_AP_history_grade_9',
-                                   course_type=1, project_type=1,
+                                   course_type=1,
                                    class_type=1, classes_number=80,
                                    state=98, price=900000,
                                    primary_teacher_id=t.id,
@@ -104,7 +104,7 @@ class TestBase(unittest.TestCase):
                                    updated_by=str(pid))
             session.add(cs_ap_history)
             cs_ib_history = Course(course_name='T1_IB_history_grade_9',
-                                   course_type=2, project_type=1,
+                                   course_type=2,
                                    class_type=1, classes_number=60,
                                    state=98, price=800000,
                                    primary_teacher_id=t.id,

@@ -128,7 +128,10 @@ def acl_control(request, response):
         return
     result = response.get_data().decode('utf-8')
     parsed = urllib.parse.urlparse(request.url)
-    o_type = parsed.path.split('/')[-1]
+    path_atoms = parsed.path.split('/')
+    if path_atoms[0] != 'api':
+        return
+    o_type = path_atoms[-1]
     user_id = getattr(g, current_app.config['CUR_ID'])
     if request.method.lower() == 'get':
         # check acl for student and teacher, if not obey, return 401
