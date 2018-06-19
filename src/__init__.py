@@ -13,6 +13,7 @@ import inspect
 from src.blueprints.auth import auth, BEARER_TOKEN
 from src.blueprints.live import live
 from src.blueprints.upload import upload
+from src.blueprints.order import order
 from src.resources.api import api, admin
 from src.models import *
 from src.services import mail, redis_store
@@ -46,10 +47,14 @@ def auth_check_needed(request):
     if str(request.method).upper() in ['OPTIONS', 'HEAD']:
         return False
     path = request.path
-    visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
-                     '/auth/*', '/upload', '/download/*', '/admin/*',
-                     '/api/*', '/swagger.json',
-                     '/static/*', '/swagger_ui/*', '/swagger']
+    if current_app.debug:
+        visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
+                         '/auth/*', '/upload', '/download/*', '/admin/*',
+                         '/order/*', '/api/*', '/swagger.json',
+                         '/static/*', '/swagger_ui/*', '/swagger']
+    else:
+        visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
+                         '/auth/*', '/upload', '/download/*', '/static/*']
     for allow in visitor_allow:
         if fnmatchcase(path, allow):
             return False
@@ -84,11 +89,11 @@ def user_load(username):
             for key in user_source:
                 table_check = user_source[key]
                 rs = session.query(table_check).filter(
-                    and_(table_check.username == username,
-                         table_check.state != 99)).all()
+                        and_(table_check.username == username,
+                             table_check.state != 99)).all()
                 if len(rs) > 0:
                     current_app.logger.debug(
-                        username + ' set into redis cache')
+                            username + ' set into redis cache')
                     dict = row_dict(rs[0])
                     dict['user_type'] = key
                     setattr(g, current_app.config['CUR_USER'], dict)
@@ -105,7 +110,7 @@ def init_logging(app):
     open(app.config['DEBUG_LOGPATH'] + '.log', 'a').close()
     # pass config log path to handler
     file_handler = RotatingFileHandler(
-        app.config['DEBUG_LOGPATH'] + '.log', maxBytes=1024 * 1024 * 8)
+            app.config['DEBUG_LOGPATH'] + '.log', maxBytes=1024 * 1024 * 8)
     # file_handler.suffix = "%Y%m%d.log"
     file_handler.setLevel(logging.DEBUG)
     format = '[%(asctime)s] %(levelname)s %(name)s [%(filename)s:%(' \
@@ -119,7 +124,6 @@ def init_logging(app):
 
 
 def acl_control(request, response):
-    current_app.logger.debug('acl_control: setup redis, filter get response')
     if hasattr(g, current_app.config['CUR_USER']):
         user = getattr(g, current_app.config['CUR_USER'])
         if user['user_type'] not in ['Student', 'Teacher']:
@@ -132,6 +136,7 @@ def acl_control(request, response):
         return
     o_type = path_atoms[2]
     user_id = getattr(g, current_app.config['CUR_ID'])
+    current_app.logger.debug('acl_control: setup redis, check data access')
     if request.method.lower() == 'get':
         result = response.get_data().decode('utf-8')
         res_dict = json.loads(result)
@@ -142,7 +147,7 @@ def acl_control(request, response):
                     if not o['id']:
                         continue
                     redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
-                        o['id'])
+                            o['id'])
                     acl = redis_store.get(redis_key)
                     if not acl:
                         abort(401, redis_key + ' not in redis acl')
@@ -155,7 +160,7 @@ def acl_control(request, response):
         result = response.get_data().decode('utf-8')
         res_dict = json.loads(result)
         redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
-            res_dict['id'])
+                res_dict['id'])
         value = hashlib.md5(str(res_dict).encode('utf-8')).hexdigest()
         redis_store.set(redis_key, value)
     elif request.method.lower() == 'put':
@@ -195,6 +200,7 @@ def create_app(config):
     app.register_blueprint(upload)
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(live, url_prefix='/live')
+    app.register_blueprint(order, url_prefix='/order')
     # register restful endpoints
     app.register_blueprint(admin, url_prefix='/admin')
 
@@ -211,6 +217,7 @@ def create_app(config):
             setattr(g, 'lang', language)
             current_app.logger.debug('set lang with ' + language)
         # jwt authentication check
+        acl_control(request, None)
         if auth_check_needed(request):
             payload = jwt_check(request)
             if payload:
@@ -238,7 +245,7 @@ def create_app(config):
                 setattr(g, current_app.config['CUR_ID'],
                         'visitor_' + str(request.remote_addr))
                 current_app.logger.debug(
-                    'visitor comming')
+                        'visitor comming')
 
     @app.after_request
     def request_postprocess(response):
@@ -253,11 +260,12 @@ def create_app(config):
         if language:
             response.headers['Content-Langauge'] = language
             response.set_cookie('user_lang', language)
-        if response.is_json:
+        if response.is_json and current_app.debug:
             current_app.logger.debug(
-                "\n" + request.method + ': ' + request.url + "\nreq: ------\n" +
-                request.get_data().decode('utf-8') + "\nres: ------\n" +
-                response.get_data().decode('utf-8'))
+                    "\n" + request.method + ': ' + request.url + "\nreq: "
+                                                                 "------\n" +
+                    request.get_data().decode('utf-8') + "\nres: ------\n" +
+                    response.get_data().decode('utf-8'))
             acl_control(request, response)
         return response
 

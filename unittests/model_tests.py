@@ -50,7 +50,7 @@ class ModelTest(TestBase):
             r3 = session.execute(sql1, {'x': 'test%'})
             for index, row in enumerate(r3.fetchall()):
                 self.app.logger.debug('row ' + str(index) + ' = ' + str(row))
-            session.query(Notification).delete()
+            # session.query(Notification).delete()
 
     def test_common(self):
         self.sql_check()
