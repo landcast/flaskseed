@@ -77,7 +77,7 @@ def user_load(username):
     if redis_store.exists(username):
         current_app.logger.debug(username + ' already in redis cache')
         setattr(g, current_app.config['CUR_USER'],
-                redis_store.get('UP:' + username))
+                json.loads(redis_store.get('UP:' + username).decode('utf8')))
         return True
     else:
         with session_scope(db) as session:
