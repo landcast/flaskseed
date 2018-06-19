@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from src.services import redis_store
 from src.models import db, session_scope, SysControl, Curriculum, Subject, \
     SubjectCategory, Course, CourseSchedule, CourseClassroom, Courseware, \
-    Teacher
+    Teacher, Student, Channel, Order
 
 
 def random_username():
@@ -16,19 +16,23 @@ def random_username():
 
 class TestBase(unittest.TestCase):
     def setUp(self):
-        if not hasattr(self, 'app'):
-            upper_path = os.path.abspath('.')
-            sys.path.append(upper_path)
-            from src import create_app
-            from config import settings
-            app = create_app(settings)
-            self.client = app.test_client()
-            self.app = app
-            self.logger = app.logger
-            self.config = app.config
-            self.app_context = self.app.app_context()
-            self.app_context.push()
-            self.data_prepare()
+        upper_path = os.path.abspath('.')
+        sys.path.append(upper_path)
+        from src import create_app
+        from config import settings
+        app = create_app(settings)
+        self.client = app.test_client()
+        self.app = app
+        self.logger = app.logger
+        self.config = app.config
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.test_student = random_username()
+        self.auth_header = json.loads(
+                self.register(self.test_student, 'Student').get_data(
+                        as_text=True))
+        self.token = self.auth_header[self.config['JWT_HEADER']]
+        self.data_prepare()
 
     def tearDown(self):
         self.app_context.pop()
@@ -79,8 +83,9 @@ class TestBase(unittest.TestCase):
             session.flush()
             self.logger.debug(sc)
             s_ap_history = Subject(subject_name='AP_history_grade_9',
-                    curriculum_id=c_ap.id, state=98,
-                    subject_category_id=sc.id, updated_by=str(pid))
+                                   curriculum_id=c_ap.id, state=98,
+                                   subject_category_id=sc.id,
+                                   updated_by=str(pid))
             session.add(s_ap_history)
             s_ib_history = Subject(subject_name='IB_history_grade_9',
                                    curriculum_id=c_ib.id, state=98,

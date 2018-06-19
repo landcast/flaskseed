@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime
 
 sys.path.append(".")
-from unittests.test_base import TestBase, random_username
+from unittests.test_base import TestBase
 from src.services.email_service import create_email_attachment, send_email
 
 
@@ -22,11 +22,6 @@ class EmailServiceTest(TestBase):
 
     def setUp(self):
         super().setUp()
-        test_user = random_username()
-        self.auth_header = json.loads(
-            super().register(test_user, 'Student').get_data(as_text=True))
-        self.token = self.auth_header[self.config['JWT_HEADER']]
-        self.app.logger.debug("jwt:" + self.token)
         os.system("echo '中文内容' | cat > ./中文文件.txt")
 
     def tearDown(self):

@@ -41,10 +41,10 @@ def query():
         description: 'updated by'
         type: 'string'
       created_at_start:
-        description: 'created_at start'
+        description: 'created_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       created_at_end:
-        description: 'created_at end'
+        description: 'created_at end in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       order_type:
         description: 'order type'
@@ -105,6 +105,12 @@ def query():
 
 def generate_sql(params):
     '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
     select o.id, c.course_name, c.classes_number, o.order_type, o.state,
         o.updated_by, o.created_at, t.nickname, s.nickname, o.amount
     from `order` o, student s, teacher t, course c, subject su,
@@ -112,11 +118,26 @@ def generate_sql(params):
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.subject_id = su.id and
         su.curriculum_id = cr.id and su.subject_category_id = sc.id
-    :param params:
-    :return:
-    '''
-    current_app.logger.debug(params['start'] + ', ' + params['end'])
-    sql = 'select id, notice, updated_at from notification ' \
-          'where updated_at between :start and :end order by updated_at ' \
-          'desc'
-    return ['seq', 'desc', 'operation_time'], sql
+    ''']
+    if hasattr(params, 'course_id'):
+        sql.append[' and c.course_id = :course_id']
+    if hasattr(params, 'course_name'):
+        sql.append[' and c.course_name = :course_name']
+    if hasattr(params, 'order_type'):
+        sql.append[' and o.order_type = :order_type']
+    if hasattr(params, 'order_state'):
+        sql.append[' and o.order_state = :order_state']
+    if hasattr(params, 'updated_by'):
+        sql.append[' and o.updated_by = :updated_by']
+    if hasattr(params, 'created_at'):
+        sql.append[
+            ' and o.created_at between :created_at_start and :created_at_end']
+    if hasattr(params, 'category_1'):
+        sql.append[' and cr.full_name like :category_1']
+    if hasattr(params, 'category_2'):
+        sql.append[' and sc.subject_category like :category_2']
+    if hasattr(params, 'category_3'):
+        sql.append[' and su.subject_name like :category_3']
+    return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
+            'updated_by', 'created_at', 'teacher_name', 'student_name',
+            'order_amount'], ''.join(sql)

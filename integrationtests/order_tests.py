@@ -16,10 +16,9 @@ class OrderCurlTest(TestBase):
     def test_register(self):
         url = f'{server_location}/order/main_query'
         json_data = "'" + json.dumps({
-            "page_no": 0,
+            "page_no": 1,
             "page_limit": 10,
-            "start": "2018-06-18 23:00:00.000",
-            "end": "2018-06-19 23:00:00.000"
+            "updated_by": "landcast"
         }) + "'"
         cmd = f'''
             curl -sS -i -H {json_header} -X POST --data {json_data} {url}

@@ -7,6 +7,8 @@ import unittest
 
 from config import settings
 from datetime import datetime
+import unittests.test_base
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -17,7 +19,7 @@ def random_username():
     return 'u_' + str(datetime.now().timestamp())
 
 
-class TestBase(unittest.TestCase):
+class TestBase(unittests.test_base.TestBase):
 
     def server_check(self):
         pid_file_path = "./" + settings.PID_FILE + ".pid"
@@ -46,6 +48,7 @@ class TestBase(unittest.TestCase):
             logger.debug('step 21 ' + str(datetime.now()))
 
     def setUp(self):
+        super().setUp()
         self.server_check()
 
     def tearDown(self):

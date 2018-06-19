@@ -16,14 +16,6 @@ class RestLessTest(TestBase):
     channel_name = None
     channel_id = 0
     enrollment_id = 0
-    test_user = random_username()
-
-    def setUp(self):
-        super().setUp()
-        self.auth_header = json.loads(
-            super().register(self.test_user, 'Student').get_data(as_text=True))
-        self.token = self.auth_header[self.config['JWT_HEADER']]
-        self.app.logger.debug("jwt:" + self.token)
 
     def get_student(self):
         end = (datetime.now() + timedelta(seconds=30)).isoformat()[:-3] + 'Z'
@@ -32,7 +24,7 @@ class RestLessTest(TestBase):
             "filters": [
                 {"name": "created_at", "op": "<=", "val": end},
                 {"name": "created_at", "op": ">=", "val": start},
-                {"name": "updated_by", "op": "==", "val": self.test_user}
+                {"name": "updated_by", "op": "==", "val": self.test_student}
             ]
         }),
                             content_type='application/json',
@@ -65,7 +57,7 @@ class RestLessTest(TestBase):
             ],
             "channel_name": self.channel_name,
             "channel_orders": [],
-            "updated_by": self.test_user
+            "updated_by": self.test_student
         }), content_type='application/json',
                              headers={self.config['JWT_HEADER']: self.token})
         self.app.logger.debug("post status = " + str(r.status_code))
@@ -103,7 +95,7 @@ class RestLessTest(TestBase):
                             data=json.dumps({
                                 "channel_desc": "calling put, change desc and "
                                                 "add new enrollment",
-                                "updated_by": self.test_user,
+                                "updated_by": self.test_student,
                                 "channel_enrollments": [
                                     {
                                         "created_at":

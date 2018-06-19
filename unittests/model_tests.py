@@ -7,7 +7,6 @@ import sys
 sys.path.append(".")
 from unittests.test_base import TestBase, random_username
 from src.models import db, session_scope, Student, Notification
-from src.models.common_models import row_dict
 
 
 class ModelTest(TestBase):
