@@ -7,6 +7,7 @@ import sys
 sys.path.append(".")
 from unittests.test_base import TestBase, random_username
 from src.models import db, session_scope, Student, Notification
+from src.models.common_models import row_dict
 
 
 class ModelTest(TestBase):
@@ -33,8 +34,27 @@ class ModelTest(TestBase):
             r5 = session.query(Notification).one_or_none()
             self.app.logger.debug('r5=' + str(r5))
 
+    def sql_query(self):
+        with session_scope(db) as session:
+            session.add_all([Notification(notice='test-1'),
+                             Notification(notice='test-2',
+                                          updated_by='rawsql')])
+            session.flush()
+            sql1 = "select id, notice, updated_at, updated_by " \
+                   "from notification where notice like :x"
+            r2 = session.execute(sql1, {'x': 'test-2'})
+            row = r2.first()
+            self.app.logger.debug('row=' + str(row))
+            self.assertEqual(row['updated_by'], 'rawsql',
+                             'check updated_at=rawsql')
+            r3 = session.execute(sql1, {'x': 'test%'})
+            for index, row in enumerate(r3.fetchall()):
+                self.app.logger.debug('row ' + str(index) + ' = ' + str(row))
+            session.query(Notification).delete()
+
     def test_common(self):
         self.sql_check()
+        self.sql_query()
 
 
 if __name__ == '__main__':
