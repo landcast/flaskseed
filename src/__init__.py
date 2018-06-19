@@ -1,8 +1,10 @@
+from datetime import datetime
 import logging
 import os
 from logging import Formatter
 from logging.handlers import TimedRotatingFileHandler, RotatingFileHandler
 from flask import Flask, current_app, abort, request, g, jsonify
+from flask.json import JSONEncoder
 from flask_debugtoolbar import DebugToolbarExtension
 import json
 import jwt
@@ -173,6 +175,19 @@ def acl_control(request, response):
         pass
 
 
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        try:
+            if isinstance(obj, datetime):
+                return obj.isoformat() + '.000Z'
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        return JSONEncoder.default(self, obj)
+
+
 def create_app(config):
     app = Flask(__name__)
     # app loading config
@@ -206,6 +221,7 @@ def create_app(config):
 
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     app.manager = manager
+    app.json_encoder = CustomJSONEncoder
 
     @app.before_request
     def request_preprocess():
