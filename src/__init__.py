@@ -20,6 +20,8 @@ from src.services import mail, redis_store
 from src.dbmigrate import migrate
 from sqlalchemy.sql.expression import *
 from sqlalchemy.orm.properties import ColumnProperty
+import urllib
+import hashlib
 
 
 def guess_language_from_request(request):
@@ -74,18 +76,25 @@ def user_load(username):
     setattr(g, current_app.config['CUR_ID'], username)
     if redis_store.exists(username):
         current_app.logger.debug(username + ' already in redis cache')
+        setattr(g, current_app.config['CUR_USER'],
+                redis_store.get('UP:' + username))
+        return True
     else:
         with session_scope(db) as session:
-            for table_check in user_source.values():
+            for key in user_source:
+                table_check = user_source[key]
                 rs = session.query(table_check).filter(
                     and_(table_check.username == username,
-                         table_check.state == 1)).all()
+                         table_check.state != 99)).all()
                 if len(rs) > 0:
                     current_app.logger.debug(
                         username + ' set into redis cache')
+                    dict = row_dict(rs[0])
+                    dict['user_type'] = key
+                    setattr(g, current_app.config['CUR_USER'], dict)
                     redis_store.set('UP:' + username,
-                                    json.dumps(row_dict(rs[0])))
-                    break
+                                    json.dumps(dict))
+                    return True
 
 
 def init_logging(app):
@@ -107,6 +116,54 @@ def init_logging(app):
     wsgi_logger.addHandler(file_handler)
     # for h in app.logger.handlers:
     #    print('handler is %s' % str(h))
+
+
+def acl_control(request, response):
+    current_app.logger.debug('acl_control: setup redis, filter get response')
+    if hasattr(g, current_app.config['CUR_USER']):
+        user = getattr(g, current_app.config['CUR_USER'])
+        if user['user_type'] not in ['Student', 'Teacher']:
+            return
+    else:
+        return
+    result = response.get_data().decode('utf-8')
+    parsed = urllib.parse.urlparse(request.url)
+    o_type = parsed.path.split('/')[-1]
+    user_id = getattr(g, current_app.config['CUR_ID'])
+    if request.method.lower() == 'get':
+        # check acl for student and teacher, if not obey, return 401
+        try:
+            res_dict = json.loads(result)
+            if res_dict['objects']:
+                for o in res_dict['objects']:
+                    if not o['id']:
+                        continue
+                    redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
+                        o['id'])
+                    acl = redis_store.get(redis_key)
+                    if not acl:
+                        abort(401, redis_key + ' not in redis acl')
+                        break
+        except Exception as e:
+            raise e
+        else:
+            pass
+    elif request.method.lower() == 'post':
+        res_dict = json.loads(result)
+        redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
+            res_dict['id'])
+        value = hashlib.md5(str(res_dict).encode('utf-8')).hexdigest()
+        redis_store.set(redis_key, value)
+    elif request.method.lower() == 'put':
+        # TODO check for object in request belong to user in jwt auth header
+        # add acl record to redis
+        res_dict = json.loads(result)
+        redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
+            res_dict['id'])
+        value = hashlib.md5(str(res_dict).encode('utf-8')).hexdigest()
+        redis_store.set(redis_key, value)
+    else:
+        pass
 
 
 def create_app(config):
@@ -167,10 +224,19 @@ def create_app(config):
                 current_app.logger.warn('auth failed!')
                 abort(401)
         else:
-            setattr(g, current_app.config['CUR_ID'],
-                    'visitor_' + str(request.remote_addr))
-            current_app.logger.debug(
-                'visitor comming')
+            payload = jwt_check(request)
+            if payload:
+                # user object loading and redis cache setting
+                username = payload.get(app.config['JWT_SUBJECT_KEY'])
+                if username:
+                    current_app.logger.info('auth passed, loading ' + username)
+                    if not user_load(username):
+                        abort(401, 'failed to load user from cache or db')
+            else:
+                setattr(g, current_app.config['CUR_ID'],
+                        'visitor_' + str(request.remote_addr))
+                current_app.logger.debug(
+                    'visitor comming')
 
     @app.after_request
     def request_postprocess(response):
@@ -185,11 +251,12 @@ def create_app(config):
         if language:
             response.headers['Content-Langauge'] = language
             response.set_cookie('user_lang', language)
-        if request.is_json:
+        if response.is_json:
             current_app.logger.debug(
                 "\n" + request.method + ': ' + request.url + "\nreq: ------\n" +
                 request.get_data().decode('utf-8') + "\nres: ------\n" +
                 response.get_data().decode('utf-8'))
+            acl_control(request, response)
         return response
 
     @app.teardown_request
@@ -205,9 +272,10 @@ def create_app(config):
                 continue
             # create endpoint for CRUD and with cascading support for GET
             current_app.manager.create_api(v, url_prefix='/api/v1',
-                               methods=['GET', 'DELETE', 'PUT', 'POST'],
-                               allow_patch_many=True,
-                               primary_key='id')
+                                           methods=['GET', 'DELETE', 'PUT',
+                                                    'POST'],
+                                           allow_patch_many=True,
+                                           primary_key='id')
             # create bare endpoint for GET without cascading query to improve
             # performance by exclude relation columns
             include_columns = []
@@ -217,8 +285,8 @@ def create_app(config):
                         ColumnProperty):
                     include_columns.append(x)
             current_app.manager.create_api(v, url_prefix='/api/v1/_bare',
-                               methods=['GET'],
-                               include_columns=include_columns,
-                               primary_key='id')
+                                           methods=['GET'],
+                                           include_columns=include_columns,
+                                           primary_key='id')
 
     return app

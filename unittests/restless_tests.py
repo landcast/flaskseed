@@ -16,30 +16,23 @@ class RestLessTest(TestBase):
     channel_name = None
     channel_id = 0
     enrollment_id = 0
+    test_user = random_username()
 
     def setUp(self):
         super().setUp()
-        test_user = random_username()
         self.auth_header = json.loads(
-            super().register(test_user, 'Student').get_data(as_text=True))
+            super().register(self.test_user, 'Student').get_data(as_text=True))
         self.token = self.auth_header[self.config['JWT_HEADER']]
         self.app.logger.debug("jwt:" + self.token)
 
     def get_student(self):
-        r = self.client.get('/api/v1/student', content_type='application/json',
-                            headers={self.config['JWT_HEADER']: self.token})
-        self.app.logger.debug("status = " + str(r.status_code))
-        self.assertEqual(200, r.status_code, 'get students failed')
-        students = json.loads(r.get_data(as_text=True))['objects']
-        self.app.logger.debug(len(students))
-        self.assertGreater(len(students), 0, 'get students empty')
-        # self.app.logger.debug(json.loads(r.get_data(as_text=True)))
         end = (datetime.now() + timedelta(seconds=30)).isoformat()[:-3] + 'Z'
         start = (datetime.now() + timedelta(seconds=-30)).isoformat()[:-3] + 'Z'
         r = self.client.get('/api/v1/student', query_string="q=" + json.dumps({
             "filters": [
                 {"name": "created_at", "op": "<=", "val": end},
                 {"name": "created_at", "op": ">=", "val": start},
+                {"name": "updated_by", "op": "==", "val": self.test_user}
             ]
         }),
                             content_type='application/json',
@@ -72,9 +65,7 @@ class RestLessTest(TestBase):
             ],
             "channel_name": self.channel_name,
             "channel_orders": [],
-            "created_at": "2018-05-21T13:27:09.908Z",
-            "updated_at": "2018-05-21T13:27:09.908Z",
-            "updated_by": "unittests"
+            "updated_by": self.test_user
         }), content_type='application/json',
                              headers={self.config['JWT_HEADER']: self.token})
         self.app.logger.debug("post status = " + str(r.status_code))
@@ -112,9 +103,7 @@ class RestLessTest(TestBase):
                             data=json.dumps({
                                 "channel_desc": "calling put, change desc and "
                                                 "add new enrollment",
-                                "created_at": "2018-05-29T13:27:09.900Z",
-                                "updated_at": "2018-05-29T13:27:09.900Z",
-                                "updated_by": "put-action",
+                                "updated_by": self.test_user,
                                 "channel_enrollments": [
                                     {
                                         "created_at":
@@ -122,8 +111,6 @@ class RestLessTest(TestBase):
                                         "student_id": self.student_id,
                                         "channel_id": self.channel_id,
                                         "id": self.enrollment_id,
-                                        "updated_at":
-                                            "2018-05-29T13:27:09.908Z",
                                         "updated_by": "put-action cascade"
                                     }
                                 ],

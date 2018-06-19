@@ -111,6 +111,10 @@ Using flask-restless to generate restful endpoint for every model in models.
 In ```./ustutor/__init__.py``` setup_api function using reflection method to 
 control automated api endpoint generation.
 
+For Get operation, the query criteria comply with restless design pattern, 
+detailed information, please refer to 
+[rest-less query](https://flask-restless.readthedocs.io/en/stable/searchformat.html).
+
 For performance consideration, we added /_bare/model_class api for single table 
 query without cascading.
 When front-end client just want to get single table column data without 

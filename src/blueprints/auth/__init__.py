@@ -10,6 +10,7 @@ import requests
 
 from src.models import db, session_scope, user_source, SmsLog
 from src.services import send_email, redis_store
+import hashlib
 
 BEARER_TOKEN = ' Bearer '
 
@@ -151,7 +152,13 @@ def register():
         result = session.add(user)
         current_app.logger.debug(result)
     token = generate_jwt_token(current_app.config['JWT_HEADER'], user.username)
-    token.update({'id': getattr(user, 'id')})
+    user_id = getattr(user, 'id')
+    token.update({'id': user_id})
+    # handle acl redis record
+    redis_key = 'ACL:' + user_name + ':' + user_type.lower() + ':' + str(
+        user_id)
+    value = hashlib.md5(str(user).encode('utf-8')).hexdigest()
+    redis_store.set(redis_key, value)
     return jsonify(token)
 
 
