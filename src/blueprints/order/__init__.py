@@ -14,7 +14,7 @@ order = Blueprint('order', __name__)
 def query():
     """
     swagger-doc: 'do order query'
-    required: ['username', 'password', 'usertype']
+    required: []
     req:
       page_limit:
         description: 'records in one page'
@@ -119,25 +119,27 @@ def generate_sql(params):
         c.primary_teacher_id = t.id and c.subject_id = su.id and
         su.curriculum_id = cr.id and su.subject_category_id = sc.id
     ''']
-    if hasattr(params, 'course_id'):
-        sql.append[' and c.course_id = :course_id']
-    if hasattr(params, 'course_name'):
-        sql.append[' and c.course_name = :course_name']
-    if hasattr(params, 'order_type'):
-        sql.append[' and o.order_type = :order_type']
-    if hasattr(params, 'order_state'):
-        sql.append[' and o.order_state = :order_state']
-    if hasattr(params, 'updated_by'):
-        sql.append[' and o.updated_by = :updated_by']
-    if hasattr(params, 'created_at'):
-        sql.append[
-            ' and o.created_at between :created_at_start and :created_at_end']
-    if hasattr(params, 'category_1'):
-        sql.append[' and cr.full_name like :category_1']
-    if hasattr(params, 'category_2'):
-        sql.append[' and sc.subject_category like :category_2']
-    if hasattr(params, 'category_3'):
-        sql.append[' and su.subject_name like :category_3']
+    if 'course_id' in params.keys():
+        sql.append(' and c.course_id = :course_id')
+    if 'course_name' in params.keys():
+        sql.append(' and c.course_name = :course_name')
+    if 'order_type' in params.keys():
+        sql.append(' and o.order_type = :order_type')
+    if 'order_state' in params.keys():
+        sql.append(' and o.order_state = :order_state')
+    if 'updated_by' in params.keys():
+        sql.append(' and o.updated_by = :updated_by')
+    if 'created_at_start' in params.keys() \
+            and 'created_at_end' in params.keys():
+        sql.append(
+            ' and o.created_at between :created_at_start and :created_at_end')
+    if 'category_1' in params.keys():
+        sql.append(' and cr.full_name like :category_1')
+    if 'category_2' in params.keys():
+        sql.append(' and sc.subject_category like :category_2')
+    if 'category_3' in params.keys():
+        sql.append(' and su.subject_name like :category_3')
+    # current_app.logger.debug(sql)
     return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
             'order_amount'], ''.join(sql)

@@ -6,6 +6,7 @@ def do_query(params, generate_sql):
     current_app.logger.debug(params)
     with session_scope(db) as session:
         columns, sql = generate_sql(params)
+        current_app.logger.debug(sql)
         result = session.execute(sql, params)
         # default page_no to 1
         page_no = 1
