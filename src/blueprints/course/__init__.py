@@ -74,7 +74,7 @@ def query():
             course_name:
               description: 'course name'
               type: 'string'
-             course_name_zh:
+            course_name_zh:
               description: 'course name zh'
               type: 'string'
             course_type:
