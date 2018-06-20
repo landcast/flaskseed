@@ -202,7 +202,7 @@ def my_order_sql(params):
         c.primary_teacher_id = t.id
     ''']
 
-    sql.append(" and s.id ='"+g.get(current_app.config['CUR_ID'])+"'")
+    sql.append(" and o.student_id ='"+g.get(current_app.config['CUR_ID'])+"'")
 
     if 'order_id' in params.keys():
         sql.append(' and o.id =:order_id')
