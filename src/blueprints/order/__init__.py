@@ -41,10 +41,10 @@ def query():
         description: 'updated by'
         type: 'string'
       created_at_start:
-        description: 'created_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: 'created_at start in sql format YYYY-mm-ddTHH:MM:ss.SSSZ'
         type: 'string'
       created_at_end:
-        description: 'created_at end in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: 'created_at end in sql format YYYY-mm-ddTHH:MM:ss.SSSZ'
         type: 'string'
       order_type:
         description: 'order type'
