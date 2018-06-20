@@ -35,7 +35,7 @@ class TestBase(unittests.test_base.TestBase):
                     logger.debug('start new server ' + str(datetime.now()))
                     subprocess.Popen(
                             'python run.py',
-                            shell=False, start_new_session=False)
+                            shell=True, start_new_session=True)
                     time.sleep(2)
                     logger.debug('step 13 ' + str(datetime.now()))
         else:
@@ -43,12 +43,11 @@ class TestBase(unittests.test_base.TestBase):
             logger.debug(os.getcwd())
             subprocess.Popen(
                     'python run.py ',
-                    shell=False, start_new_session=False)
+                    shell=True, start_new_session=True)
             time.sleep(2)
             logger.debug('step 21 ' + str(datetime.now()))
 
     def setUp(self):
-        super().setUp()
         self.server_check()
 
     def tearDown(self):

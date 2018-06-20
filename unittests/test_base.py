@@ -8,6 +8,7 @@ from src.services import redis_store
 from src.models import db, session_scope, SysControl, Curriculum, Subject, \
     SubjectCategory, Course, CourseSchedule, CourseClassroom, Courseware, \
     Teacher, Student, Channel, Order
+from src.utils import setup_pid_file
 
 
 def random_username():
@@ -21,6 +22,7 @@ class TestBase(unittest.TestCase):
         from src import create_app
         from config import settings
         app = create_app(settings)
+        # setup_pid_file(app)
         self.client = app.test_client()
         self.app = app
         self.logger = app.logger
