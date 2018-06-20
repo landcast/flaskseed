@@ -16,5 +16,6 @@ install:
 services:
   - mysql
 script:
+  - export EXTERNALCFG=`pwd`/config/settings_travisci.cfg
   - nohup python run.py > /dev/null 2>&1 &
   - pyb -v
