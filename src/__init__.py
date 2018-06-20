@@ -107,12 +107,15 @@ def user_load(username):
 def init_logging(app):
     # check log file, if not exist create
     basedir = os.path.dirname(app.config['DEBUG_LOGPATH'])
+    log_file_path = app.config['DEBUG_LOGPATH']
+    if app.debug:
+        log_file_path = log_file_path + '_' + str(os.getpid())
     if not os.path.exists(basedir):
         os.makedirs(basedir)
-    open(app.config['DEBUG_LOGPATH'] + '.log', 'a').close()
+    open(log_file_path + '.log', 'a').close()
     # pass config log path to handler
     file_handler = RotatingFileHandler(
-            app.config['DEBUG_LOGPATH'] + '.log', maxBytes=1024 * 1024 * 8)
+        log_file_path + '.log', maxBytes=1024 * 1024 * 8)
     # file_handler.suffix = "%Y%m%d.log"
     file_handler.setLevel(logging.DEBUG)
     format = '[%(asctime)s] %(levelname)s %(name)s [%(filename)s:%(' \
