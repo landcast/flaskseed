@@ -2,7 +2,7 @@ ENV_NAME = 'prd'
 
 SECRET_KEY = '123'
 
-DEBUG = False
+DEBUG = True
 
 DEBUG_LOGPATH = '/var/log/flaskseed-debug-prd'
 
