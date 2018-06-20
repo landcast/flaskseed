@@ -238,7 +238,7 @@ def create_app(config):
     # register restful endpoints
     app.register_blueprint(admin, url_prefix='/admin')
     app.register_blueprint(course, url_prefix='/course')
-    # app.register_blueprint(student, url_prefix='/student')
+    app.register_blueprint(student, url_prefix='/student')
     app.register_blueprint(teacher, url_prefix='/teacher')
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     app.manager = manager
