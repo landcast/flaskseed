@@ -112,7 +112,8 @@ def init_logging(app):
         log_file_path = log_file_path + '_' + str(os.getpid())
     if not os.path.exists(basedir):
         os.makedirs(basedir)
-    open(log_file_path + '.log', 'a').close()
+    if not os.path.exists(log_file_path):
+        open(log_file_path + '.log', 'a').close()
     # pass config log path to handler
     file_handler = RotatingFileHandler(
         log_file_path + '.log', maxBytes=1024 * 1024 * 8)
