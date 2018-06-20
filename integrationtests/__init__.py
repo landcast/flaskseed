@@ -35,7 +35,7 @@ class TestBase(unittests.test_base.TestBase):
                     logger.debug('start new server ' + str(datetime.now()))
                     subprocess.Popen(
                             'python run.py',
-                            shell=True, start_new_session=False)
+                            shell=False, start_new_session=False)
                     time.sleep(2)
                     logger.debug('step 13 ' + str(datetime.now()))
         else:
@@ -43,7 +43,7 @@ class TestBase(unittests.test_base.TestBase):
             logger.debug(os.getcwd())
             subprocess.Popen(
                     'python run.py ',
-                    shell=True, start_new_session=False)
+                    shell=False, start_new_session=False)
             time.sleep(2)
             logger.debug('step 21 ' + str(datetime.now()))
 
