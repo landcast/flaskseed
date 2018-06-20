@@ -14,7 +14,7 @@ course = Blueprint('course', __name__)
 @course.route('/package_query', methods=['POST'])
 def query():
     """
-    swagger-doc: 'do order query'
+    swagger-doc: 'do package query'
     required: []
     req:
       page_limit:

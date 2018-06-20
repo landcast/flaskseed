@@ -15,6 +15,7 @@ student = Blueprint('student', __name__)
 def my_course():
     """
     swagger-doc: 'do my course query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
@@ -113,6 +114,7 @@ def my_course_sql(params):
 def my_order():
     """
     swagger-doc: 'do my course query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'

@@ -15,6 +15,7 @@ teacher = Blueprint('teacher', __name__)
 def my_course():
     """
     swagger-doc: 'do my course query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
