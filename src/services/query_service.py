@@ -18,9 +18,13 @@ def do_query(params, generate_sql):
         # calculate offset
         offset = (page_no - 1) * page_limit
         rows = result.fetchall()
+        row_count = len(rows)
+        total_pages = row_count // page_limit
+        if row_count % page_limit != 0:
+            total_pages = total_pages + 1
         final_result = {
-            'objects': [], 'num_results': len(rows), 'page': page_no,
-            'total_pages': int(len(rows) / page_limit) + 1
+            'objects': [], 'num_results': row_count, 'page': page_no,
+            'total_pages': total_pages
         }
         for index, row in enumerate(rows):
             current_app.logger.debug('row ' + str(index) + ' = ' + str(row))

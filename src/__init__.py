@@ -179,7 +179,16 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         try:
             if isinstance(obj, datetime):
-                return obj.isoformat() + '.000Z'
+                str_datetime = obj.isoformat()
+                if len(str_datetime) == 19:
+                    # 2019-09-01T19:01:01
+                    return obj.isoformat() + '.000Z'
+                elif len(str_datetime) == 23:
+                    return obj.isoformat() + 'Z'
+                elif len(str_datetime) == 26:
+                    return obj.isoformat()[:-3] + 'Z'
+                else:
+                    raise Exception("invalid datetime format " + str_datetime)
             iterable = iter(obj)
         except TypeError:
             pass

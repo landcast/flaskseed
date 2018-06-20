@@ -29,9 +29,13 @@ class TestBase(unittest.TestCase):
         self.app_context.push()
         self.test_student = random_username()
         self.auth_header = json.loads(
-                self.register(self.test_student, 'Student').get_data(
-                        as_text=True))
+            self.register(self.test_student, 'Student').get_data(
+                as_text=True))
+        self.test_student_id = self.auth_header['id']
         self.token = self.auth_header[self.config['JWT_HEADER']]
+        self.test_teacher_id = json.loads(
+            self.register(random_username(), 'Teacher').get_data(
+                as_text=True))['id']
         self.data_prepare()
 
     def tearDown(self):
@@ -65,7 +69,7 @@ class TestBase(unittest.TestCase):
         with session_scope(db) as session:
             pid = os.getpid()
             r = session.query(SysControl).filter(
-                    SysControl.current_pid == pid).one_or_none()
+                SysControl.current_pid == pid).one_or_none()
             if r:
                 # one process only run once
                 return
@@ -98,7 +102,7 @@ class TestBase(unittest.TestCase):
             teacher_name = random_username()
             self.register(teacher_name, 'Teacher')
             t = session.query(Teacher).filter(
-                    Teacher.username == teacher_name).one_or_none()
+                Teacher.username == teacher_name).one_or_none()
             self.logger.debug(t)
             cs_ap_history = Course(course_name='T1_AP_history_grade_9',
                                    course_type=1,
@@ -132,6 +136,19 @@ class TestBase(unittest.TestCase):
             session.flush()
             self.logger.debug(cs_s_ap)
             self.logger.debug(cs_s_ib)
+            # add channel
+            channel = Channel(channel_name=str(pid), updated_by=str(pid))
+            session.add(channel)
+            session.flush()
+            # add order
+            order = Order(updated_by=str(pid), channel_id=channel.id,
+                          student_id=self.test_student_id,
+                          course_id=cs_ib_history.id,
+                          order_type=1, order_desc='', state=1,
+                          payment_state=1, amount=1000000,
+                          discount=10, promotion='')
+            session.add(order)
+            session.flush()
             # finally add the control record of this pid
             sys_control = SysControl(current_pid=pid)
             session.add(sys_control)
