@@ -110,6 +110,7 @@ def my_course_sql(params):
     return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
             'updated_by', 'created_at'], ''.join(sql)
 
+
 @student.route('/my_order', methods=['POST'])
 def my_order():
     """
