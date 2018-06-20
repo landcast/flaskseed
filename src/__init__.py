@@ -53,7 +53,7 @@ def auth_check_needed(request):
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/admin/*',
                          '/order/*', '/api/*', '/swagger.json',
-                         '/static/*', '/swagger_ui/*', '/swagger']
+                         '/static/*', '/swagger_ui/*', '/swagger', '/student/*', '/teacher/*', '/course/*']
     else:
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/static/*']
