@@ -33,3 +33,10 @@ def do_query(params, generate_sql):
                 final_result['objects'].append(dict((c, v) for c, v in
                                                     zip(columns, row)))
         return final_result
+
+
+def datetime_param_sql_format(params, datetime_keys):
+    for key in datetime_keys:
+        if key in params.keys():
+            params[key] = params[key].replace('T', ' ').replace('Z', '')
+    return params

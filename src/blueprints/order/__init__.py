@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 from src.models import db, session_scope
-from src.services import do_query
+from src.services import do_query, datetime_param_sql_format
 import hashlib
 
 order = Blueprint('order', __name__)
@@ -100,7 +100,9 @@ def query():
               type: 'integer'
     """
     j = request.json
-    return jsonify(do_query(j, generate_sql))
+    return jsonify(do_query(
+        datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
+        generate_sql))
 
 
 def generate_sql(params):
@@ -109,7 +111,6 @@ def generate_sql(params):
     :param params:
     :return:
     '''
-    current_app.logger.debug(params)
     sql = ['''
     select o.id, c.course_name, c.classes_number, o.order_type, o.state,
         o.updated_by, o.created_at, t.nickname, s.nickname, o.amount
