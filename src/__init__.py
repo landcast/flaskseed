@@ -16,6 +16,12 @@ from src.blueprints.auth import auth, BEARER_TOKEN
 from src.blueprints.live import live
 from src.blueprints.upload import upload
 from src.blueprints.order import order
+
+from src.blueprints.course import course
+from src.blueprints.student import student
+from src.blueprints.teacher import teacher
+
+
 from src.resources.api import api, admin
 from src.models import *
 from src.services import mail, redis_store
@@ -231,6 +237,11 @@ def create_app(config):
     app.register_blueprint(order, url_prefix='/order')
     # register restful endpoints
     app.register_blueprint(admin, url_prefix='/admin')
+
+
+    app.register_blueprint(order, url_prefix='/course')
+    app.register_blueprint(order, url_prefix='/student')
+    app.register_blueprint(order, url_prefix='/teacher')
 
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     app.manager = manager
