@@ -4,9 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 from src.models import db, session_scope
-from src.services import do_query
-import hashlib
 from src.services import do_query, datetime_param_sql_format
+import hashlib
+
 
 course = Blueprint('course', __name__)
 
@@ -15,6 +15,7 @@ course = Blueprint('course', __name__)
 def query():
     """
     swagger-doc: 'do order query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
