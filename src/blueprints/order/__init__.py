@@ -17,10 +17,10 @@ def query():
     required: []
     req:
       page_limit:
-        description: 'records in one page'
+        description: 'records in one page 分页中每页条数'
         type: 'integer'
       page_no:
-        description: 'page no'
+        description: 'page no, start from 1 分页中页序号'
         type: 'integer'
       category_1:
         description: '一级分类'
@@ -32,25 +32,25 @@ def query():
         description: '三级分类'
         type: 'string'
       course_name:
-        description: 'course name'
+        description: 'course name 课程名称'
         type: 'string'
       course_id:
-        description: 'course id'
+        description: 'course id 课程编号'
         type: 'string'
       updated_by:
-        description: 'updated by'
+        description: 'updated by 下单人'
         type: 'string'
       created_at_start:
-        description: 'created_at start in sql format YYYY-mm-ddTHH:MM:ss.SSSZ'
+        description: '订单创建时间开始，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
         type: 'string'
       created_at_end:
-        description: 'created_at end in sql format YYYY-mm-ddTHH:MM:ss.SSSZ'
+        description: '订单创建时间结束，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
         type: 'string'
       order_type:
-        description: 'order type'
+        description: 'order type 订单类型'
         type: 'string'
       order_state:
-        description: 'order state'
+        description: 'order state 订单状态'
         type: 'string'
     res:
       num_results:
