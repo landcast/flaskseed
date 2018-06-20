@@ -60,3 +60,32 @@ class OrderStateEnum(IntFlag):
     """
     EFFECTIVE = 98
     INVALID = 99
+
+class OrderPaymentStateEnum(IntFlag):
+    """
+    PAY：下订单
+    PAID :已经付款
+    CANCEL : 取消
+    APPLY_REFUND:申请退款
+    REFUND :退款
+
+    """
+
+    PAY = 1
+    PAID =2
+    CANCEL =3
+    APPLY_REFUND = 4
+    REFUND =5
+
+
+class OrderTypeEnum(IntFlag):
+    """
+    COMMON :普通订单
+    GIVE :赠送订单
+    COMPENSATE :补偿订单
+    FREE :免费订单
+    """
+    COMMON = 1
+    GIVE = 2
+    COMPENSATE = 3
+    FREE = 4

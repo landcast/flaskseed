@@ -153,6 +153,27 @@ class CourseStatueEnum(enum.IntEnum):
     INVALID = 99
 
 
+
+class CourseClassTypeEnum(enum.IntEnum):
+    """
+    1:1V1
+    2:1V2
+    3:1V3
+    4:1V4
+    5:1V6
+    6:1V10
+    7:1V15
+    8:1V20
+    """
+    V1 = 1
+    V2 = 2
+    V3 = 3
+    V4 = 4
+    V5 = 6
+    V6 = 10
+    V7 = 15
+    V8 = 20
+
 class Courseware(EntityMixin, db.Model):
     """
     PPT or something showing in course uploaded by teacher
