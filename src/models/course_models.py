@@ -180,7 +180,7 @@ class Courseware(EntityMixin, db.Model):
     before course study, needs to be checked by admin
     """
     ware_desc = Column(String(2000), nullable=False, comment='课件描述')
-    ware_url = Column(String(255), nullable=True, comment='课件存储地址，JSON')
+    ware_url = Column(String(255), nullable=True, comment='课件存储地址')
     ware_uid = Column(String(120), nullable=True, index=True,
                       comment='e.g. duobei use')
     room_id = Column(String(2000), nullable=True, comment='classroom list')
