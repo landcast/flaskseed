@@ -73,9 +73,9 @@ def jwt_check(request):
     jwt_header = request.headers.get(current_app.config['JWT_HEADER'])
     # current_app.logger.debug(jwt_header)
     if jwt_header:
-        jwt_token = jwt_header
-        if jwt_header.startswith(BEARER_TOKEN):
-            jwt_token = jwt_header[len(BEARER_TOKEN):]
+        jwt_token = jwt_header.lstrip()
+        if jwt_token.startswith(BEARER_TOKEN):
+            jwt_token = jwt_token[len(BEARER_TOKEN):]
         payload = jwt.decode(jwt_token, current_app.config['JWT_SECRET'],
                              algorithm=current_app.config['JWT_ALG'],
                              verify=True)
@@ -225,8 +225,9 @@ def create_app(config):
     migrate.init_app(app, db)
     redis_store.init_app(app)
 
-    toolbar = DebugToolbarExtension()
-    toolbar.init_app(app)
+    # toolbar = DebugToolbarExtension()
+    # toolbar.init_app(app)
+
     # create needed folders
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 

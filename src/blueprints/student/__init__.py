@@ -85,7 +85,8 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select c.id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
+    select c.id,c.`course_name`,(select count(*) from study_schedule where 
+    student_id = s.id and study_state = 1) as finish,
 		c.classes_number,
 		t.`nickname`,
 		cs.start,cs.end
@@ -93,19 +94,21 @@ def my_course_sql(params):
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
     ''']
-    sql.append("and s.id ="+getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():
-        sql.append(' and （c.course_name like :course_name or c.course_name_zh like:course_name)')
-    if 'teacher_name'in params.keys():
-        sql.append(' and t.nick_name like :teacher_name')
-    if 'course_time'in params.keys():
         sql.append(
-            ' and cs.start >:course_time and cs.end <:course_time')
-    if 'course_status'in params.keys() \
-            and 'course_status' == '1':
+            ' and （c.course_name like :course_name or c.course_name_zh '
+            'like:course_name)')
+    if 'teacher_name' in params.keys():
+        sql.append(' and t.nick_name like :teacher_name')
+    if 'course_time' in params.keys():
+        sql.append(
+                ' and cs.start >:course_time and cs.end <:course_time')
+    if 'course_status' in params.keys() \
+            and params['course_status'] == '1':
         sql.append(' and cs.end >=:now()')
-    if 'course_status'in params.keys() \
-            and 'course_status' == '2':
+    if 'course_status' in params.keys() \
+            and params['course_status'] == '2':
         sql.append(' and cs.end < now()')
 
     return ['id', 'course_name', 'finish', 'classes_number', 'nickname',
@@ -185,7 +188,7 @@ def my_order():
               type: 'integer'
     """
     j = request.json
-    datetime_param_sql_format(j, ['created_at_start','created_at_end']),
+    datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
     return jsonify(do_query(j, my_order_sql))
 
 
@@ -197,25 +200,32 @@ def my_order_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select o.id,c.`course_name`,c.classes_number,o.`order_type`,o.`payment_state`,o.`created_at`,t.`nickname`,o.`amount`
+    select o.id,c.`course_name`,c.classes_number,o.`order_type`,
+    o.`payment_state`,o.`created_at`,t.`nickname`,o.`amount`
     from `order` o, teacher t, course c
     where  o.course_id = c.id and
         c.primary_teacher_id = t.id
     ''']
 
-    sql.append(" and o.student_id ="+getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append(
+        " and o.student_id =" + getattr(g, current_app.config['CUR_USER'])[
+            'id'])
 
     if 'order_id' in params.keys():
         sql.append(' and o.id =:order_id')
 
     if 'course_name' in params.keys():
-        sql.append[' and （c.course_name like :course_name or c.course_name_zh like:course_name)']
-    if 'payment_state'in params.keys():
+        sql.append[
+            ' and （c.course_name like :course_name or c.course_name_zh ' \
+            'like:course_name)']
+    if 'payment_state' in params.keys():
         sql.append[' and o.payment_state = :payment_state']
     if 'created_at_start' in params.keys() \
             and 'created_at_end' in params.keys():
         sql.append(
-            ' and o.created_at between :created_at_start and :created_at_end')
+                ' and o.created_at between :created_at_start and '
+                ':created_at_end')
 
-    return ['id', 'course_name', 'classes_number', 'order_type', 'payment_state',
-            'created_at', 'nickname','amount'], ''.join(sql)
+    return ['id', 'course_name', 'classes_number', 'order_type',
+            'payment_state',
+            'created_at', 'nickname', 'amount'], ''.join(sql)

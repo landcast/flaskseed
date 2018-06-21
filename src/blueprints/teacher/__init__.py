@@ -87,7 +87,8 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-     select c.id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
+     select c.id,c.`course_name`,(select count(*) from study_schedule where 
+     student_id = s.id and study_state = 1) as finish,
 		c.classes_number,
 		s.`nickname` as student_name,
 		cs.start,cs.end
@@ -95,19 +96,21 @@ def my_course_sql(params):
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
     ''']
-    sql.append(" and t.id ="+getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append(" and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():
-        sql.append(' and （c.course_name like :course_name or c.course_name_zh like:course_name)')
-    if 'student_name'in params.keys():
-        sql.append(' and s.nick_name like :student_name')
-    if 'course_time'in params.keys():
         sql.append(
-            ' and cs.start >:course_time and cs.end <:course_time')
-    if 'course_status'in params.keys() \
-            and 'course_status' == '1':
+            ' and （c.course_name like :course_name or c.course_name_zh '
+            'like:course_name)')
+    if 'student_name' in params.keys():
+        sql.append(' and s.nick_name like :student_name')
+    if 'course_time' in params.keys():
+        sql.append(
+                ' and cs.start >:course_time and cs.end <:course_time')
+    if 'course_status' in params.keys() \
+            and params['course_status'] == '1':
         sql.append(' and cs.end >=:now()')
-    if 'course_status'in params.keys() \
-            and 'course_status' == '2':
+    if 'course_status' in params.keys() \
+            and params['course_status'] == '2':
         sql.append(' and cs.end < now()')
 
     return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',

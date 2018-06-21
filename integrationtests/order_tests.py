@@ -7,15 +7,10 @@ sys.path.append('.')
 from integrationtests import random_username, TestBase, redis_store, logger
 
 
-json_header = '"Content-Type:application/json"'
-
-server_location = 'http://127.0.0.1:5000'
-
-
 class OrderCurlTest(TestBase):
 
     def test_register(self):
-        url = f'{server_location}/order/main_query'
+        url = f'{self.server_location}/order/main_query'
         end = (datetime.now() + timedelta(seconds=30)).isoformat()[:-3] + 'Z'
         start = (datetime.now() + timedelta(seconds=-30)).isoformat()[:-3] + 'Z'
         json_data = "'" + json.dumps({
@@ -26,7 +21,7 @@ class OrderCurlTest(TestBase):
             "created_at_end": end
         }) + "'"
         cmd = f'''
-            curl -sS -i -H {json_header} -X POST --data {json_data} {url}
+            curl -sS -i -H '{self.json_header}' -X POST --data {json_data} {url}
             '''
         print(cmd)
         status_code, output = subprocess.getstatusoutput(cmd)
@@ -38,7 +33,7 @@ class OrderCurlTest(TestBase):
             "order_type": "2"
         }) + "'"
         cmd = f'''
-            curl -sS -i -H {json_header} -X POST --data {json_data} {url}
+            curl -sS -i -H '{self.json_header}' -X POST --data {json_data} {url}
             '''
         print(cmd)
         status_code, output = subprocess.getstatusoutput(cmd)

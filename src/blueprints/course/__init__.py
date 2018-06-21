@@ -7,7 +7,6 @@ from src.models import db, session_scope
 from src.services import do_query, datetime_param_sql_format
 import hashlib
 
-
 course = Blueprint('course', __name__)
 
 
@@ -104,7 +103,8 @@ def generate_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select c.`course_name`,c.`course_name_zh`,c.id,c.`course_type`,c.state,c.`updated_by`,c.`created_at`
+    select c.`course_name`,c.`course_name_zh`,c.id,c.`course_type`,c.state,
+    c.`updated_by`,c.`created_at`
     from   course c, subject su,
     subject_category sc, curriculum cr
     where  c.subject_id = su.id and
@@ -113,21 +113,24 @@ def generate_sql(params):
     if 'course_id' in params.keys():
         sql.append(' and c.course_id = :course_id')
     if 'course_name' in params.keys():
-        sql.append(' and （c.course_name like :course_name or c.course_name_zh like:course_name)')
+        sql.append(
+            ' and （c.course_name like :course_name or c.course_name_zh '
+            'like:course_name)')
     if 'course_type' in params.keys():
         sql.append(' and c.course_type = :course_type')
-    if 'order_state'in params.keys():
+    if 'order_state' in params.keys():
         sql.append(' and c.state = :course_state')
-    if 'updated_by'in params.keys():
+    if 'updated_by' in params.keys():
         sql.append(' and c.updated_by = :updated_by')
-    if 'created_at'in params.keys():
+    if 'created_at' in params.keys():
         sql.append(
-            ' and c.created_at between :created_at_start and :created_at_end')
-    if 'category_1'in params.keys():
+                ' and c.created_at between :created_at_start and '
+                ':created_at_end')
+    if 'category_1' in params.keys():
         sql.append(' and cr.full_name like :category_1')
-    if 'category_2'in params.keys():
+    if 'category_2' in params.keys():
         sql.append(' and sc.subject_category like :category_2')
-    if  'category_3'in params.keys():
+    if 'category_3' in params.keys():
         sql.append(' and su.subject_name like :category_3')
     return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
             'updated_by', 'created_at'], ''.join(sql)
@@ -214,21 +217,26 @@ def category_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.* from (select full_name as name,full_name_zh as name_zh,id,updated_by,created_at,state,1 'level' from `curriculum` cu 
-    union all select subject_category as name,subject_category_zh as name_zh,id,updated_by,created_at,state,2 'level' from subject_category
-    union all select subject_name as name,subject_name_zh as name_zh,id,updated_by,created_at,state,3 'level' from subject) t
+    select t.* from (select full_name as name,full_name_zh as name_zh,id,
+    updated_by,created_at,state,1 'level' from `curriculum` cu 
+    union all select subject_category as name,subject_category_zh as name_zh,
+    id,updated_by,created_at,state,2 'level' from subject_category
+    union all select subject_name as name,subject_name_zh as name_zh,id,
+    updated_by,created_at,state,3 'level' from subject) t
     ''']
     if 'course_id' in params.keys():
         sql.append(' and t.id = :course_id')
     if 'course_name' in params.keys():
-        sql.append(' and （t.name like :course_name or t.name_zh like:course_name)')
-    if 'course_state'in params.keys():
-        sql.append(' and t.state = :course_state')
-    if 'updated_by'in params.keys():
-        sql.append(' and t.updated_by = :updated_by')
-    if 'created_at'in params.keys():
         sql.append(
-            ' and t.created_at between :created_at_start and :created_at_end')
+            ' and （t.name like :course_name or t.name_zh like:course_name)')
+    if 'course_state' in params.keys():
+        sql.append(' and t.state = :course_state')
+    if 'updated_by' in params.keys():
+        sql.append(' and t.updated_by = :updated_by')
+    if 'created_at' in params.keys():
+        sql.append(
+                ' and t.created_at between :created_at_start and '
+                ':created_at_end')
 
-    return [ 'name', 'name_zh', 'id','updated_by', 'created_at',
+    return ['name', 'name_zh', 'id', 'updated_by', 'created_at',
             'state', 'level'], ''.join(sql)

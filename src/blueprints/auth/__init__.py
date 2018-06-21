@@ -12,7 +12,7 @@ from src.models import db, session_scope, user_source, SmsLog
 from src.services import send_email, redis_store
 import hashlib
 
-BEARER_TOKEN = ' Bearer '
+BEARER_TOKEN = 'Bearer '
 
 auth = Blueprint('auth', __name__)
 
