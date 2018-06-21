@@ -93,7 +93,7 @@ def my_course_sql(params):
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
     ''']
-    sql.append("and s.id ="+json.loads(getattr(g, current_app.config['CUR_USER']))[id])
+    sql.append("and s.id ="+getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():
         sql.append(' and （c.course_name like :course_name or c.course_name_zh like:course_name)')
     if 'teacher_name'in params.keys():
@@ -203,7 +203,7 @@ def my_order_sql(params):
         c.primary_teacher_id = t.id
     ''']
 
-    sql.append(" and o.student_id ="+json.loads(getattr(g, current_app.config['CUR_USER']))[id])
+    sql.append(" and o.student_id ="+getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'order_id' in params.keys():
         sql.append(' and o.id =:order_id')
