@@ -4,9 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 from src.models import db, session_scope
-from src.services import do_query
-import hashlib
 from src.services import do_query, datetime_param_sql_format
+import hashlib
+
 
 course = Blueprint('course', __name__)
 
@@ -14,7 +14,7 @@ course = Blueprint('course', __name__)
 @course.route('/package_query', methods=['POST'])
 def query():
     """
-    swagger-doc: 'do order query'
+    swagger-doc: 'do package query'
     required: []
     req:
       page_limit:
@@ -75,7 +75,7 @@ def query():
             course_name:
               description: 'course name'
               type: 'string'
-             course_name_zh:
+            course_name_zh:
               description: 'course name zh'
               type: 'string'
             course_type:

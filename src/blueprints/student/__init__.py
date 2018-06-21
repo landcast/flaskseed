@@ -15,6 +15,7 @@ student = Blueprint('student', __name__)
 def my_course():
     """
     swagger-doc: 'do my course query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
@@ -91,7 +92,7 @@ def my_course_sql(params):
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
     ''']
-    sql.append("o.studet_id ="+g.get(current_app.config['CUR_ID']))
+    sql.append("and s.id ='"+g.get(current_app.config['CUR_ID'])+"'")
     if 'course_name' in params.keys():
         sql.append(' and （c.course_name like :course_name or c.course_name_zh like:course_name)')
     if 'teacher_name'in params.keys():
@@ -106,13 +107,15 @@ def my_course_sql(params):
             and 'course_status' == '2':
         sql.append(' and cs.end < now()')
 
-    return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
-            'updated_by', 'created_at'], ''.join(sql)
+    return ['id', 'course_name', 'finish', 'classes_number', 'nickname',
+            'start', 'end'], ''.join(sql)
+
 
 @student.route('/my_order', methods=['POST'])
 def my_order():
     """
     swagger-doc: 'do my course query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
@@ -199,7 +202,7 @@ def my_order_sql(params):
         c.primary_teacher_id = t.id
     ''']
 
-    sql.append("o.studet_id ="+g.get(current_app.config['CUR_ID']))
+    sql.append(" and o.student_id ='"+g.get(current_app.config['CUR_ID'])+"'")
 
     if 'order_id' in params.keys():
         sql.append(' and o.id =:order_id')
@@ -213,5 +216,5 @@ def my_order_sql(params):
         sql.append(
             ' and o.created_at between :created_at_start and :created_at_end')
 
-    return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
-            'updated_by', 'created_at'], ''.join(sql)
+    return ['id', 'course_name', 'classes_number', 'order_type', 'payment_state',
+            'created_at', 'nickname','amount'], ''.join(sql)

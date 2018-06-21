@@ -15,6 +15,7 @@ teacher = Blueprint('teacher', __name__)
 def my_course():
     """
     swagger-doc: 'do my course query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
@@ -94,7 +95,7 @@ def my_course_sql(params):
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
     ''']
-    sql.append("t.id ="+g.get(current_app.config['CUR_ID']))
+    sql.append(" and t.id ='"+g.get(current_app.config['CUR_ID'])+"'")
     if 'course_name' in params.keys():
         sql.append(' and （c.course_name like :course_name or c.course_name_zh like:course_name)')
     if 'student_name'in params.keys():
