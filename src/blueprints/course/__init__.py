@@ -230,5 +230,5 @@ def category_sql(params):
         sql.append(
             ' and t.created_at between :created_at_start and :created_at_end')
 
-    return ['id', 'name', 'name_zh', 'updated_by', 'created_at',
+    return [ 'name', 'name_zh', 'id','updated_by', 'created_at',
             'state', 'level'], ''.join(sql)
