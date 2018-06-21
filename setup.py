@@ -17,6 +17,7 @@ class install(_install):
 
         self.post_install_script()
 
+
 if __name__ == '__main__':
     setup(
         name = 'flaskseed',
