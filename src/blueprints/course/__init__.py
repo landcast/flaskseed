@@ -15,6 +15,7 @@ course = Blueprint('course', __name__)
 def query():
     """
     swagger-doc: 'do order query'
+    required: []
     req:
       page_limit:
         description: 'records in one page'
