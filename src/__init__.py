@@ -323,6 +323,7 @@ def create_app(config):
                                            methods=['GET', 'DELETE', 'PUT',
                                                     'POST'],
                                            allow_patch_many=True,
+                                           results_per_page=1000,
                                            primary_key='id')
             # create bare endpoint for GET without cascading query to improve
             # performance by exclude relation columns
