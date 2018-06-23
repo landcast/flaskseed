@@ -272,6 +272,9 @@ def my_homework():
             homework_type:
               description: 'homework type'
               type: 'integer'
+            question_name:
+              description: '作业名称'
+              type: 'string'
             question_text:
               description: '问题'
               type: 'string'
@@ -312,7 +315,7 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name
     from homework hm,study_schedule sc,course c,teacher t,`order` o
     where 
     hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id 
@@ -336,5 +339,5 @@ def my_homework_sql(params):
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
 
-    return ['id', 'homework_type', 'question_text', 'question_attachment_url',
+    return ['id','question_name', 'homework_type', 'question_text', 'question_attachment_url',
             'answer_text','answer_attachment_url', 'score', 'score_remark','score_reason','created_at','teacher_name'], ''.join(sql)
