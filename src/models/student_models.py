@@ -41,6 +41,7 @@ class StudySchedule(EntityMixin, db.Model):
 
 class Homework(EntityMixin, db.Model):
     homework_type = Column(Integer, nullable=False, comment='作业类型1：教师留作业，2：学生完成作业')
+    question_name = Column(String(100), nullable=True, comment='作业名称')
     question_text = Column(String(2000), nullable=True, comment='问题')
     question_attachment_url = Column(String(255), nullable=True, comment='问题附件地址可以多个，JSON')
     answer_text = Column(String(2000), nullable=True, comment='答案')
