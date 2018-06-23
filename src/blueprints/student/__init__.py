@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from filecmp import cmp
+
 from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
@@ -326,7 +328,7 @@ def my_homework_sql(params):
         sql.append(' and sc.id =:study_schedule_id')
 
     if 'homework_state' in params.keys()\
-            and 'homework_state' == '1':
+            and cmp('homework_state','1') == 0:
         sql.append(' and study_schedule_id  in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
