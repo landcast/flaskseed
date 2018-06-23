@@ -328,14 +328,14 @@ def my_homework_sql(params):
         sql.append(' and sc.id =:study_schedule_id')
 
     if 'homework_state' in params.keys()\
-            and 'homework_state'=='1':
+            and '1'==':study_schedule_id':
         sql.append(' and study_schedule_id  in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'homework_state' in params.keys() \
-                and 'homework_state' == '2':
+            and '2'==':study_schedule_id':
         sql.append(' and study_schedule_id  not in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
