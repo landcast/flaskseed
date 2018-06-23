@@ -323,7 +323,7 @@ def my_homework_sql(params):
     sql.append(
         " and sc.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'study_schedule_id' in params.keys():
-        sql.append(' and ac.id =:study_schedule_id')
+        sql.append(' and sc.id =:study_schedule_id')
 
     if 'homework_state' in params.keys()\
             and 'homework_state' == '1':
