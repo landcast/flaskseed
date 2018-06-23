@@ -105,7 +105,7 @@ def my_course_sql(params):
         sql.append(' and t.nick_name like :teacher_name')
     if 'course_time' in params.keys():
         sql.append(
-                ' and cs.start >:course_time and cs.end <:course_time')
+            ' and cs.start >:course_time and cs.end <:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
         sql.append(' and cs.end >=:now()')
@@ -225,8 +225,8 @@ def my_order_sql(params):
     if 'created_at_start' in params.keys() \
             and 'created_at_end' in params.keys():
         sql.append(
-                ' and o.created_at between :created_at_start and '
-                ':created_at_end')
+            ' and o.created_at between :created_at_start and '
+            ':created_at_end')
 
     return ['id', 'course_name', 'classes_number', 'order_type',
             'payment_state',
@@ -327,19 +327,20 @@ def my_homework_sql(params):
     if 'study_schedule_id' in params.keys():
         sql.append(' and sc.id =:study_schedule_id')
 
-    if 'homework_state' in params.keys()\
-            and '1'==':study_schedule_id':
+    if 'homework_state' in params.keys() \
+             and json.loads(params)['study_schedule_id'] == '1':
         sql.append(' and study_schedule_id  in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'homework_state' in params.keys() \
-            and '2'==':study_schedule_id':
+             and json.loads(params)['study_schedule_id'] == '2':
         sql.append(' and study_schedule_id  not in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
 
-    return ['id','question_name', 'homework_type', 'question_text', 'question_attachment_url',
-            'answer_text','answer_attachment_url', 'score', 'score_remark','score_reason','created_at','teacher_name'], ''.join(sql)
+    return ['id', 'question_name', 'homework_type', 'question_text', 'question_attachment_url',
+            'answer_text', 'answer_attachment_url', 'score', 'score_remark', 'score_reason', 'created_at',
+            'teacher_name'], ''.join(sql)
