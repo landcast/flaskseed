@@ -304,6 +304,9 @@ def my_homework():
             teacher_name:
               description: 'teacher name'
               type: 'string'
+            course_name:
+              description: 'course name'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, my_homework_sql))
@@ -317,7 +320,7 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name
     from homework hm,study_schedule sc,course c,teacher t,`order` o
     where 
     hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id 
@@ -343,4 +346,4 @@ def my_homework_sql(params):
 
     return ['id', 'question_name', 'homework_type', 'question_text', 'question_attachment_url',
             'answer_text', 'answer_attachment_url', 'score', 'score_remark', 'score_reason', 'created_at',
-            'teacher_name'], ''.join(sql)
+            'teacher_name','course_name'], ''.join(sql)
