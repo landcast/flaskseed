@@ -46,6 +46,23 @@ class StudentTest(TestBase):
         print(output)
         self.assertTrue('200 OK' in output, 'expect http status return 200')
 
+    def test_my_homework(self):
+        output = self.json_register(random_username(), 'Student')
+        header = JWT_HEADER + ":" + output[JWT_HEADER]
+        url = f'{self.server_location}/student/my_homework'
+        start = (datetime.now() + timedelta(seconds=-30)).isoformat()[:-3] + 'Z'
+        json_data = "'" + json.dumps({
+            "page_no": 1,
+            "page_limit": 1
+        }) + "'"
+        cmd = f'''
+            curl -sS -i -H '{self.json_header}' -H '{header}' -X POST --data {json_data} {url}
+            '''
+        print(cmd)
+        status_code, output = subprocess.getstatusoutput(cmd)
+        print(output)
+        self.assertTrue('200 OK' in output, 'expect http status return 200')
+
 
 if __name__ == "__main__":
     unittest.main()
