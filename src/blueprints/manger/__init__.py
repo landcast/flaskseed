@@ -70,6 +70,9 @@ def query():
             state:
               description: 'state'
               type: 'integer'
+            sys_user_id:
+              description: 'sys_user_id'
+              type: 'integer'
     """
     j = request.json
     return jsonify(do_query(j, generate_sql))
@@ -82,7 +85,7 @@ def generate_sql(params):
     :return:
     '''
     sql = ['''
-    select su.id,su.username,su.mobile,su.email,su.`created_at`,rd.role_name,su.state
+    select su.id,su.username,su.mobile,su.email,su.`created_at`,rd.role_name,su.state,sur.sys_user_id
     from sys_user su,sys_user_role sur,role_definition rd 
     where su.`id`=sur.sys_user_id and sur.role_definition_id = rd.id
     ''']
