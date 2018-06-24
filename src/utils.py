@@ -13,27 +13,29 @@ def setup_pid_file(app):
     """
     pid = os.getpid()
     pid_file_path = app.config['PID_FILE'] + ".pid"
-    if os.path.exists(pid_file_path):
-        with open(pid_file_path, 'r+') as pidfile:
+    print(pid_file_path)
+    if os.path.exists("./" + pid_file_path):
+        try:
+            pidfile = open(pid_file_path, 'r')
             old_pid = pidfile.read()
+            print(old_pid, os.getppid())
+            pidfile.close()
             # kill the process
-            try:
-                if not os.getppid() == int(old_pid):
-                    os.kill(int(old_pid), signal.SIGKILL)
-                    app.logger.debug(
-                        'kill ' + old_pid + ', started ' + str(pid))
-                else:
-                    app.logger.debug(
-                        'flaskseed.pid refer to current process parent id,'
-                        ' ignore kill action')
-            except ProcessLookupError as e:
-                # app.logger.debug(old_pid + ' process already killed', e)
-                pass
-            # move file teller to start
-            pidfile.seek(0, 0)
-            pidfile.write(str(pid))
+            if not os.getppid() == int(old_pid):
+                os.kill(int(old_pid), signal.SIGKILL)
+                print('kill ' + old_pid + ', started ' + str(pid))
+                os.remove(pid_file_path)
+                with open(pid_file_path, 'w') as newpidfile:
+                    newpidfile.write(str(pid))
+            else:
+                print('flaskseed.pid refer to current process parent id,'
+                    ' ignore kill action')
+        except ProcessLookupError as e:
+            # app.logger.debug(old_pid + ' process already killed', e)
+            pass
     else:
-        with open(pid_file_path, 'a+') as pidfile:
+        print('not found pid file, start new server')
+        with open(pid_file_path, 'w') as pidfile:
             pidfile.write(str(pid))
 
 

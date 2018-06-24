@@ -18,12 +18,12 @@ redis_store = redis.from_url(settings.REDIS_URL)
 json_header = 'Content-Type:application/json'
 server_location = 'http://127.0.0.1:5000'
 
+
 def random_username():
     return 'u_' + str(datetime.now().timestamp())
 
 
 class TestBase(unittests.test_base.TestBase):
-
 
     @classmethod
     def register(cls, username, user_type):
@@ -37,7 +37,8 @@ class TestBase(unittests.test_base.TestBase):
             "verify_code": "000000"
         }) + "'"
         cmd = f'''
-            curl -sS -i -H '{json_header}' -X POST --data {json_data} {register_url}
+            curl -sS -i -H '{json_header}' -X POST --data {json_data} {
+            register_url}
             '''
         status_code, output = subprocess.getstatusoutput(cmd)
         return status_code, output
@@ -50,6 +51,7 @@ class TestBase(unittests.test_base.TestBase):
     @classmethod
     def server_check(cls):
         pid_file_path = "./" + settings.PID_FILE + ".pid"
+        print('current pid file at ' + os.path.abspath(pid_file_path))
         if os.path.exists(pid_file_path):
             logger.debug('step 10')
             with open(pid_file_path, 'r+') as pidfile:
@@ -57,9 +59,11 @@ class TestBase(unittests.test_base.TestBase):
                 old_pid = pidfile.read()
                 # check process exist or not
                 output = subprocess.getoutput('ps -q ' + old_pid)
+                print(old_pid, output)
                 if old_pid not in output:
                     logger.debug('step 12')
-                    logger.debug('start new server ' + str(datetime.now()))
+                    print('not found process in pid, start new server ' + str(
+                            datetime.now()))
                     subprocess.Popen(
                             'python run.py',
                             shell=True, start_new_session=True)
@@ -67,7 +71,8 @@ class TestBase(unittests.test_base.TestBase):
                     logger.debug('step 13 ' + str(datetime.now()))
         else:
             logger.debug('step 20 ' + str(datetime.now()))
-            logger.debug(os.getcwd())
+            print('not found pid file, start new server' + str(
+                    datetime.now()))
             subprocess.Popen(
                     'python run.py ',
                     shell=True, start_new_session=True)
