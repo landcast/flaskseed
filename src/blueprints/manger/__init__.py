@@ -3,10 +3,10 @@ from flask import jsonify, Blueprint, request
 from src.services import do_query, datetime_param_sql_format
 
 
-admin = Blueprint('admin', __name__)
+manger = Blueprint('manger', __name__)
 
 
-@admin.route('/staff_query', methods=['POST'])
+@manger.route('/staff_query', methods=['POST'])
 def query():
     """
     swagger-doc: 'do order query'
