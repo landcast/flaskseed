@@ -9,7 +9,7 @@ manger = Blueprint('manger', __name__)
 @manger.route('/staff_query', methods=['POST'])
 def query():
     """
-    swagger-doc: 'do order query'
+    swagger-doc: 'do staff query'
     required: []
     req:
       page_limit:
@@ -72,8 +72,7 @@ def query():
               type: 'integer'
     """
     j = request.json
-    return jsonify(do_query(
-        generate_sql))
+    return jsonify(do_query(j, generate_sql))
 
 
 def generate_sql(params):
