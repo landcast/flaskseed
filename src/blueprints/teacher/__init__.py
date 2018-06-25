@@ -95,6 +95,7 @@ def my_course_sql(params):
     from `order` o, student s, teacher t, course c,`course_schedule`cs 
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
+        and o.`state` <> 99 and s.`state` <> 99 and c.state<> 99 and cs.state <> 99
     ''']
     sql.append(" and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():

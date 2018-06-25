@@ -95,6 +95,7 @@ def my_course_sql(params):
     from `order` o, student s, teacher t, course c,`course_schedule`cs 
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
+        and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
     ''']
     sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():
@@ -207,6 +208,7 @@ def my_order_sql(params):
     from `order` o, teacher t, course c
     where  o.course_id = c.id and
         c.primary_teacher_id = t.id
+        and o.`state` <> 99 and c.state<> 99
     ''']
 
     sql.append(
@@ -323,7 +325,8 @@ def my_homework_sql(params):
     select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name
     from homework hm,study_schedule sc,course c,teacher t,`order` o
     where 
-    hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id 
+    hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id
+    and o.`state` <> 99  and c.state<> 99 
     ''']
     sql.append(
         " and sc.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
