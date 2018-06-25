@@ -319,6 +319,9 @@ def create_app(config):
                     and hasattr(v, '__tablename__')):
                 continue
             # create endpoint for CRUD and with cascading support for GET
+            # because if client pagination results_per_page greater than
+            # server default 10, the client results_per_page will be ignored
+            # so, set the server results_per_page to 1000
             current_app.manager.create_api(v, url_prefix='/api/v1',
                                            methods=['GET', 'DELETE', 'PUT',
                                                     'POST'],
