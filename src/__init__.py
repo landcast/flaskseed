@@ -20,7 +20,7 @@ from src.blueprints.order import order
 from src.blueprints.course import course
 from src.blueprints.student import student
 from src.blueprints.teacher import teacher
-
+from src.blueprints.manger import manger
 
 from src.resources.api import api, admin
 from src.models import *
@@ -59,7 +59,7 @@ def auth_check_needed(request):
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/admin/*',
                          '/order/*', '/api/*', '/swagger.json',
-                         '/static/*', '/swagger_ui/*', '/swagger', '/student/*', '/teacher/*', '/course/*']
+                         '/static/*', '/swagger_ui/*', '/swagger', '/student/*', '/teacher/*', '/course/*', '/manger/*']
     else:
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/static/*']
@@ -241,6 +241,7 @@ def create_app(config):
     app.register_blueprint(course, url_prefix='/course')
     app.register_blueprint(student, url_prefix='/student')
     app.register_blueprint(teacher, url_prefix='/teacher')
+    app.register_blueprint(manger, url_prefix='/manger')
     manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     app.manager = manager
     app.json_encoder = CustomJSONEncoder

@@ -281,7 +281,6 @@ class ClassroomDeviceEnum(enum.IntEnum):
     PC = 1
     PHONE = 2
 
-
 class CourseClassParticipant(EntityMixin, db.Model):
     role_in_course = Column(Enum(ClassroomRoleEnum), nullable=False,
                             server_default=ClassroomRoleEnum.ASSISTANT.name)
@@ -313,3 +312,15 @@ class CourseAppointment(EntityMixin, db.Model):
     appointments = db.relationship('Teacher',
                                    backref='course_appointments',
                                    lazy=True)
+
+
+class CourdeTypeEnum(enum.IntEnum):
+    """
+    COMMON :公共课程
+    ONLINE :在线课程
+    TRYOUT :试讲
+    """
+    COMMON = 1
+    ONLINE = 2
+    TRYOUT = 3
+
