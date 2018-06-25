@@ -88,6 +88,7 @@ def generate_sql(params):
     select su.id,su.username,su.mobile,su.email,su.`created_at`,rd.role_name,su.state,sur.sys_user_id
     from sys_user su,sys_user_role sur,role_definition rd 
     where su.`id`=sur.sys_user_id and sur.role_definition_id = rd.id
+    and su.`delete_flag` = 'IN_FORCE' and sur.`delete_flag` = 'IN_FORCE' and rd.`delete_flag` = 'IN_FORCE' 
     ''']
     if 'user_name' in params.keys():
         sql.append(' and su.username like :user_name')
@@ -191,6 +192,7 @@ def student_course_sql(params):
     from `order` o, student s, teacher t, course c,`course_schedule`cs 
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
+        and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' 
     ''']
     sql.append("and s.id =" + params['student_id'])
     if 'course_name' in params.keys():

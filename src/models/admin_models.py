@@ -20,6 +20,7 @@ class Channel(EntityMixin, db.Model):
     contact_tel = Column(String(255), nullable=True, comment='联系电话')
     contact_email = Column(String(255), nullable=True, comment='联系人邮件')
     contact_address = Column(String(255), nullable=True, comment='联系地址')
+    contact_name = Column(String(255), nullable=True, comment='联系人名称')
     logo_url = Column(String(255), nullable=True, comment='logourl')
     domain_address = Column(String(255), nullable=True, comment='主页地址')
     service_helper = Column(Integer, ForeignKey('sys_user.id'),

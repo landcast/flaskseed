@@ -105,10 +105,11 @@ def generate_sql(params):
     sql = ['''
     select c.`course_name`,c.`course_name_zh`,c.id,c.`course_type`,c.state,
     c.`updated_by`,c.`created_at`
-    from   course c, subject su,
-    subject_category sc, curriculum cr
+    from   course c, subject su,subject_category sc, curriculum cr
     where  c.subject_id = su.id and
         su.curriculum_id = cr.id and su.subject_category_id = sc.id
+    and c.state <> 99 and su.state <> 99 and sc.state <> 99 and cr.state <> 99    
+    and c.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE'  and cr.`delete_flag` = 'IN_FORCE' 
     ''']
     if 'course_id' in params.keys():
         sql.append(' and c.course_id = :course_id')
@@ -218,11 +219,11 @@ def category_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select t.* from (select full_name as name,full_name_zh as name_zh,id,
-    updated_by,created_at,state,1 'level' from `curriculum` cu 
+    updated_by,created_at,state,1 'level' from `curriculum` cu where cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE' 
     union all select subject_category as name,subject_category_zh as name_zh,
-    id,updated_by,created_at,state,2 'level' from subject_category
+    id,updated_by,created_at,state,2 'level' from subject_category where state <> 99 and `delete_flag` = 'IN_FORCE'
     union all select subject_name as name,subject_name_zh as name_zh,id,
-    updated_by,created_at,state,3 'level' from subject) t
+    updated_by,created_at,state,3 'level' from subject where  state <> 99 and `delete_flag` = 'IN_FORCE') t
     ''']
     if 'course_id' in params.keys():
         sql.append(' and t.id = :course_id')
