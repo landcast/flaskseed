@@ -329,7 +329,7 @@ def my_homework_sql(params):
     where 
     hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id
     and o.`state` <> 99  and c.state<> 99 
-    and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE' 
+    and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE' 
     ''']
     sql.append(
         " and sc.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
