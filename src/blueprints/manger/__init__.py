@@ -335,7 +335,7 @@ def student_allot_sql(params):
 
 
 @manger.route('/thacher_check', methods=['POST'])
-def allot_query():
+def thacher_check():
     """
     swagger-doc: 'do allot query'
     required: []
@@ -439,7 +439,7 @@ def thacher_check_sql(params):
 
 
 @manger.route('/thacher_interview', methods=['POST'])
-def allot_query():
+def thacher_interview():
     """
     swagger-doc: 'do allot query'
     required: []
@@ -517,10 +517,10 @@ def allot_query():
               type: 'integer'
     """
     j = request.json
-    return jsonify(do_query(j, thacher_check_sql))
+    return jsonify(do_query(j, thacher_interviewsql))
 
 
-def thacher_check_sql(params):
+def thacher_interview_sql(params):
     '''
     generate dynamic sql for order query by params
     :param params:
