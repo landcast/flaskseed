@@ -221,11 +221,11 @@ def my_order_sql(params):
         sql.append(' and o.id =:order_id')
 
     if 'course_name' in params.keys():
-        sql.appen(
+        sql.append(
             ' and (c.course_name like %:course_name % or c.course_name_zh ' \
             'like %:course_name %)')
     if 'payment_state' in params.keys():
-        sql.append[' and o.payment_state = :payment_state']
+        sql.append(' and o.payment_state = :payment_state')
     if 'created_at_start' in params.keys() \
             and 'created_at_end' in params.keys():
         sql.append(
