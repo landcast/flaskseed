@@ -222,8 +222,8 @@ def my_order_sql(params):
 
     if 'course_name' in params.keys():
         sql.appen(
-            ' and (c.course_name like \'%:course_name %\'or c.course_name_zh ' \
-            'like \'%:course_name %\')')
+            ' and (c.course_name like %:course_name % or c.course_name_zh ' \
+            'like %:course_name %)')
     if 'payment_state' in params.keys():
         sql.append[' and o.payment_state = :payment_state']
     if 'created_at_start' in params.keys() \
