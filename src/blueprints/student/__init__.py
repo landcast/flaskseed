@@ -221,8 +221,8 @@ def my_order_sql(params):
         sql.append(' and o.id =:order_id')
 
     if 'course_name' in params.keys():
-        sql.append(" and (c.course_name like '%").append(params['course_name']).append("%'");
-        sql.append(" or c.course_name_zh like '%").append(params['course_name']).append("%')");
+        sql.append(" and (c.course_name like '%").append(params['course_name']).append("%'")\
+            .append(" or c.course_name_zh like '%").append(params['course_name']).append("%')")
 
     if 'payment_state' in params.keys():
         sql.append(' and o.payment_state = :payment_state')
