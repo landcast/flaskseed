@@ -139,6 +139,9 @@ def my_order():
       course_name:
         description: 'course name'
         type: 'string'
+      teacher_name:
+        description: 'teacher name'
+        type: 'string'
       order_id:
         description: 'order id'
         type: 'string'
@@ -232,7 +235,10 @@ def my_order_sql(params):
         sql.append(" or c.course_name_zh like '%")
         sql.append(params['course_name'])
         sql.append("%')")
-
+    if 'teacher_name' in params.keys():
+        sql.append(" and t.nick_name like '%")
+        sql.append(params['teacher_name'])
+        sql.append("%')")
     if 'payment_state' in params.keys():
         sql.append(' and o.payment_state = :payment_state')
     if 'created_at_start' in params.keys() \
