@@ -84,8 +84,10 @@ class OrderTypeEnum(IntFlag):
     GIVE :赠送订单
     COMPENSATE :补偿订单
     FREE :免费订单
+    REFUND:退款订单
     """
     COMMON = 1
     GIVE = 2
     COMPENSATE = 3
     FREE = 4
+    REFUND = 5
