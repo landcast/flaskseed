@@ -152,7 +152,18 @@ class CourseStatueEnum(enum.IntEnum):
     EFFECTIVE = 98
     INVALID = 99
 
+class CourseScheduleStatueEnum(enum.IntEnum):
+    """
+    CLASS_BEGIN:已经上课
+    NO_CLASS:未上课
+    CANCEL:取消
+    TROUBLE_CLASS:问题课程
+    """
 
+    NO_CLASS = 1
+    CLASS_BEGIN = 2
+    CANCEL =  3
+    TROUBLE_CLASS = 4
 
 class CourseClassTypeEnum(enum.IntEnum):
     """
@@ -180,6 +191,7 @@ class Courseware(EntityMixin, db.Model):
     before course study, needs to be checked by admin
     """
     ware_desc = Column(String(2000), nullable=False, comment='课件描述')
+    ware_name = Column(String(100), nullable=False, comment='课件名称')
     ware_url = Column(String(255), nullable=True, comment='课件存储地址')
     ware_uid = Column(String(120), nullable=True, index=True,
                       comment='e.g. duobei use')

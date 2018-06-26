@@ -121,7 +121,7 @@ class StudentState(IntFlag):
     BASIC_INFO：学生基本信息
     DISTRIBUTION_ADVISER:分配学生顾问
     PERFECT_INFORMATION：完善信息
-    DISTRIBUTION_HEADMASTER:分配学生班主任
+    DISTRIBUTION_HEADMASTER:待分配学生班主任
     HAVE_HEADMASTER:分配学生班主任
     NOORDER:未下订单
     INSTUDY: 付费上课
