@@ -242,8 +242,8 @@ def create_app(config):
     app.register_blueprint(student, url_prefix='/student')
     app.register_blueprint(teacher, url_prefix='/teacher')
     app.register_blueprint(manger, url_prefix='/manger')
-    manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
-    app.manager = manager
+    sw_manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
+    app.sw_manager = sw_manager
     app.json_encoder = CustomJSONEncoder
 
     @app.before_request
@@ -323,7 +323,7 @@ def create_app(config):
             # because if client pagination results_per_page greater than
             # server default 10, the client results_per_page will be ignored
             # so, set the server results_per_page to 1000
-            current_app.manager.create_api(v, url_prefix='/api/v1',
+            current_app.sw_manager.create_api(v, url_prefix='/api/v1',
                                            methods=['GET', 'DELETE', 'PUT',
                                                     'POST'],
                                            allow_patch_many=True,
@@ -337,7 +337,7 @@ def create_app(config):
                         getattr(getattr(v, x), 'property', None),
                         ColumnProperty):
                     include_columns.append(x)
-            current_app.manager.create_api(v, url_prefix='/api/v1/_bare',
+            current_app.sw_manager.create_api(v, url_prefix='/api/v1/_bare',
                                            methods=['GET'],
                                            include_columns=include_columns,
                                            primary_key='id')
