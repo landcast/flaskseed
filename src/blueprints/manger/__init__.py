@@ -517,7 +517,7 @@ def thacher_interview():
               type: 'integer'
     """
     j = request.json
-    return jsonify(do_query(j, thacher_interviewsql))
+    return jsonify(do_query(j, thacher_interview_sql))
 
 
 def thacher_interview_sql(params):
