@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from flask import jsonify, Blueprint, request
+from flask import g, jsonify, Blueprint, request, current_app
 from src.services import do_query, datetime_param_sql_format
-
+from sqlalchemy.sql import *
+from src.models import db, session_scope, Course,Order,PayLog,Student,Teacher,Subject
 
 order = Blueprint('order', __name__)
 
@@ -140,3 +141,219 @@ def generate_sql(params):
     return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
             'order_amount'], ''.join(sql)
+
+
+@order.route('/establish', methods=['POST'])
+def establish():
+    """
+    swagger-doc: 'send verify code by sms'
+    required: ['mobile_no']
+    req:
+      order_type:
+        description: '订单类型'
+        type: 'string'
+      have_course:
+        description: '存在课包：1，不存在：0'
+        type: 'integer'
+      course_id:
+        description: '课程包id'
+        type: 'integer'
+      student:
+        description: '学生账号或id'
+        type: 'string'
+      subject_id:
+        description: '第三节分类id'
+        type: 'integer'
+      course_type:
+        description: '1:公共，2在线'
+        type: 'integer'
+      class_type:
+        description: '班级，常量'
+        type: 'integer'
+      project_type:
+        description: '班级，常量'
+        type: 'integer'
+      teacher:
+        description: '教师账号或id'
+        type: 'string'
+      classes_number:
+        description: '课程节数'
+        type: 'integer'
+      basic_amount:
+        description: '基本价格'
+        type: 'integer'
+      amount:
+        description: '金额'
+        type: 'integer'
+      order_desc:
+        description: '订单描述'
+        type: 'string'
+    res:
+      id:
+        description: 'order id'
+        type: 'string'
+    """
+    order_type = request.json['order_type']
+    course_id = request.json['course_id']
+    student_parm = request.json['student']
+    subject_id = request.json['subject_id']
+    course_type = request.json['course_type']
+    class_type = request.json['class_type']
+    project_type = request.json['project_type']
+    teacher_parm = request.json['teacher']
+    classes_number = request.json['classes_number']
+    basic_amount = request.json['basic_amount']
+    amount = request.json['amount']
+    order_desc = request.json['order_desc']
+    have_course = request.json['have_course']
+
+    with session_scope(db) as session:
+        if student_parm.isdigit():
+            student = session.query(Student).filter_by(
+                id=student_parm).first()
+        else:
+            student = session.query(Student).filter_by(
+                username=student_parm).first()
+
+        student_id = getattr(student, 'id')
+
+        if student_id.isdigit()!=true:
+            return jsonify({
+                "error": "not found student:{0} ".format(
+                    student_parm)
+            }), 500
+
+        if 'have_course' in request.json and have_course == 0:
+
+            if teacher_parm.isdigit():
+                teacher = session.query(Teacher).filter_by(id=teacher_parm).first()
+            else:
+                teacher = session.query(Teacher).filter_by(username=teacher_parm).first()
+
+            teacher_id = getattr(teacher, 'id')
+
+            subject = session.query(Subject).filter_by(id=subject_id).first()
+
+            if teacher_id.isdigit()!=true:
+                return jsonify({
+                    "error": "not found teacher: {1}".format(
+                        teacher_parm)
+                }), 500
+
+            course_name = getattr(subject, 'subject_name')
+
+            course_name_zh = getattr(subject, 'subject_name_zh')
+
+            course =Course( course_type= course_type,
+                            class_type= class_type,
+                            classes_number = classes_number,
+                            course_desc = order_desc,
+                            state = 98,
+                            price= basic_amount,
+                            primary_teacher_id = teacher_id,
+                            subject_id = subject_id,
+                            course_name = course_name,
+                            course_name_zh = course_name_zh,
+                            delete_flag = 'IN_FORCE',
+                            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                )
+
+            session.add(course)
+
+            amount = classes_number*basic_amount
+
+            course_id = getattr(course, 'id')
+
+            if teacher_id.isdigit()!=true:
+                return jsonify({
+                    "error": "not found course: {1}".format(
+                        course_id)
+                }), 500
+
+        order = Order(
+            order_type = order_type,
+            order_desc = order_desc,
+            amount = amount,
+            student_id = student_id,
+            course_id = course_id,
+            payment_state = 1,
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+
+        session.add(order)
+
+        order_id = getattr(order, 'id')
+
+        paylog = PayLog( direction = order_desc,
+                        state = 98,
+                        amount = amount,
+                        payment_fee = amount,
+                        order_id= order_id,
+                        account_id = student_id,
+                        delete_flag = 'IN_FORCE',
+                      updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                )
+        session.add(paylog)
+
+    return jsonify({'id':order_id })
+
+
+@order.route('/refund', methods=['POST'])
+def establish():
+    """
+    swagger-doc: 'send verify code by sms'
+    required: ['mobile_no']
+    req:
+      order_id:
+        description: '订单id'
+        type: 'string'
+      reason:
+        description: '原因'
+        type: 'string'
+      amount:
+        description: '金额'
+        type: 'integer'
+      order_desc:
+        description: '描述'
+        type: 'string'
+    res:
+      id:
+        description: 'id'
+        type: 'string'
+    """
+    order_id = request.json['order_id']
+    reason = request.json['reason']
+    amount = request.json['amount']
+    order_desc = request.json['order_desc']
+
+    with session_scope(db) as session:
+
+        order = session.query(Order).filter_by(
+                id=order_id).first()
+
+        order_id = getattr(order, 'id')
+
+        if order_id.isdigit()!=true:
+            return jsonify({
+                "error": "not found order_id:{0} ".format(
+                    order_id)
+            }), 500
+
+        setattr(order,'order_type',5)
+
+        session.add(order)
+
+        paylog = PayLog( direction = order_desc,
+                         state = 98,
+                         amount = amount,
+                         payment_fee = amount,
+                         order_id= order_id,
+                         state_reason = reason,
+                         order_desc= order_desc,
+                         delete_flag = 'IN_FORCE',
+                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                         )
+        session.add(paylog)
+
+    return jsonify({'id':order_id })
