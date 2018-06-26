@@ -1074,7 +1074,7 @@ def thacher_common_sql(params):
 
 
 @manger.route('/orders', methods=['POST'])
-def query():
+def orders_query():
     """
     swagger-doc: 'do order query'
     required: []
@@ -1156,10 +1156,10 @@ def query():
     j = request.json
     return jsonify(do_query(
         datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
-        generate_sql))
+        orders_query_sql))
 
 
-def generate_sql(params):
+def orders_query_sql(params):
     '''
     generate dynamic sql for order query by params
     :param params:
