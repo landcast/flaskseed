@@ -878,7 +878,7 @@ def course_ware_query():
       course_ware_name:
         description: '课件名称'
         type: 'string'
-      subject_name:
+      course_name:
         description: '课包名称'
         type: 'string'
       teacher_name:
@@ -915,7 +915,7 @@ def course_ware_query():
             room_title:
               description: '课节，房间名称'
               type: 'string'
-            subject_name:
+            course_name:
               description: '课包名称'
               type: 'string'
             teacher_name:
@@ -940,7 +940,7 @@ def course_ware_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select csw.id,csw.ware_name,cc.room_title,su.subject_name,t.`username` as teacher_name,csw.`created_at`,csw.`checked_result` as state
+    select csw.id,csw.ware_name,cc.room_title,c.course_name,t.`username` as teacher_name,csw.`created_at`,csw.`checked_result` as state
     from course c,teacher t ,course_schedule cs,course_classroom cc,courseware csw,subject su
     where c.`primary_teacher_id` = t.id and c.id = cs.`course_id` and cs.id = cc.course_schedule_id and cc.room_id = csw.room_id and c.subject_id = su.id
     and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and cc.`delete_flag` = 'IN_FORCE' and csw.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE' 
@@ -953,8 +953,8 @@ def course_ware_sql(params):
     if 'course_ware_name' in params.keys():
         sql.append(' and csw.ware_name like:course_ware_name')
 
-    if 'subject_name' in params.keys():
-        sql.append(' and su.subject_name like:subject_name')
+    if 'course_name' in params.keys():
+        sql.append(' and c.course_name like:course_name')
 
     if 'teacher_name' in params.keys():
         sql.append(' and t.username like:teacher_name')
