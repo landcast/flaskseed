@@ -197,48 +197,58 @@ def establish():
     course_id = request.json['course_id']
     student_parm = request.json['student']
     subject_id = request.json['subject_id']
-    course_type = request.json['course_type']
-    class_type = request.json['class_type']
-    project_type = request.json['project_type']
-    teacher_parm = request.json['teacher']
-    classes_number = request.json['classes_number']
-    basic_amount = request.json['basic_amount']
     amount = request.json['amount']
     order_desc = request.json['order_desc']
-    have_course = request.json['have_course']
 
     with session_scope(db) as session:
         if student_parm.isdigit():
             student = session.query(Student).filter_by(
-                id=student_parm).first()
+                id=student_parm).one_or_none()
         else:
             student = session.query(Student).filter_by(
-                username=student_parm).first()
+                username=student_parm).one_or_none()
 
-        student_id = getattr(student, 'id')
-
-        if student_id.isdigit()!=true:
+        if student.isNone:
             return jsonify({
                 "error": "not found student:{0} ".format(
                     student_parm)
             }), 500
 
-        if 'have_course' in request.json and have_course == 0:
+        student_id = getattr(student, 'id')
+
+        subject = session.query(Subject).filter_by(id=subject_id).one_or_none()
+
+        if subject.isNone:
+            return jsonify({
+                "error": "not found subject: {1}".format(
+                    subject_id)
+            }), 500
+
+
+        if 'have_course' in request.json and request.json['have_course'] == 0:
+
+            teacher_parm = request.json['teacher']
+            course_type = request.json['course_type']
+            class_type = request.json['class_type']
+           # project_type = request.json['project_type']
+
+            classes_number = request.json['classes_number']
+            basic_amount = request.json['basic_amount']
 
             if teacher_parm.isdigit():
-                teacher = session.query(Teacher).filter_by(id=teacher_parm).first()
+                teacher = session.query(Teacher).filter_by(id=teacher_parm).one_or_none()
             else:
-                teacher = session.query(Teacher).filter_by(username=teacher_parm).first()
+                teacher = session.query(Teacher).filter_by(username=teacher_parm).one_or_none()
 
-            teacher_id = getattr(teacher, 'id')
+            subject = session.query(Subject).filter_by(id=subject_id).one_or_none()
 
-            subject = session.query(Subject).filter_by(id=subject_id).first()
-
-            if teacher_id.isdigit()!=true:
+            if teacher.isNone:
                 return jsonify({
                     "error": "not found teacher: {1}".format(
                         teacher_parm)
                 }), 500
+
+            teacher_id = getattr(teacher, 'id')
 
             course_name = getattr(subject, 'subject_name')
 
@@ -263,12 +273,6 @@ def establish():
             amount = classes_number*basic_amount
 
             course_id = getattr(course, 'id')
-
-            if teacher_id.isdigit()!=true:
-                return jsonify({
-                    "error": "not found course: {1}".format(
-                        course_id)
-                }), 500
 
         order = Order(
             order_type = order_type,
@@ -330,11 +334,11 @@ def establish():
     with session_scope(db) as session:
 
         order = session.query(Order).filter_by(
-                id=order_id).first()
+                id=order_id).one_or_none()
 
         order_id = getattr(order, 'id')
 
-        if order_id.isdigit()!=true:
+        if order_id.isNone:
             return jsonify({
                 "error": "not found order_id:{0} ".format(
                     order_id)
