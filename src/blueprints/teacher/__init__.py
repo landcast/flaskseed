@@ -100,11 +100,16 @@ def my_course_sql(params):
     ''']
     sql.append(" and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():
-        sql.append(
-            ' and （c.course_name like :course_name or c.course_name_zh '
-            'like:course_name)')
+        sql.append(" and (c.course_name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or c.course_name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
     if 'student_name' in params.keys():
-        sql.append(' and s.nick_name like :student_name')
+        sql.append(" and s.nick_name like '%")
+        sql.append(params['student_name'])
+        sql.append("%')")
     if 'course_time' in params.keys():
         sql.append(
                 ' and cs.start >:course_time and cs.end <:course_time')
