@@ -300,6 +300,7 @@ def establish():
                         order_id= order_id,
                         account_id = student_id,
                         delete_flag = 'IN_FORCE',
+                        state_reason = 'establish',
                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
         session.add(paylog)
@@ -350,7 +351,7 @@ def refund():
 
         session.add(order)
 
-        paylog = PayLog( direction = order_desc,
+        paylog = PayLog( direction = 1,
                          state = 98,
                          amount = amount,
                          payment_fee = amount,
