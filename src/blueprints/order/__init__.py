@@ -363,6 +363,7 @@ def refund():
                          result = amount,
                          order_id= order_id,
                          state_reason = reason,
+                         remark= order_desc,
                          delete_flag = 'IN_FORCE',
                          payment_method = 1,
                          updated_by=getattr(g, current_app.config['CUR_USER'])['username']
