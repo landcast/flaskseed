@@ -147,7 +147,7 @@ def register():
         user = target_table(username=user_name,
                             password=generate_password_hash(
                                 request.json['password']), state=1,
-                            updated_by=user_name, email=email, mobile=mobile)
+                            updated_by=user_name, email=email, mobile=mobile,nickname=user_name)
         current_app.logger.debug('encrypted password:' + user.password)
         result = session.add(user)
         current_app.logger.debug(result)
