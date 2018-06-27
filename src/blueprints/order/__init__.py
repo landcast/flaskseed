@@ -269,6 +269,7 @@ def establish():
                 )
 
             session.add(course)
+            session.flush()
 
             amount = classes_number*basic_amount
 
@@ -290,6 +291,7 @@ def establish():
         )
 
         result = session.add(order)
+        session.flush()
         current_app.logger.debug(result)
 
         order_id = getattr(order, 'id')
@@ -307,6 +309,7 @@ def establish():
                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
         session.add(paylog)
+        session.flush()
 
     return jsonify({'id':order_id })
 
