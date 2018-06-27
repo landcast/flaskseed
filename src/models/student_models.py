@@ -54,7 +54,6 @@ class Homework(EntityMixin, db.Model):
     homeworks = db.relationship('StudySchedule', backref='homeworks',
                                 lazy=True)
 
-
 class StudyResult(EntityMixin, db.Model):
     score = Column(Float, nullable=True, comment='分数')
     score_type = Column(String(60), nullable=True, comment='得分类型')
@@ -62,6 +61,7 @@ class StudyResult(EntityMixin, db.Model):
     score_reason = Column(String(2000), nullable=True, comment='得分原因')
     score_remark = Column(String(2000), nullable=True, comment='分数标记')
     score_comment = Column(String(2000), nullable=True, comment='分数确认')
+    report_card_url = Column(String(2000), nullable=True, comment='成绩单 JSON')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     student_study_results = db.relationship('Student', backref='study_results',
