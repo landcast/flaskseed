@@ -278,9 +278,13 @@ def establish():
             order_type = order_type,
             order_desc = order_desc,
             amount = amount,
+            discount = amount,
+            promotion=course_id,
             student_id = student_id,
             course_id = course_id,
             payment_state = 1,
+            channel_id = 1,
+            state = 98,
             delete_flag = 'IN_FORCE',
             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
         )
