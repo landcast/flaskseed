@@ -20,11 +20,13 @@ class StudySchedule(EntityMixin, db.Model):
     actual_start = Column(DateTime, nullable=False, comment='实际上课开始时间')
     actual_end = Column(DateTime, nullable=False, comment='实际上课结束时间')
     study_state = Column(Integer, nullable=False, comment='学习状态，1：进行中，2：已经学完')
-    evaluation = Column(String(255), nullable=True, comment='评价')
-    result = Column(String(255), nullable=True, comment='结果反馈')
+    student_evaluation = Column(String(255), nullable=True, comment='学生评价')
+    student_result = Column(String(255), nullable=True, comment='学生结果反馈')
+    teacher_evaluation = Column(String(255), nullable=True, comment='教师评价')
+    teacher_result = Column(String(255), nullable=True, comment='教师结果反馈')
     homework = Column(String(255), nullable=True, comment='作业')
     test = Column(String(255), nullable=True, comment='课后测试')
-    class_score = Column(Float, nullable=True, comment='课程评分')
+    student_score = Column(Float, nullable=True, comment='学生评分')
     teacher_score = Column(Float, nullable=True, comment='教师评分')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
@@ -61,7 +63,7 @@ class StudyResult(EntityMixin, db.Model):
     score_reason = Column(String(2000), nullable=True, comment='得分原因')
     score_remark = Column(String(2000), nullable=True, comment='分数标记')
     score_comment = Column(String(2000), nullable=True, comment='分数确认')
-    report_card_url = Column(String(2000), nullable=True, comment='成绩单 JSON')
+    report_card_url = Column(String(200), nullable=True, comment='成绩单地址')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     student_study_results = db.relationship('Student', backref='study_results',

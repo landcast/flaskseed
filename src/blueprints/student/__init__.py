@@ -353,14 +353,14 @@ def my_homework_sql(params):
 
     if 'homework_state' in params.keys() \
              and params['study_schedule_id']== '1':
-        sql.append(' and study_schedule_id  in (select study_schedule_id '
+        sql.append(' and hm. study_schedule_id  in (elect study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'homework_state' in params.keys() \
              and params['study_schedule_id'] == '2':
-        sql.append(' and study_schedule_id  not in (select study_schedule_id '
+        sql.append(' and hm. study_schedule_id  not in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
@@ -368,5 +368,92 @@ def my_homework_sql(params):
     return ['id', 'question_name', 'homework_type', 'question_text', 'question_attachment_url',
             'answer_text', 'answer_attachment_url', 'score', 'score_remark', 'score_reason', 'created_at',
             'teacher_name','course_name'], ''.join(sql)
+
+
+
+
+@student.route('/report_card', methods=['POST'])
+def report_card():
+    """
+    swagger-doc: 'do mreport_card query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      student_id:
+        description: '学生id，如果不传认为是自己'
+        type: 'string'
+      course_id:
+        description: '课程id'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '学习结果id'
+              type: 'integer'
+            course_id:
+              description: '课程id'
+              type: 'string'
+            course_name:
+              description: 'course name'
+              type: 'string'
+            created_at:
+              description: 'created at'
+              type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
+            report_card_url:
+              description: '成绩单地址'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, report_card_sql))
+
+
+def report_card_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+	select sr.id,c.id as course_id,c.`course_name`,sr.`created_at`,t.nickname as teacher_name,sr.report_card_url
+	from study_result sr,course_exam ce,course c,teacher t
+	where sr.course_exam_id = ce.id and ce.course_id = c.id and c.primary_teacher_id = t.id
+    and ce.state<> 99 and c.`state` <> 99  and t.state<> 99 
+    and sr.`delete_flag` = 'IN_FORCE' and ce.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE'  
+    ''']
+
+    if 'student_id' in params.keys():
+        sql.append(" and sr.student_id =:student_id")
+    else:
+        sql.append(" and sr.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    if 'course_id' in params.keys():
+        sql.append(' and c.id =:course_id')
+
+    return ['id', 'course_id', 'course_name', 'created_at', 'teacher_name','report_card_url'], ''.join(sql)
+
 
 

@@ -352,7 +352,7 @@ def refund():
                     order_id)
             }), 500
 
-        setattr(order,'order_type',5)
+        setattr(order,'order_type',4)
 
         session.add(order)
 
