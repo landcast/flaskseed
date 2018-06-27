@@ -356,14 +356,13 @@ def refund():
 
         session.add(order)
 
-        paylog = PayLog( direction = 1,
+        paylog = PayLog( direction = 2,
                          state = 98,
                          amount = amount,
                          payment_fee = amount,
                          result = amount,
                          order_id= order_id,
                          state_reason = reason,
-                         order_desc= order_desc,
                          delete_flag = 'IN_FORCE',
                          payment_method = 1,
                          updated_by=getattr(g, current_app.config['CUR_USER'])['username']

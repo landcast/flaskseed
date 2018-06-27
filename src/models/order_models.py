@@ -36,13 +36,14 @@ class PayLog(EntityMixin, db.Model):
     result = Column(Integer, nullable=False)
     payment_method = Column(Integer, nullable=False)
     payment_fee = Column(Integer, nullable=False)
+    remark = Column(String(1000), nullable=True,comment='备注信息')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
     order_paylogs = db.relationship('Order', backref='order_paylogs', lazy=True)
     account_id = Column(Integer, ForeignKey('account.id'),
-                        nullable=False)
+                        nullable=True)
     account_paylogs = db.relationship('Account', backref='account_paylogs',
-                                      lazy=False)
+                                      lazy=True)
 
 
 class Account(EntityMixin, db.Model):
