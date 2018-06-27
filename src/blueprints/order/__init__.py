@@ -289,7 +289,8 @@ def establish():
             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
         )
 
-        session.add(order)
+        result = session.add(order)
+        current_app.logger.debug(result)
 
         order_id = getattr(order, 'id')
 
