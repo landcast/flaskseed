@@ -304,7 +304,7 @@ def establish():
 
 
 @order.route('/refund', methods=['POST'])
-def establish():
+def refund():
     """
     swagger-doc: 'refund'
     required: []
