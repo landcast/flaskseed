@@ -365,6 +365,8 @@ def my_homework_sql(params):
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = '
                    + getattr(g, current_app.config['CUR_USER'])['id'])+')'
 
+    current_app.logger.debug(sql)
+
     return ['id', 'question_name', 'homework_type', 'question_text', 'question_attachment_url',
             'answer_text', 'answer_attachment_url', 'score', 'score_remark', 'score_reason', 'created_at',
             'teacher_name','course_name'], ''.join(sql)
