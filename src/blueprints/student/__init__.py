@@ -113,7 +113,7 @@ def my_course_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nick_name like '%")
+        sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
         sql.append("%')")
     if 'course_time' in params.keys():
@@ -242,7 +242,7 @@ def my_order_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nick_name like '%")
+        sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
         sql.append("%')")
     if 'payment_state' in params.keys():

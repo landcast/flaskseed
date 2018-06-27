@@ -107,7 +107,7 @@ def my_course_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'student_name' in params.keys():
-        sql.append(" and s.nick_name like '%")
+        sql.append(" and s.nickname like '%")
         sql.append(params['student_name'])
         sql.append("%')")
     if 'course_time' in params.keys():
