@@ -288,7 +288,7 @@ def schedule():
 
         for order in session.query(Order).filter_by(course_id=course.id):
 
-            for index, item in range(0, len(schedules)):
+            for index, item in enumerate(schedules):
 
                 courseschedule_id = 0
 
