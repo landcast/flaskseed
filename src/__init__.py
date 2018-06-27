@@ -8,6 +8,7 @@ from flask.json import JSONEncoder
 from flask_debugtoolbar import DebugToolbarExtension
 import json
 import jwt
+import psutil
 from src.swaggerapis import SwagAPIManager
 from fnmatch import fnmatchcase
 import inspect
@@ -59,7 +60,8 @@ def auth_check_needed(request):
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/admin/*',
                          '/order/*', '/api/*', '/swagger.json',
-                         '/static/*', '/swagger_ui/*', '/swagger', '/student/*', '/teacher/*', '/course/*', '/manger/*']
+                         '/static/*', '/swagger_ui/*', '/swagger', '/student/*',
+                         '/teacher/*', '/course/*', '/manger/*']
     else:
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/static/*']
@@ -97,11 +99,11 @@ def user_load(username):
             for key in user_source:
                 table_check = user_source[key]
                 rs = session.query(table_check).filter(
-                        and_(table_check.username == username,
-                             table_check.state != 99)).all()
+                    and_(table_check.username == username,
+                         table_check.state != 99)).all()
                 if len(rs) > 0:
                     current_app.logger.debug(
-                            username + ' set into redis cache')
+                        username + ' set into redis cache')
                     dict = row_dict(rs[0])
                     dict['user_type'] = key
                     setattr(g, current_app.config['CUR_USER'], dict)
@@ -114,8 +116,6 @@ def init_logging(app):
     # check log file, if not exist create
     basedir = os.path.dirname(app.config['DEBUG_LOGPATH'])
     log_file_path = app.config['DEBUG_LOGPATH']
-    if app.debug:
-        log_file_path = log_file_path + '_' + str(os.getpid())
     if not os.path.exists(basedir):
         os.makedirs(basedir)
     if not os.path.exists(log_file_path):
@@ -159,7 +159,7 @@ def acl_control(request, response):
                     if not o['id']:
                         continue
                     redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
-                            o['id'])
+                        o['id'])
                     acl = redis_store.get(redis_key)
                     if not acl:
                         abort(401, redis_key + ' not in redis acl')
@@ -172,7 +172,7 @@ def acl_control(request, response):
         result = response.get_data().decode('utf-8')
         res_dict = json.loads(result)
         redis_key = 'ACL:' + user_id + ':' + o_type + ':' + str(
-                res_dict['id'])
+            res_dict['id'])
         value = hashlib.md5(str(res_dict).encode('utf-8')).hexdigest()
         redis_store.set(redis_key, value)
     elif request.method.lower() == 'put':
@@ -284,7 +284,7 @@ def create_app(config):
                 setattr(g, current_app.config['CUR_ID'],
                         'visitor_' + str(request.remote_addr))
                 current_app.logger.debug(
-                        'visitor comming')
+                    'visitor comming')
 
     @app.after_request
     def request_postprocess(response):
@@ -299,12 +299,12 @@ def create_app(config):
         if language:
             response.headers['Content-Langauge'] = language
             response.set_cookie('user_lang', language)
-        if response.is_json and current_app.debug:
+        if response.is_json and current_app.config['LOG_REQ_RES']:
             current_app.logger.debug(
-                    "\n" + request.method + ': ' + request.url + "\nreq: "
-                                                                 "------\n" +
-                    request.get_data().decode('utf-8') + "\nres: ------\n" +
-                    response.get_data().decode('utf-8'))
+                "\n" + request.method + ': ' + request.url + "\nreq: "
+                                                             "------\n" +
+                request.get_data().decode('utf-8') + "\nres: ------\n" +
+                response.get_data().decode('utf-8'))
             acl_control(request, response)
         return response
 
@@ -324,11 +324,11 @@ def create_app(config):
             # server default 10, the client results_per_page will be ignored
             # so, set the server results_per_page to 1000
             current_app.sw_manager.create_api(v, url_prefix='/api/v1',
-                                           methods=['GET', 'DELETE', 'PUT',
-                                                    'POST'],
-                                           allow_patch_many=True,
-                                           results_per_page=1000,
-                                           primary_key='id')
+                                              methods=['GET', 'DELETE', 'PUT',
+                                                       'POST'],
+                                              allow_patch_many=True,
+                                              results_per_page=1000,
+                                              primary_key='id')
             # create bare endpoint for GET without cascading query to improve
             # performance by exclude relation columns
             include_columns = []
@@ -338,8 +338,8 @@ def create_app(config):
                         ColumnProperty):
                     include_columns.append(x)
             current_app.sw_manager.create_api(v, url_prefix='/api/v1/_bare',
-                                           methods=['GET'],
-                                           include_columns=include_columns,
-                                           primary_key='id')
+                                              methods=['GET'],
+                                              include_columns=include_columns,
+                                              primary_key='id')
 
     return app

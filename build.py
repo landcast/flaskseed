@@ -73,6 +73,7 @@ def set_properties(project):
     project.depends_on('requests')
     project.depends_on('urllib3')
     project.depends_on('python-consul')
+    project.depends_on('psutil')
 
     project.set_property('flake8_break_build', False)
     project.set_property("coverage_break_build", False)
