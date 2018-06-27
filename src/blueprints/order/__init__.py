@@ -293,14 +293,14 @@ def establish():
 
         order_id = getattr(order, 'id')
 
-        paylog = PayLog( direction = order_desc,
+        paylog = PayLog( direction = 1,
                         state = 98,
                         amount = amount,
                         payment_fee = amount,
                         order_id= order_id,
                         account_id = student_id,
                         delete_flag = 'IN_FORCE',
-                      updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                        updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
         session.add(paylog)
 
