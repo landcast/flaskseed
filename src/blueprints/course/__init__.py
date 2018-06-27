@@ -294,11 +294,13 @@ def schedule():
 
                 if index == 0:
                     courseschedule = CourseSchedule(
-                        start = item['start'],
-                        end = item['end'],
+                        start = item['start'].replace('T', ' ').replace('Z', ''),
+                        end = item['end'].replace('T', ' ').replace('Z', ''),
                         state = 1,
                         override_course_type=course.course_type,
-                        course_id = course_id
+                        course_id = course_id,
+                        delete_flag = 'IN_FORCE',
+                        updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                     )
                     session.add(courseschedule)
                     session.flush()
@@ -311,13 +313,15 @@ def schedule():
                     }), 500
 
                 sudyschedule = StudySchedule(
-                    actual_start = item['start'],
-                    actual_end = item['end'],
+                    actual_start = item['start'].replace('T', ' ').replace('Z', ''),
+                    actual_end = item['end'].replace('T', ' ').replace('Z', ''),
                     name = item['course_name'],
                     study_state = 1,
                     order_id = order.id,
                     course_schedule_id = courseschedule_id,
-                    student_id = order.student_id
+                    student_id = order.student_id,
+                    delete_flag = 'IN_FORCE',
+                    updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
                 session.add(sudyschedule)
                 session.flush()
