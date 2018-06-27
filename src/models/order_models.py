@@ -40,9 +40,9 @@ class PayLog(EntityMixin, db.Model):
                       nullable=False)
     order_paylogs = db.relationship('Order', backref='order_paylogs', lazy=True)
     account_id = Column(Integer, ForeignKey('account.id'),
-                        nullable=True)
+                        nullable=False)
     account_paylogs = db.relationship('Account', backref='account_paylogs',
-                                      lazy=True)
+                                      lazy=False)
 
 
 class Account(EntityMixin, db.Model):
