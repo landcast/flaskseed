@@ -286,7 +286,7 @@ def schedule():
                     course_id)
             }), 500
 
-        for order in session.query(Order).filter_by(course_id=course_id):
+        for order in session.query(Order).filter_by(course_id=course.id):
 
             for i in range(0, len(schedules)):
 
