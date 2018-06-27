@@ -93,7 +93,7 @@ def generate_sql(params):
     if 'user_name' in params.keys():
         sql.append(" and su.username like '%")
         sql.append(params['user_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(' and su.mobile = :mobile')
     if 'email' in params.keys():
@@ -207,11 +207,11 @@ def student_course_sql(params):
     if 'student_name' in params.keys():
         sql.append(" and s.username like '%")
         sql.append(params['student_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'course_time' in params.keys():
         sql.append(
             ' and cs.start >:course_time and cs.end <:course_time')
@@ -326,7 +326,7 @@ def student_allot_sql(params):
     if 'student_name' in params.keys():
         sql.append(" and s.nickname like '%")
         sql.append(params['student_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(' and s.mobile =:mobile')
 
@@ -339,7 +339,7 @@ def student_allot_sql(params):
     if 'student_from' in params.keys():
         sql.append(" and c.channel_name like '%")
         sql.append(params['student_from'])
-        sql.append("%')")
+        sql.append("%'")
     return ['id', 'username', 'family_name', 'given_name', 'mobile',
             'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name'], ''.join(sql)
 
@@ -430,7 +430,7 @@ def thacher_check_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(' and t.mobile =:mobile')
 
@@ -549,7 +549,7 @@ def thacher_interview_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(' and t.mobile =:mobile')
 
@@ -566,7 +566,7 @@ def thacher_interview_sql(params):
     if 'interview_name' in params.keys():
         sql.append(" and t.updated_by like '%")
         sql.append(params['interview_name'])
-        sql.append("%')")
+        sql.append("%'")
     return ['id', 'course_id', 'username', 'mobile', 'email',
             'course_name', 'interview_name', 'start', 'end', 'state', 'courseware_num'], ''.join(sql)
 
@@ -654,7 +654,7 @@ def students_sql(params):
     if 'student_name' in params.keys():
         sql.append(" and s.nickname like '%")
         sql.append(params['student_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(' and s.mobile =:mobile')
 
@@ -760,7 +760,7 @@ def thacher_tryout_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
 
     if 'class_at' in params.keys() :
         sql.append(
@@ -865,7 +865,7 @@ def student_tryout_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'class_at' in params.keys() :
         sql.append(
             ' and t.`start` >:class_at and t.`end` <:class_at')
@@ -967,21 +967,21 @@ def course_ware_sql(params):
     if 'classroom_name' in params.keys():
         sql.append(" and cc.room_title like '%")
         sql.append(params['classroom_name'])
-        sql.append("%')")
+        sql.append("%'")
 
     if 'course_ware_name' in params.keys():
         sql.append(" and csw.ware_name like '%")
         sql.append(params['course_ware_name'])
-        sql.append("%')")
+        sql.append("%'")
 
     if 'course_name' in params.keys():
         sql.append(" and c.course_name  like '%")
         sql.append(params['course_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'teacher_name' in params.keys():
         sql.append(" and t.username  like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'state' in params.keys():
         sql.append(' and csw.`checked_result` =:state')
 
@@ -1085,7 +1085,7 @@ def thacher_common_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'class_at' in params.keys() :
         sql.append(
             ' and t.`start` >:class_at and t.`end` <:class_at')

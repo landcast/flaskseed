@@ -244,7 +244,7 @@ def my_order_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'payment_state' in params.keys():
         sql.append(' and o.payment_state = :payment_state')
     if 'created_at_start' in params.keys() \

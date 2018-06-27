@@ -114,9 +114,12 @@ def generate_sql(params):
     if 'course_id' in params.keys():
         sql.append(' and c.course_id = :course_id')
     if 'course_name' in params.keys():
-        sql.append(
-            ' and （c.course_name like :course_name or c.course_name_zh '
-            'like:course_name)')
+        sql.append(" and (c.course_name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or c.course_name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
     if 'course_type' in params.keys():
         sql.append(' and c.course_type = :course_type')
     if 'order_state' in params.keys():
@@ -128,11 +131,17 @@ def generate_sql(params):
                 ' and c.created_at between :created_at_start and '
                 ':created_at_end')
     if 'category_1' in params.keys():
-        sql.append(' and cr.full_name like :category_1')
+        sql.append(" and cr.full_name like '%")
+        sql.append(params['category_1'])
+        sql.append("%'")
     if 'category_2' in params.keys():
-        sql.append(' and sc.subject_category like :category_2')
+        sql.append(" and sc.subject_category like '%")
+        sql.append(params['category_2'])
+        sql.append("%'")
     if 'category_3' in params.keys():
-        sql.append(' and su.subject_name like :category_3')
+        sql.append(" and su.subject_name  like '%")
+        sql.append(params['category_3'])
+        sql.append("%'")
     return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
             'updated_by', 'created_at'], ''.join(sql)
 
@@ -228,8 +237,12 @@ def category_sql(params):
     if 'course_id' in params.keys():
         sql.append(' and t.id = :course_id')
     if 'course_name' in params.keys():
-        sql.append(
-            ' and （t.name like :course_name or t.name_zh like:course_name)')
+        sql.append(" and (t.name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or t.name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
     if 'course_state' in params.keys():
         sql.append(' and t.state = :course_state')
     if 'updated_by' in params.keys():
