@@ -353,14 +353,14 @@ def my_homework_sql(params):
 
     if 'homework_state' in params.keys() \
              and params['study_schedule_id']== '1':
-        sql.append(' and hm. study_schedule_id  in (elect study_schedule_id '
+        sql.append(' and hm.study_schedule_id  in (elect study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'homework_state' in params.keys() \
              and params['study_schedule_id'] == '2':
-        sql.append(' and hm. study_schedule_id  not in (select study_schedule_id '
+        sql.append(' and hm.study_schedule_id  not in (select study_schedule_id '
                    'from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = )'
                    + getattr(g, current_app.config['CUR_USER'])['id'])
