@@ -372,8 +372,6 @@ def my_homework_sql(params):
             'teacher_name','course_name'], ''.join(sql)
 
 
-
-
 @student.route('/report_card', methods=['POST'])
 def report_card():
     """

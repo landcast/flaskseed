@@ -58,6 +58,7 @@ class Homework(EntityMixin, db.Model):
 
 class StudyResult(EntityMixin, db.Model):
     score = Column(Float, nullable=True, comment='分数')
+    evaluation = Column(String(2000), nullable=True, comment='阶段性评价 json')
     score_type = Column(String(60), nullable=True, comment='得分类型')
     score_full_mark = Column(Float, nullable=True, comment="满分")
     score_reason = Column(String(2000), nullable=True, comment='得分原因')
