@@ -288,14 +288,14 @@ def schedule():
 
         for order in session.query(Order).filter_by(course_id=course.id):
 
-            for i in range(0, len(schedules)):
+            for index, item in range(0, len(schedules)):
 
                 courseschedule_id = 0
 
-                if i == 0:
+                if index == 0:
                     courseschedule = CourseSchedule(
-                        start = schedules['start'],
-                        end = schedules['end'],
+                        start = item['start'],
+                        end = item['end'],
                         state = 1,
                         override_course_type=course.course_type,
                         course_id = course_id
@@ -311,9 +311,9 @@ def schedule():
                     }), 500
 
                 sudyschedule = StudySchedule(
-                    actual_start = schedules['start'],
-                    actual_end = schedules['end'],
-                    name = schedules['course_name'],
+                    actual_start = item['start'],
+                    actual_end = item['end'],
+                    name = item['course_name'],
                     study_state = 1,
                     order_id = order.id,
                     course_schedule_id = courseschedule_id,
