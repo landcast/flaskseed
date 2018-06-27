@@ -61,6 +61,12 @@ def my_course():
             course_name:
               description: 'course name'
               type: 'string'
+            course_desc:
+              description: '课程描述'
+              type: 'string'
+            teacher_avatar:
+              description: '教师头像'
+              type: 'string'
             finish:
               description: 'finish number'
               type: 'integer'
@@ -91,7 +97,7 @@ def my_course_sql(params):
     student_id = s.id and study_state = 1) as finish,
 		c.classes_number,
 		t.`nickname`,
-		cs.start,cs.end
+		cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
     from `order` o, student s, teacher t, course c,`course_schedule`cs 
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.`id` = cs.course_id
@@ -121,7 +127,7 @@ def my_course_sql(params):
         sql.append(' and cs.end < now()')
 
     return ['id', 'course_name', 'finish', 'classes_number', 'nickname',
-            'start', 'end'], ''.join(sql)
+            'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
 
 
 @student.route('/my_order', methods=['POST'])
