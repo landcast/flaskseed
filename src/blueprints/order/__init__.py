@@ -146,8 +146,8 @@ def generate_sql(params):
 @order.route('/establish', methods=['POST'])
 def establish():
     """
-    swagger-doc: 'send verify code by sms'
-    required: ['mobile_no']
+    swagger-doc: 'establish'
+    required: []
     req:
       order_type:
         description: '订单类型'
@@ -306,8 +306,8 @@ def establish():
 @order.route('/refund', methods=['POST'])
 def establish():
     """
-    swagger-doc: 'send verify code by sms'
-    required: ['mobile_no']
+    swagger-doc: 'refund'
+    required: []
     req:
       order_id:
         description: '订单id'
