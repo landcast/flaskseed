@@ -325,3 +325,4 @@ def schedule():
                 )
                 session.add(sudyschedule)
                 session.flush()
+    return jsonify({'id':order.id })
