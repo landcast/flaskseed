@@ -302,6 +302,7 @@ def establish():
                         account_id = student_id,
                         delete_flag = 'IN_FORCE',
                         state_reason = 'establish',
+                        payment_method = 1,
                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
         session.add(paylog)
@@ -361,6 +362,7 @@ def refund():
                          state_reason = reason,
                          order_desc= order_desc,
                          delete_flag = 'IN_FORCE',
+                         payment_method = 1,
                          updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                          )
         session.add(paylog)

@@ -91,3 +91,12 @@ class OrderTypeEnum(IntFlag):
     COMPENSATE = 3
     FREE = 4
     REFUND = 5
+
+class PaymentMethodEnum(IntFlag):
+    """
+    UNDER_LINE :线下支付
+    """
+    UNDER_LINE = 1
+
+
+
