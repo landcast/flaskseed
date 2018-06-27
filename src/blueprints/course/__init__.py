@@ -267,16 +267,7 @@ def schedule():
         type: 'string'
       schedules:
         description: '课表数据'
-        type: 'array'
-            course_name
-                description: '课节名称'
-                type: 'string'
-            start
-                description: '上课开始时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
-                type: 'string'
-            end
-                description: '上课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
-                type: 'string'
+        type: 'string'
     res:
       verify_code:
         description: 'id'
