@@ -302,7 +302,6 @@ def establish():
                         payment_fee = amount,
                         result = amount,
                         order_id= order_id,
-                        account_id = student_id,
                         delete_flag = 'IN_FORCE',
                         state_reason = 'establish',
                         payment_method = 1,
