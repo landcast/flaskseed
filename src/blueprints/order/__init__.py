@@ -208,7 +208,7 @@ def establish():
             student = session.query(Student).filter_by(
                 username=student_parm).one_or_none()
 
-        if student.isNone:
+        if student is None:
             return jsonify({
                 "error": "not found student:{0} ".format(
                     student_parm)
@@ -218,7 +218,7 @@ def establish():
 
         subject = session.query(Subject).filter_by(id=subject_id).one_or_none()
 
-        if subject.isNone:
+        if subject is None:
             return jsonify({
                 "error": "not found subject: {1}".format(
                     subject_id)
@@ -242,7 +242,7 @@ def establish():
 
             subject = session.query(Subject).filter_by(id=subject_id).one_or_none()
 
-            if teacher.isNone:
+            if teacher is None:
                 return jsonify({
                     "error": "not found teacher: {1}".format(
                         teacher_parm)
@@ -336,9 +336,7 @@ def refund():
         order = session.query(Order).filter_by(
                 id=order_id).one_or_none()
 
-        order_id = getattr(order, 'id')
-
-        if order_id.isNone:
+        if order is None:
             return jsonify({
                 "error": "not found order_id:{0} ".format(
                     order_id)
