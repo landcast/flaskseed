@@ -3,7 +3,7 @@ from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
-from src.models import db, session_scope
+from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule
 from src.services import do_query, datetime_param_sql_format
 import hashlib
 
@@ -254,3 +254,79 @@ def category_sql(params):
 
     return ['name', 'name_zh', 'id', 'updated_by', 'created_at',
             'state', 'level'], ''.join(sql)
+
+
+@course.route('/schedule', methods=['POST'])
+def schedule():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_id:
+        description: '课程id'
+        type: 'string'
+      schedules:
+        description: '课表数据'
+        type: 'array'
+            course_name
+                description: '课节名称'
+                type: 'string'
+            start
+                description: '上课开始时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+                type: 'string'
+            end
+                description: '上课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+                type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: 'string'
+    """
+    course_id = request.json['course_id']
+    schedules = request.json['schedules']
+
+    with session_scope(db) as session:
+
+        course = session.query(Course).filter_by(id=course_id).one_or_none()
+
+        if course is None:
+            return jsonify({
+                "error": "not found course: {1}".format(
+                    course_id)
+            }), 500
+
+        for order in session.query(Order).filter_by(course_id=course_id):
+
+            for i in range(0, len(schedules)):
+
+                courseschedule_id = 0
+
+                if i == 0:
+                    courseschedule = CourseSchedule(
+                        start = schedules['start'],
+                        end = schedules['end'],
+                        state = 1,
+                        override_course_type=course.course_type,
+                        course_id = course_id
+                    )
+                    session.add(courseschedule)
+                    session.flush()
+
+                    courseschedule_id = courseschedule.id
+
+                if courseschedule_id ==0 :
+                    return jsonify({
+                        "error": "courseschedule error"
+                    }), 500
+
+                sudyschedule = StudySchedule(
+                    actual_start = schedules['start'],
+                    actual_end = schedules['end'],
+                    name = schedules['course_name'],
+                    study_state = 1,
+                    order_id = order.id,
+                    course_schedule_id = courseschedule_id,
+                    student_id = order.student_id
+                )
+                session.add(sudyschedule)
+                session.flush()
