@@ -24,16 +24,16 @@ def my_course():
         description: 'page no'
         type: 'integer'
       course_name:
-        description: 'course name'
+        description: '课程名称'
         type: 'string'
       student_name:
-        description: 'student name'
+        description: '学生名称'
         type: 'string'
       course_time:
-        description: 'created_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       course_status:
-        description: 'course status 1：finish,2:go on'
+        description: '课程状态 1：已完成,2:未上'
         type: 'string'
 
     res:
@@ -53,25 +53,25 @@ def my_course():
           type: object
           properties:
             id:
-              description: 'course id'
+              description: '课程id'
               type: 'integer'
             course_name:
-              description: 'course name'
+              description: '课程名称'
               type: 'string'
             student_name:
-              description: 'student name'
+              description: '学生名称'
               type: 'string'
             finish:
-              description: 'finish number'
+              description: '已经上的课程数量'
               type: 'integer'
             classes_number:
-              description: 'classes number'
+              description: '课节总数'
               type: 'integer'
             start:
-              description: 'course start'
+              description: '上课开始时间'
               type: 'string'
             end:
-              description: 'course end'
+              description: '上课结束时间'
               type: 'string'
     """
     j = request.json

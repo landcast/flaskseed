@@ -32,25 +32,25 @@ def query():
         description: '三级分类'
         type: 'string'
       course_name:
-        description: 'course name'
+        description: '课程名称'
         type: 'string'
       course_id:
-        description: 'course id'
+        description: '课程id'
         type: 'string'
       updated_by:
-        description: 'updated by'
+        description: '更新操作人'
         type: 'string'
       created_at_start:
-        description: 'created_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课开始时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       created_at_end:
-        description: 'created_at end in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       course_type:
-        description: 'order type'
+        description: '课程类型'
         type: 'string'
       course_state:
-        description: 'order state'
+        description: '课程状态'
         type: 'string'
     res:
       num_results:
@@ -69,25 +69,25 @@ def query():
           type: object
           properties:
             id:
-              description: 'course id'
+              description: '课程id'
               type: 'integer'
             course_name:
-              description: 'course name'
+              description: '课程英文名称'
               type: 'string'
             course_name_zh:
-              description: 'course name zh'
+              description: '课程中文名称'
               type: 'string'
             course_type:
-              description: 'order type'
+              description: '课程类型'
               type: 'integer'
             course_state:
-              description: 'order state'
+              description: '课程状态'
               type: 'integer'
             updated_by:
-              description: 'order updated by'
+              description: '最后更新人'
               type: 'string'
             created_at:
-              description: 'order created at'
+              description: '创建时间'
               type: 'string'
     """
     j = request.json
@@ -159,22 +159,22 @@ def category_query():
         description: 'page no'
         type: 'integer'
       course_name:
-        description: 'course name'
+        description: '课程名称'
         type: 'string'
       course_id:
-        description: 'course id'
+        description: '课程id'
         type: 'string'
       updated_by:
-        description: 'updated by'
+        description: '更新人'
         type: 'string'
       created_at_start:
-        description: 'created_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '课程开始时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       created_at_end:
-        description: 'created_at end in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '课程结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       course_state:
-        description: 'order state'
+        description: '课程状态'
         type: 'string'
     res:
       num_results:
@@ -193,25 +193,25 @@ def category_query():
           type: object
           properties:
             id:
-              description: 'course id'
+              description: '课程id'
               type: 'integer'
             name:
-              description: 'course name'
+              description: '课程中文名称
               type: 'string'
             name_zh:
-              description: 'course name zh'
+              description: '课程英文名车'
               type: 'string'
             level:
               description: '层级，1，2，3'
               type: 'integer'
             state:
-              description: 'course state'
+              description: '课程状态'
               type: 'integer'
             updated_by:
-              description: 'order updated by'
+              description: '更新人'
               type: 'string'
             created_at:
-              description: 'order created at'
+              description: '创建时间'
               type: 'string'
     """
     j = request.json
@@ -266,12 +266,12 @@ def schedule():
         description: '课程id'
         type: 'string'
       schedules:
-        description: '课表数据'
+        description: '课表数据，数组数据'
         type: 'string'
     res:
       verify_code:
         description: 'id'
-        type: 'string'
+        type: ''
     """
     course_id = request.json['course_id']
     schedules = request.json['schedules']

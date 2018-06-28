@@ -50,28 +50,28 @@ def query():
           type: object
           properties:
             id:
-              description: 'user id'
+              description: '用户id'
               type: 'integer'
             username:
-              description: 'user name'
+              description: '用户账号'
               type: 'string'
             mobile:
-              description: 'mobile'
+              description: '手机'
               type: 'string'
             mail:
-              description: 'mail'
+              description: '邮箱'
               type: 'string'
             created_at:
-              description: 'order created at'
+              description: '创建时间'
               type: 'string'
             role_name:
               description: '角色名称'
               type: 'string'
             state:
-              description: 'state'
+              description: '用户状态'
               type: 'integer'
             sys_user_id:
-              description: 'sys_user_id'
+              description: '用户角色关联id'
               type: 'integer'
     """
     j = request.json
@@ -85,7 +85,7 @@ def generate_sql(params):
     :return:
     '''
     sql = ['''
-    select su.id,su.username,su.mobile,su.email,su.`created_at`,rd.role_name,su.state,sur.sys_user_id
+    select su.id,su.username,su.mobile,su.email,su.`created_at`,rd.role_name,su.state,sur.id
     from sys_user su,sys_user_role sur,role_definition rd 
     where su.`id`=sur.sys_user_id and sur.role_definition_id = rd.id
     and su.`delete_flag` = 'IN_FORCE' and sur.`delete_flag` = 'IN_FORCE' and rd.`delete_flag` = 'IN_FORCE' 
@@ -123,16 +123,16 @@ def student_course():
         description: '学生id'
         type: 'string'
       student_name:
-        description: 'student name'
+        description: '学生名称'
         type: 'string'
       course_name:
-        description: 'course name'
+        description: '课程名称'
         type: 'string'
       course_time:
-        description: 'course_time start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '课程时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       course_status:
-        description: 'course status 1：finish,2:go on'
+        description: '课程状态 1：上完,2:未上'
         type: 'string'
 
     res:
@@ -152,25 +152,25 @@ def student_course():
           type: object
           properties:
             id:
-              description: 'course id'
+              description: '课程id'
               type: 'integer'
             course_name:
-              description: 'course name'
+              description: '课程名称'
               type: 'string'
             finish:
-              description: 'finish number'
+              description: '已经上过的课程数量'
               type: 'integer'
             classes_number:
-              description: 'classes number'
+              description: '全部课程数量'
               type: 'integer'
             teacher_name:
-              description: 'teachaer name'
+              description: '教师名称'
               type: 'string'
             start:
-              description: 'course start'
+              description: '课程开始时间'
               type: 'string'
             end:
-              description: 'course end'
+              description: '课程结束时间'
               type: 'string'
     """
     j = request.json
@@ -239,19 +239,19 @@ def allot_query():
         description: 'page no'
         type: 'integer'
       student_name:
-        description: 'student_name'
+        description: '学生名称'
         type: 'string'
       mobile:
-        description: 'mobile'
+        description: '手机号'
         type: 'string'
       email:
-        description: 'email'
+        description: '邮箱'
         type: 'string'
       state:
-        description: 'state '
+        description: '学生状态 '
         type: 'string'
       student_from:
-        description: 'studeng from'
+        description: '学生来源'
         type: 'string'
 
     res:
@@ -271,7 +271,7 @@ def allot_query():
           type: object
           properties:
             id:
-              description: 'id'
+              description: '学生id'
               type: 'integer'
             username:
               description: '学生账号'
@@ -282,17 +282,20 @@ def allot_query():
             given_name:
               description: 'given_name'
               type: 'string'
+            student_name:
+              description: '学生名称'
+              type: 'string'
             mobile:
-              description: 'mobile'
+              description: '手机号'
               type: 'string'
             email:
-              description: 'email'
+              description: '邮箱'
               type: 'string'
             created_at:
-              description: 'created at'
+              description: '注册时间'
               type: 'string'
             channel_name:
-              description: 'channel name'
+              description: '渠道名称'
               type: 'string'
             state:
               description: '状态'
@@ -302,6 +305,9 @@ def allot_query():
               type: 'string'
             su_given_name:
               description: '课程顾问given_name'
+              type: 'string'
+            su_name:
+              description: '课程顾问名称'
               type: 'string'
     """
     j = request.json
@@ -316,7 +322,7 @@ def student_allot_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.username,s.`family_name`,s.`given_name`,s.mobile,s.email,s.`created_at`,c.channel_name,s.state,su.family_name as su_family_name,su.given_name as su_given_name
+    select s.id,s.username,s.`family_name`,s.`given_name`,s.nickname as student_name,s.mobile,s.email,s.`created_at`,c.channel_name,s.state,su.family_name as su_family_name,su.given_name as su_given_name,su.nickname as su_name
     from student s left join sys_user su on  s.consultant_id = su.id   ,enrollment e,channel c
     where 
      s.id = e.`student_id` and e.`channel_id` = c.id
@@ -340,8 +346,8 @@ def student_allot_sql(params):
         sql.append(" and c.channel_name like '%")
         sql.append(params['student_from'])
         sql.append("%'")
-    return ['id', 'username', 'family_name', 'given_name', 'mobile',
-            'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name'], ''.join(sql)
+    return ['id', 'username', 'family_name', 'given_name','student_name', 'mobile',
+            'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name','su_name'], ''.join(sql)
 
 
 @manger.route('/thacher_check', methods=['POST'])
@@ -357,22 +363,22 @@ def thacher_check():
         description: 'page no'
         type: 'integer'
       teacher_name:
-        description: 'teacher_name'
+        description: '教师名称'
         type: 'string'
       mobile:
-        description: 'mobile'
+        description: '手机号'
         type: 'string'
       email:
-        description: 'email'
+        description: '邮箱'
         type: 'string'
       state:
-        description: 'state '
+        description: '教师状态 '
         type: 'string'
       update_at_start:
-        description: 'update_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '教师注册开始时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       update_at_end:
-        description: 'update_at end in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: ' 教师注册结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
 
     res:
@@ -392,19 +398,19 @@ def thacher_check():
           type: object
           properties:
             id:
-              description: 'id'
+              description: '教师id'
               type: 'integer'
-            username:
-              description: '学生账号'
+            teacher_name:
+              description: '教师名称'
               type: 'integer'
             mobile:
-              description: 'mobile'
+              description: '手机号'
               type: 'string'
             email:
-              description: 'email'
+              description: '邮箱'
               type: 'string'
             update_at:
-              description: 'update at'
+              description: '更新时间'
               type: 'string'
             state:
               description: '状态'
@@ -422,7 +428,7 @@ def thacher_check_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,t.username,t.mobile,t.email,t.`updated_at`,t.state
+    select t.id,t.username as teacher_name,t.mobile,t.email,t.`updated_at`,t.state
     from teacher t   where
     t.`delete_flag` = 'IN_FORCE' 
     ''']
@@ -445,7 +451,7 @@ def thacher_check_sql(params):
         sql.append(
             ' and t.update_at between :created_at_start and :created_at_end')
 
-    return ['id', 'username', 'family_name', 'given_name', 'mobile',
+    return ['id', 'teacher_name', 'family_name', 'given_name', 'mobile',
             'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name'], ''.join(sql)
 
 
@@ -462,19 +468,19 @@ def thacher_interview():
         description: 'page no'
         type: 'integer'
       teacher_name:
-        description: 'teacher_name'
+        description: '教师名称'
         type: 'string'
       interview_name:
-        description: 'interview_name'
+        description: '面试人名称'
         type: 'string'
       mobile:
-        description: 'mobile'
+        description: '手机号'
         type: 'string'
       email:
-        description: 'email'
+        description: '邮箱'
         type: 'string'
       state:
-        description: 'state '
+        description: '状态 '
         type: 'string'
       interview_at:
         description: '面试时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
@@ -497,7 +503,7 @@ def thacher_interview():
           type: object
           properties:
             id:
-              description: 'id'
+              description: '教师id'
               type: 'integer'
             course_id:
               description: '课程id'
@@ -584,13 +590,13 @@ def students_query():
         description: 'page no'
         type: 'integer'
       student_name:
-        description: 'student_name'
+        description: '学生名称'
         type: 'string'
       mobile:
-        description: 'mobile'
+        description: '手机号'
         type: 'string'
       email:
-        description: 'email'
+        description: '邮箱'
         type: 'string'
 
     res:
@@ -610,7 +616,7 @@ def students_query():
           type: object
           properties:
             id:
-              description: 'id'
+              description: '学生id'
               type: 'integer'
             username:
               description: '学生账号'
@@ -621,14 +627,17 @@ def students_query():
             given_name:
               description: 'given_name'
               type: 'string'
+            student_name:
+              description: '学生名称'
+              type: 'string'
             mobile:
-              description: 'mobile'
+              description: '手机号'
               type: 'string'
             email:
-              description: 'email'
+              description: '邮箱'
               type: 'string'
             create_at:
-              description: 'create_at'
+              description: '注册时间'
               type: 'string'
             state:
               description: '状态'
@@ -646,7 +655,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.username,s.`family_name`,s.`given_name`,s.mobile,s.email,s.`created_at`
+    select s.id,s.username,s.`family_name`,s.`given_name`,s.nickname as student_name,s.mobile,s.email,s.`created_at`
     from student s
     where s.`delete_flag` = 'IN_FORCE'  
     ''']
@@ -664,7 +673,7 @@ def students_sql(params):
     if 'state' in params.keys():
         sql.append(' and s.state =:state')
 
-    return ['id', 'username', 'family_name', 'given_name', 'mobile',
+    return ['id', 'username', 'family_name', 'given_name','student_name', 'mobile',
             'email', 'created_at'], ''.join(sql)
 
 
@@ -681,10 +690,10 @@ def thacher_tryout():
         description: 'page no'
         type: 'integer'
       teacher_name:
-        description: 'teacher_name'
+        description: '教师名称'
         type: 'string'
       class_at:
-        description: 'class_at 上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       courseware_state:
         description: '课件状态0：没有，1：有'
@@ -709,7 +718,7 @@ def thacher_tryout():
           type: object
           properties:
             id:
-              description: 'id'
+              description: '课程id'
               type: 'integer'
             teacher_name:
               description: '教师账号'
@@ -786,10 +795,10 @@ def student_tryout_query():
         description: 'page no'
         type: 'integer'
       teacher_name:
-        description: 'teacher_name'
+        description: '教师名称'
         type: 'string'
       class_at:
-        description: 'class_at 上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       courseware_state:
         description: '课件状态0：没有，1：有'
@@ -814,7 +823,7 @@ def student_tryout_query():
           type: object
           properties:
             id:
-              description: 'id'
+              description: '课程id'
               type: 'integer'
             course_name:
               description: '课程名称'
@@ -1006,10 +1015,10 @@ def thacher_common():
         description: 'page no'
         type: 'integer'
       teacher_name:
-        description: 'teacher_name'
+        description: '教师名称'
         type: 'string'
       class_at:
-        description: 'class_at 上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       courseware_state:
         description: '课件状态0：没有，1：有'
@@ -1153,28 +1162,28 @@ def orders_query():
               description: '课包 name'
               type: 'string'
             classes_number:
-              description: 'classes number in this order'
+              description: '上课总节数'
               type: 'integer'
             order_type:
-              description: 'order type'
+              description: '订单类型'
               type: 'integer'
             order_state:
-              description: 'order state'
+              description: '订单状态'
               type: 'integer'
             updated_by:
-              description: 'order updated by'
+              description: '订单更新时间'
               type: 'string'
             created_at:
-              description: 'order created at'
+              description: '创建时间'
               type: 'string'
             teacher_name:
-              description: 'teacher name of order'
+              description: '教师名称'
               type: 'string'
             student_name:
-              description: 'student name of order'
+              description: '学生名称'
               type: 'string'
             order_amount:
-              description: 'order price amount'
+              description: '订单金额'
               type: 'integer'
     """
     j = request.json

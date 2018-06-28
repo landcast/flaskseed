@@ -27,19 +27,19 @@ def my_course():
         description: 'page no'
         type: 'integer'
       course_name:
-        description: 'course name'
+        description: '课程名称'
         type: 'string'
       course_id:
-        description: 'course id'
+        description: '课程id'
         type: 'string'
       teacher_name:
-        description: 'teacher name'
+        description: '教师名称'
         type: 'string'
       course_time:
-        description: 'course_time start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课时间in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       course_status:
-        description: 'course status 1：finish,2:go on'
+        description: '课程状态 1：已上完,2:未上'
         type: 'string'
 
     res:
@@ -59,10 +59,10 @@ def my_course():
           type: object
           properties:
             id:
-              description: 'course id'
+              description: '课程id'
               type: 'integer'
             course_name:
-              description: 'course name'
+              description: '课程名称'
               type: 'string'
             course_desc:
               description: '课程描述'
@@ -71,16 +71,16 @@ def my_course():
               description: '教师头像'
               type: 'string'
             finish:
-              description: 'finish number'
+              description: '已经上完的数量'
               type: 'integer'
             classes_number:
-              description: 'classes number'
+              description: '课节总数'
               type: 'integer'
             start:
-              description: 'course start'
+              description: '上课开始时间'
               type: 'string'
             end:
-              description: 'course end'
+              description: '上课结束时间'
               type: 'string'
     """
     j = request.json
@@ -150,22 +150,22 @@ def my_order():
         description: 'page no'
         type: 'integer'
       course_name:
-        description: 'course name'
+        description: '课程名称'
         type: 'string'
       teacher_name:
-        description: 'teacher name'
+        description: '教师名称'
         type: 'string'
       order_id:
-        description: 'order id'
+        description: '订单id'
         type: 'string'
       payment_state:
-        description: 'payment state'
+        description: '支付状态，参考枚举值'
         type: 'string'
       created_at_start:
-        description: 'created_at start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课开始时间 format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       created_at_end:
-        description: 'created_at end in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        description: '上课结束时间 format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
 
     res:
@@ -185,31 +185,28 @@ def my_order():
           type: object
           properties:
             id:
-              description: 'course id'
+              description: '订单id'
               type: 'integer'
             course_name:
-              description: 'course name'
-              type: 'string'
-            teacher_name:
-              description: 'teacher name'
+              description: '课程名称'
               type: 'string'
             classes_number:
-              description: 'classes number'
+              description: '总课节数'
               type: 'integer'
             order_type:
-              description: 'order type'
+              description: '订单类型参考枚举'
               type: 'integer'
             payment_state:
-              description: 'payment state'
-              type: 'string'
-            teacher_name:
-              description: 'teacher_name'
+              description: '支付状态'
               type: 'string'
             created_at:
-              description: 'order created at'
+              description: '订单创建时间'
               type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string
             order_amount:
-              description: 'order price amount'
+              description: '订单金额'
               type: 'integer'
     """
     j = request.json
@@ -226,7 +223,7 @@ def my_order_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select o.id,c.`course_name`,c.classes_number,o.`order_type`,
-    o.`payment_state`,o.`created_at`,t.`nickname`,o.`amount`
+    o.`payment_state`,o.`created_at`,t.`nickname` as teacher_name,o.`amount`
     from `order` o, teacher t, course c
     where  o.course_id = c.id and
         c.primary_teacher_id = t.id
@@ -261,8 +258,7 @@ def my_order_sql(params):
             ':created_at_end')
 
     return ['id', 'course_name', 'classes_number', 'order_type',
-            'payment_state',
-            'created_at', 'nickname', 'amount'], ''.join(sql)
+            'payment_state','created_at', 'teacher_name', 'amount'], ''.join(sql)
 
 
 @student.route('/my_homework', methods=['POST'])
@@ -278,7 +274,7 @@ def my_homework():
         description: 'page no'
         type: 'integer'
       study_schedule_id:
-        description: 'study schedule id'
+        description: 'study schedule id 课节id'
         type: 'string'
       homework_state:
         description: 'homework state 0:全部列表，1：我完成的，2：待完成的'
@@ -301,10 +297,10 @@ def my_homework():
           type: object
           properties:
             id:
-              description: 'homework id'
+              description: '作业id'
               type: 'integer'
             homework_type:
-              description: 'homework type'
+              description: '作业类型，参考常量'
               type: 'integer'
             question_name:
               description: '作业名称'
@@ -331,13 +327,13 @@ def my_homework():
               description: '得分原因'
               type: 'string'
             created_at:
-              description: 'created at'
+              description: '创建时间'
               type: 'string'
             teacher_name:
-              description: 'teacher name'
+              description: '教师名称'
               type: 'string'
             course_name:
-              description: 'course name'
+              description: '课程名称'
               type: 'string'
     """
     j = request.json
@@ -427,10 +423,10 @@ def report_card():
               description: '课程id'
               type: 'string'
             course_name:
-              description: 'course name'
+              description: '课程名称'
               type: 'string'
             created_at:
-              description: 'created at'
+              description: '创建时间'
               type: 'string'
             teacher_name:
               description: '教师名称'
@@ -514,7 +510,7 @@ def student_schedule():
               description: '课节名称'
               type: 'string'
             start:
-              description: 'created at'
+              description: '创建时间'
               type: 'string'
             end:
               description: '教师名称'
