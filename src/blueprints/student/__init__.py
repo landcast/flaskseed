@@ -204,7 +204,7 @@ def my_order():
               type: 'string'
             teacher_name:
               description: '教师名称'
-              type: 'string
+              type: 'string'
             order_amount:
               description: '订单金额'
               type: 'integer'
