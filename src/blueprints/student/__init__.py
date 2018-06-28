@@ -121,7 +121,7 @@ def my_course_sql(params):
             ' and cs.start >:course_time and cs.end <:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
-        sql.append(' and cs.end >=:now()')
+        sql.append(' and cs.end >now()')
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
         sql.append(' and cs.end < now()')
@@ -545,6 +545,86 @@ def student_schedule_sql(params):
         sql.append(' and cs1.course_id =:course_id')
 
     return ['id', 'name', 'start', 'end', 'courseware_num'], ''.join(sql)
+
+
+@student.route('/growth_report', methods=['POST'])
+def growth_report():
+    """
+    swagger-doc: 'do growth_reportquery'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '根据type类别判定：type=schedulec此时id=study_schedule_id,type=result此时id=study_result_id'
+              type: 'integer'
+            course_name:
+              description: '课程名称'
+              type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
+            evaluation:
+              description: '评价内容，json'
+              type: 'string'
+            report_card_url:
+              description: '成绩单地址'
+              type: 'string'
+            type:
+              description: '类别'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, growth_report_sql))
+
+
+def growth_report_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''''']
+
+    sql.append(" select * from (")
+    sql.append(" select sr.id ,c.`course_name` as course_name,t.nickname as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type' "
+               "from study_schedule sr,course_schedule cs,course c ,teacher t "
+               "where cs.id - sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
+               "and cs.`state` <> 99  and c.`state` <> 99 and "
+               "sr.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
+    sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append(" union all ")
+    sql.append(" select sr.id, c.`course_name` as course_name,t.nickname as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type' "
+               "from study_result sr,course_exam ce,course c ,teacher t "
+               "where sr.`course_exam_id` = ce.id and ce.course_id = c.id and c.`primary_teacher_id` = t.id "
+               "and c.`state` <> 99  and ce.`state` <> 99 and sr.`delete_flag` = 'IN_FORCE' "
+               "and ce.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
+    sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append(" ) t  order by created_at desc")
+
+    return ['id', 'course_name', 'teacher_name', 'created_at', 'evaluation','report_card_url','type'], ''.join(sql)
 
 
 

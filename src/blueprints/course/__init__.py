@@ -286,7 +286,7 @@ def schedule():
                     course_id)
             }), 500
 
-        for order in session.query(Order).filter_by(course_id=course.id):
+        for order in session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2):
 
             courseschedule_id = 0
 
@@ -325,4 +325,7 @@ def schedule():
                 )
                 session.add(sudyschedule)
                 session.flush()
+            setattr(order,'payment_state',6)
+            session.add(order)
+            session.flush()
     return jsonify({'id':order.id })

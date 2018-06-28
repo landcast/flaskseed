@@ -69,6 +69,7 @@ class OrderPaymentStateEnum(IntFlag):
     CANCEL : 取消
     APPLY_REFUND:申请退款
     REFUND :退款
+    USED :已经使
 
     """
 
@@ -77,6 +78,7 @@ class OrderPaymentStateEnum(IntFlag):
     CANCEL =3
     APPLY_REFUND = 4
     REFUND =5
+    USED=6
 
 
 class OrderTypeEnum(IntFlag):
