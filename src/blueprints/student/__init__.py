@@ -115,10 +115,10 @@ select c.id,c.`course_name`,(select count(*) from study_schedule where
     if 'teacher_name' in params.keys():
         sql.append(" and t.nickname like '%")
         sql.append(params['teacher_name'])
-        sql.append("%')")
+        sql.append("%'")
     if 'course_time' in params.keys():
         sql.append(
-            ' and cs.start >:course_time and cs.end <:course_time')
+            ' and cs.start <:course_time and cs.end >:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
         sql.append(' and ss.actual_end <now()')
