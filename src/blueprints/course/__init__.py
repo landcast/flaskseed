@@ -196,7 +196,7 @@ def category_query():
               description: '课程id'
               type: 'integer'
             name:
-              description: '课程中文名称
+              description: '课程中文名称'
               type: 'string'
             name_zh:
               description: '课程英文名车'
