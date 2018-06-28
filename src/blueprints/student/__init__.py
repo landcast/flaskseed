@@ -462,4 +462,89 @@ def report_card_sql(params):
     return ['id', 'course_id', 'course_name', 'created_at', 'teacher_name','report_card_url'], ''.join(sql)
 
 
+@student.route('/schedule', methods=['POST'])
+def student_schedule():
+    """
+    swagger-doc: 'do mreport_card query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      student_id:
+        description: '学生id，如果不传认为是自己'
+        type: 'string'
+      course_id:
+        description: '课程id'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: ''
+              type: 'integer'
+            course_id:
+              description: 'tudy_schedule_id'
+              type: 'string'
+            name:
+              description: '课节名称'
+              type: 'string'
+            start:
+              description: 'created at'
+              type: 'string'
+            end:
+              description: '教师名称'
+              type: 'string'
+            courseware_num:
+              description: '课件数量,0:未上传，>0已经上传'
+              type: 'integer'
+    """
+    j = request.json
+    return jsonify(do_query(j, student_schedule_sql))
+
+
+def student_schedule_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+	select sr.id,name,actual_start as start,actual_end as end,
+	(select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = cs1.course_id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
+	from study_schedule sr,course_schedule cs1
+	where cs1.id - sr.course_schedule_id
+     and cs1.`state` <> 99  
+    and sr.`delete_flag` = 'IN_FORCE' and cs1.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    if 'student_id' in params.keys():
+        sql.append(" and sr.student_id =:student_id")
+    else:
+        sql.append(" and sr.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    if 'course_id' in params.keys():
+        sql.append(' and cs1.course_id =:course_id')
+
+    return ['id', 'name', 'start', 'end', 'courseware_num'], ''.join(sql)
+
+
 
