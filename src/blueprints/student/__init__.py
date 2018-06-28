@@ -510,10 +510,10 @@ def student_schedule():
               description: '课节名称'
               type: 'string'
             start:
-              description: '创建时间'
+              description: '上课开始时间'
               type: 'string'
             end:
-              description: '教师名称'
+              description: '上课结束时间'
               type: 'string'
             courseware_num:
               description: '课件数量,0:未上传，>0已经上传'
