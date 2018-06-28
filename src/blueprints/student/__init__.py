@@ -93,16 +93,16 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select c.id,c.`course_name`,(select count(*) from study_schedule where 
+select c.id,c.`course_name`,(select count(*) from study_schedule where 
     student_id = s.id and study_state = 1) as finish,
-		c.classes_number,
-		t.`nickname`,
-		cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
-    from `order` o, student s, teacher t, course c,`course_schedule`cs 
+                c.classes_number,
+                t.`nickname`,
+                ss.actual_start as start,ss.actual_end as end,t.avatar as teacher_avatar,c.course_desc,now()
+    from `order` o, student s, teacher t, course c,`course_schedule`cs ,study_schedule ss
     where o.student_id = s.id and o.course_id = c.id and
-        c.primary_teacher_id = t.id and c.`id` = cs.course_id
+        c.primary_teacher_id = t.id and c.`id` = cs.course_id and cs.id = ss.course_schedule_id
         and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
-        and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'    
+        and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'       
     ''']
     sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_name' in params.keys():
@@ -121,10 +121,10 @@ def my_course_sql(params):
             ' and cs.start >:course_time and cs.end <:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
-        sql.append(' and cs.end <now()')
+        sql.append(' and ss.actual_end >now()')
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
-        sql.append(' and cs.end > now()')
+        sql.append(' and ss.actual_end < now()')
 
     return ['id', 'course_name', 'finish', 'classes_number', 'nickname',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
