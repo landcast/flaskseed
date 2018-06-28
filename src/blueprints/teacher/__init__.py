@@ -112,7 +112,7 @@ def my_course_sql(params):
         sql.append("%'")
     if 'course_time' in params.keys():
         sql.append(
-                ' and cs.start >:course_time and cs.end <:course_time')
+                ' and cs.start <:course_time and cs.end >:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
         sql.append(' and cs.end >=:now()')

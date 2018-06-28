@@ -29,6 +29,9 @@ def my_course():
       course_name:
         description: 'course name'
         type: 'string'
+      course_id:
+        description: 'course id'
+        type: 'string'
       teacher_name:
         description: 'teacher name'
         type: 'string'
@@ -105,6 +108,10 @@ select c.id,c.`course_name`,(select count(*) from study_schedule where
         and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'       
     ''']
     sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    if 'course_id' in params.keys():
+        sql.append(' and c.id =:course_id')
+
     if 'course_name' in params.keys():
         sql.append(" and (c.course_name like '%")
         sql.append(params['course_name'])

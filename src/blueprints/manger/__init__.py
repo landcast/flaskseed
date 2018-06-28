@@ -214,7 +214,7 @@ def student_course_sql(params):
         sql.append("%'")
     if 'course_time' in params.keys():
         sql.append(
-            ' and cs.start >:course_time and cs.end <:course_time')
+            ' and cs.start <:course_time and cs.end >:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
         sql.append(' and cs.end >=:now()')
@@ -561,7 +561,7 @@ def thacher_interview_sql(params):
 
     if 'interview_at' in params.keys():
         sql.append(
-            ' and i.`start` >:interview_at and i.`end` <: interview_at')
+            ' and i.`start` <:interview_at and i.`end` >: interview_at')
 
     if 'interview_name' in params.keys():
         sql.append(" and t.updated_by like '%")
@@ -868,7 +868,7 @@ def student_tryout_sql(params):
         sql.append("%'")
     if 'class_at' in params.keys() :
         sql.append(
-            ' and t.`start` >:class_at and t.`end` <:class_at')
+            ' and t.`start` <:class_at and t.`end` >:class_at')
     if 'courseware_state' in params.keys():
         sql.append(
             ' and t.courseware_num =：courseware_state')
@@ -987,7 +987,7 @@ def course_ware_sql(params):
 
     if 'class_at' in params.keys() :
         sql.append(
-            ' and cs.`start` >:class_at and cs.`end` <:class_at')
+            ' and cs.`start` <:class_at and cs.`end` >:class_at')
 
     return ['id', 'ware_name', 'room_title', 'subject_name', 'teacher_name',
             'created_at', 'state'], ''.join(sql)
@@ -1088,7 +1088,7 @@ def thacher_common_sql(params):
         sql.append("%'")
     if 'class_at' in params.keys() :
         sql.append(
-            ' and t.`start` >:class_at and t.`end` <:class_at')
+            ' and t.`start` <:class_at and t.`end` >:class_at')
     if 'courseware_state' in params.keys():
         sql.append(
             ' and t.courseware_num =：courseware_state')
