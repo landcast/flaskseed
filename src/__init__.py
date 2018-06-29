@@ -82,6 +82,7 @@ def jwt_check(request):
                              algorithm=current_app.config['JWT_ALG'],
                              verify=True)
         current_app.logger.debug(payload)
+        current_app.logger.debug("token--->"+jwt_token)
         return payload
     else:
         return None
