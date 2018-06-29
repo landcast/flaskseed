@@ -483,6 +483,9 @@ def student_schedule():
       course_id:
         description: '课程id'
         type: 'string'
+      course_schedule_id:
+        description: '课程计划id'
+        type: 'string'
 
     res:
       num_results:
@@ -546,6 +549,8 @@ def student_schedule_sql(params):
 
     if 'course_id' in params.keys():
         sql.append(' and cs1.course_id =:course_id')
+    if 'course_schedule_id' in params.keys():
+        sql.append(' and cs1.id =:course_schedule_id')
 
     return ['id', 'name', 'start', 'end', 'courseware_num'], ''.join(sql)
 
