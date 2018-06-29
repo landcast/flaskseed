@@ -265,6 +265,12 @@ def schedule():
       course_id:
         description: '课程id'
         type: 'string'
+       class_at_start:
+        description: '课程开始时间,用户选择时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      class_at_end:
+        description: '课程结束时间，排课之后的最后一堂课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
       schedules:
         description: '课表数据，数组数据'
         type: 'string'
@@ -286,31 +292,27 @@ def schedule():
                     course_id)
             }), 500
 
+        courseschedule = CourseSchedule(
+                start = request.json['class_at_start'].replace('T', ' ').replace('Z', ''),
+                end = request.json['class_at_end'].replace('T', ' ').replace('Z', ''),
+                state = 1,
+                override_course_type=course.course_type,
+                course_id = course_id,
+                delete_flag = 'IN_FORCE',
+                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+            )
+        session.add(courseschedule)
+        session.flush()
+
+        if courseschedule is None:
+            return jsonify({
+                "error": "courseschedule error"
+            }), 500
+
+
         for order in session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2):
 
-            courseschedule_id = 0
-
             for index, item in enumerate(schedules):
-
-                if index == 0:
-                    courseschedule = CourseSchedule(
-                        start = item['start'].replace('T', ' ').replace('Z', ''),
-                        end = item['end'].replace('T', ' ').replace('Z', ''),
-                        state = 1,
-                        override_course_type=course.course_type,
-                        course_id = course_id,
-                        delete_flag = 'IN_FORCE',
-                        updated_by=getattr(g, current_app.config['CUR_USER'])['username']
-                    )
-                    session.add(courseschedule)
-                    session.flush()
-
-                    courseschedule_id = courseschedule.id
-
-                if courseschedule_id ==0 :
-                    return jsonify({
-                        "error": "courseschedule error"
-                    }), 500
 
                 sudyschedule = StudySchedule(
                     actual_start = item['start'].replace('T', ' ').replace('Z', ''),
@@ -318,7 +320,7 @@ def schedule():
                     name = item['course_name'],
                     study_state = 1,
                     order_id = order.id,
-                    course_schedule_id = courseschedule_id,
+                    course_schedule_id = courseschedule.id,
                     student_id = order.student_id,
                     delete_flag = 'IN_FORCE',
                     updated_by=getattr(g, current_app.config['CUR_USER'])['username']

@@ -70,6 +70,9 @@ def my_course():
             teacher_avatar:
               description: '教师头像'
               type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
             finish:
               description: '已经上完的数量'
               type: 'integer'
@@ -96,16 +99,13 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-select c.id,c.`course_name`,(select count(*) from study_schedule where 
-    student_id = s.id and study_state = 1) as finish,
-                c.classes_number,
-                t.`nickname`,
-                ss.actual_start as start,ss.actual_end as end,t.avatar as teacher_avatar,c.course_desc,now()
-    from `order` o, student s, teacher t, course c,`course_schedule`cs ,study_schedule ss
-    where o.student_id = s.id and o.course_id = c.id and
-        c.primary_teacher_id = t.id and c.`id` = cs.course_id and cs.id = ss.course_schedule_id
-        and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
-        and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'       
+            select c.id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
+           c.classes_number,t.`nickname` as teacher_name,cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
+            from `order` o, student s, teacher t, course c,`course_schedule`cs 
+            where o.student_id = s.id and o.course_id = c.id and
+            c.primary_teacher_id = t.id and c.`id` = cs.course_id  
+            and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
+            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'       
     ''']
     sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
