@@ -112,7 +112,7 @@ def generate_sql(params):
     and c.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE'  and cr.`delete_flag` = 'IN_FORCE' 
     ''']
     if 'course_id' in params.keys():
-        sql.append(' and c.course_id = :course_id')
+        sql.append(' and c.id = :course_id')
     if 'course_name' in params.keys():
         sql.append(" and (c.course_name like '%")
         sql.append(params['course_name'])
