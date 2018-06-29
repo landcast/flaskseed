@@ -265,7 +265,7 @@ def schedule():
       course_id:
         description: '课程id'
         type: 'string'
-       class_at_start:
+      class_at_start:
         description: '课程开始时间,用户选择时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
       class_at_end:
