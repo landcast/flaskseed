@@ -1206,7 +1206,7 @@ def orders_query_sql(params):
         c.primary_teacher_id = t.id and c.subject_id = su.id 
     ''']
     if 'order_id' in params.keys():
-        sql.append(' and o.id = :course_id')
+        sql.append(' and o.id = :order_id')
     if 'subject_name' in params.keys():
         sql.append(" and (su.subject_name  like '%")
         sql.append(params['subject_name'])
