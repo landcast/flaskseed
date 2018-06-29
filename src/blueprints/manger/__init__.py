@@ -453,7 +453,7 @@ def thacher_check_sql(params):
     if 'update_at_start' in params.keys() \
             and 'update_at_end' in params.keys():
         sql.append(
-            ' and t.update_at between :update_at_start and :update_at_end')
+            ' and t.updated_at between :update_at_start and :update_at_end')
 
     return ['id', 'teacher_name', 'family_name', 'given_name', 'mobile',
             'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name'], ''.join(sql)
