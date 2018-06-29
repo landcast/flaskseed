@@ -750,6 +750,7 @@ def thacher_tryout():
               type: 'string'
     """
     j = request.json
+    datetime_param_sql_format(j, ['class_at']),
     return jsonify(do_query(j, thacher_tryout_sql))
 
 
@@ -767,11 +768,11 @@ def thacher_tryout_sql(params):
     from course c,teacher t ,student s,`order` o,course_schedule cs
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = t.id and c.id = cs.course_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' 
-    and c.`class_type` = 3 )  t
+    and c.`class_type` = 3 )  t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
 
@@ -780,7 +781,7 @@ def thacher_tryout_sql(params):
             ' and t.`start` >:class_at and t.`end` <:class_at')
     if 'courseware_state' in params.keys():
         sql.append(
-            ' and t.courseware_num =：courseware_state')
+            ' and t.courseware_num =:courseware_state')
 
     return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
             'start', 'end','course_schedule_state'], ''.join(sql)
