@@ -1093,7 +1093,7 @@ def thacher_common_sql(params):
     from course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'  ,teacher t ,student s,`order` o
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = t.id 
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' 
-    and c.`class_type` < 3 )  t
+    and c.`class_type` < 3 )  t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
