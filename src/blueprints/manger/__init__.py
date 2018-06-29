@@ -571,7 +571,7 @@ def thacher_interview_sql(params):
 
     if 'interview_at' in params.keys():
         sql.append(
-            ' and i.`start` <:interview_at and i.`end` >: interview_at')
+            ' and i.`start` <:interview_at and i.`end` >:interview_at')
 
     if 'interview_name' in params.keys():
         sql.append(" and t.updated_by like '%")
