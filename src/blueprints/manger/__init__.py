@@ -409,7 +409,10 @@ def thacher_check():
             email:
               description: '邮箱'
               type: 'string'
-            update_at:
+            update_at_start:
+              description: '更新时间'
+              type: 'string'
+            update_at_end:
               description: '更新时间'
               type: 'string'
             state:
@@ -417,6 +420,7 @@ def thacher_check():
               type: 'string'
     """
     j = request.json
+    datetime_param_sql_format(j, ['update_at']),
     return jsonify(do_query(j, thacher_check_sql))
 
 
@@ -449,7 +453,7 @@ def thacher_check_sql(params):
     if 'update_at_start' in params.keys() \
             and 'update_at_end' in params.keys():
         sql.append(
-            ' and t.update_at between :created_at_start and :created_at_end')
+            ' and t.update_at between :update_at_start and :update_at_end')
 
     return ['id', 'teacher_name', 'family_name', 'given_name', 'mobile',
             'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name'], ''.join(sql)
