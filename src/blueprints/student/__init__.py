@@ -59,7 +59,7 @@ def my_course():
           type: object
           properties:
             id:
-              description: '课程id'
+              description: '课程计划id'
               type: 'integer'
             course_name:
               description: '课程名称'
