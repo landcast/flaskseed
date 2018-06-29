@@ -1217,7 +1217,7 @@ def orders_query_sql(params):
     if 'order_type' in params.keys():
         sql.append(' and o.order_type = :order_type')
     if 'order_state' in params.keys():
-        sql.append(' and o.order_state = :order_state')
+        sql.append(' and o.state = :order_state')
     if 'updated_by' in params.keys():
         sql.append(' and o.updated_by = :updated_by')
     if 'created_at_start' in params.keys() \
