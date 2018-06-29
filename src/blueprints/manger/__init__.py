@@ -220,7 +220,7 @@ def student_course_sql(params):
         sql.append(' and cs.end >=:now()')
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
-        sql.append(' and cs.end < now()')
+        sql.append(' and cs.end <: now()')
 
     return ['id', 'course_name', 'finish', 'classes_number', 'teacher_name',
             'start', 'end'], ''.join(sql)
