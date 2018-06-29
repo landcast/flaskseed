@@ -99,7 +99,7 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select c.id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
+            select cs.id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
            c.classes_number,t.`nickname` as teacher_name,cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
             from `order` o, student s, teacher t, course c,`course_schedule`cs 
             where o.student_id = s.id and o.course_id = c.id and
