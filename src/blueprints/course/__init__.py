@@ -309,7 +309,6 @@ def schedule():
                 "error": "courseschedule error"
             }), 500
 
-
         for order in session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2):
 
             for index, item in enumerate(schedules):
@@ -330,4 +329,4 @@ def schedule():
             setattr(order,'payment_state',6)
             session.add(order)
             session.flush()
-    return jsonify({'id':order.id })
+    return jsonify({'id':courseschedule.id })
