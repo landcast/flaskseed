@@ -880,7 +880,7 @@ def student_tryout_sql(params):
             ' and t.`start` <:class_at and t.`end` >:class_at')
     if 'courseware_state' in params.keys():
         sql.append(
-            ' and t.courseware_num =：courseware_state')
+            ' and t.courseware_num =:courseware_state')
 
     return ['id', 'teacher_name', 'course_name', 'student_name', 'level',
             'start', 'end'], ''.join(sql)
