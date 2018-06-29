@@ -61,6 +61,9 @@ def my_course():
             id:
               description: '课程计划id'
               type: 'integer'
+            course_id:
+              description: '课程id'
+              type: 'string'
             course_name:
               description: '课程名称'
               type: 'string'
@@ -99,7 +102,7 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select cs.id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
+            select cs.id,c.id as course_id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and study_state = 1) as finish,
            c.classes_number,t.`nickname` as teacher_name,cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
             from `order` o, student s, teacher t, course c,`course_schedule`cs 
             where o.student_id = s.id and o.course_id = c.id and
@@ -133,7 +136,7 @@ def my_course_sql(params):
             and params['course_status'] == '2':
         sql.append(' and ss.actual_end > now()')
 
-    return ['id', 'course_name', 'finish', 'classes_number', 'nickname',
+    return ['id','course_id', 'course_name', 'finish', 'classes_number', 'nickname',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
 
 
