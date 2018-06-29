@@ -1208,7 +1208,12 @@ def orders_query_sql(params):
     if 'order_id' in params.keys():
         sql.append(' and o.id = :course_id')
     if 'subject_name' in params.keys():
-        sql.append(' and (su.subject_name = :subject_name or su.subject_name_zh = :subject_name)')
+        sql.append(" and (su.subject_name  like '%")
+        sql.append(params['subject_name'])
+        sql.append("%'")
+        sql.append(" or su.subject_name_zh like '%")
+        sql.append(params['subject_name'])
+        sql.append("%')")
     if 'order_type' in params.keys():
         sql.append(' and o.order_type = :order_type')
     if 'order_state' in params.keys():
