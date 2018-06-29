@@ -309,7 +309,15 @@ def schedule():
                 "error": "courseschedule error"
             }), 500
 
-        for order in session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2):
+        orders = session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2)
+
+        if orders is None:
+            return jsonify({
+                "error": "found order existing in {1}".format(
+                    course_id)
+            }), 500
+
+        for order in orders:
 
             for index, item in enumerate(schedules):
 
