@@ -1097,7 +1097,7 @@ def thacher_common_sql(params):
     ''']
 
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'class_at' in params.keys() :
