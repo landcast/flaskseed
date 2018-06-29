@@ -1075,6 +1075,7 @@ def thacher_common():
               type: 'string'
     """
     j = request.json
+    datetime_param_sql_format(j, ['class_at']),
     return jsonify(do_query(j, thacher_common_sql))
 
 
@@ -1104,7 +1105,7 @@ def thacher_common_sql(params):
             ' and t.`start` <:class_at and t.`end` >:class_at')
     if 'courseware_state' in params.keys():
         sql.append(
-            ' and t.courseware_num =：courseware_state')
+            ' and t.courseware_num =:courseware_state')
 
     return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
             'start', 'end','course_schedule_state'], ''.join(sql)
