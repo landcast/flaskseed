@@ -68,6 +68,8 @@ class OrderPaymentStateEnum(IntFlag):
     PAID :已经付款
     CANCEL : 取消
     APPLY_REFUND:申请退款
+    CHECK_PASSED 审核通过
+    CHECK_DENY 审核驳回
     REFUND :退款
     USED :已经使
 
@@ -77,8 +79,10 @@ class OrderPaymentStateEnum(IntFlag):
     PAID =2
     CANCEL =3
     APPLY_REFUND = 4
-    REFUND =5
-    USED=6
+    CHECK_PASSED = 5
+    CHECK_DENY = 6
+    REFUND =7
+    USED=8
 
 
 class OrderTypeEnum(IntFlag):

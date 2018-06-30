@@ -1145,6 +1145,9 @@ def orders_query():
       order_state:
         description: 'order state 订单状态'
         type: 'string'
+      payment_state:
+        description: '支付状态'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -1191,6 +1194,9 @@ def orders_query():
             order_amount:
               description: '订单金额'
               type: 'integer'
+            payment_state:
+              description: '支付状态'
+              type: 'integer'
     """
     j = request.json
     return jsonify(do_query(
@@ -1206,7 +1212,7 @@ def orders_query_sql(params):
     '''
     sql = ['''
     select o.id, su.subject_name, c.classes_number, o.order_type, o.state,
-        o.updated_by, o.created_at, t.nickname, s.nickname, o.amount
+        o.updated_by, o.created_at, t.nickname, s.nickname, o.amount,o.payment_state
     from `order` o, student s, teacher t, course c, subject su
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.subject_id = su.id 
@@ -1222,6 +1228,8 @@ def orders_query_sql(params):
         sql.append("%')")
     if 'order_type' in params.keys():
         sql.append(' and o.order_type = :order_type')
+    if 'payment_state' in params.keys():
+        sql.append(' and o.payment_state = :payment_state')
     if 'order_state' in params.keys():
         sql.append(' and o.state = :order_state')
     if 'updated_by' in params.keys():
@@ -1234,6 +1242,6 @@ def orders_query_sql(params):
     # current_app.logger.debug(sql)
     return ['id', 'subject_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
-            'order_amount'], ''.join(sql)
+            'order_amount','payment_state'], ''.join(sql)
 
 
