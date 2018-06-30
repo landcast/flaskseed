@@ -196,7 +196,7 @@ def establish():
     order_type = request.json['order_type']
     course_id = request.json['course_id']
     student_parm = request.json['student']
-    subject_id = request.json['subject_id']
+
     amount = request.json['amount']
     order_desc = request.json['order_desc']
 
@@ -216,14 +216,6 @@ def establish():
 
         student_id = getattr(student, 'id')
 
-        subject = session.query(Subject).filter_by(id=subject_id).one_or_none()
-
-        if subject is None:
-            return jsonify({
-                "error": "not found subject: {1}".format(
-                    subject_id)
-            }), 500
-
 
         if 'have_course' in request.json and request.json['have_course'] == 0:
 
@@ -234,6 +226,15 @@ def establish():
 
             classes_number = request.json['classes_number']
             basic_amount = request.json['basic_amount']
+            subject_id = request.json['subject_id']
+
+            subject = session.query(Subject).filter_by(id=subject_id).one_or_none()
+
+            if subject is None:
+                return jsonify({
+                    "error": "not found subject: {1}".format(
+                        subject_id)
+                }), 500
 
             if teacher_parm.isdigit():
                 teacher = session.query(Teacher).filter_by(id=teacher_parm).one_or_none()
