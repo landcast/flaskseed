@@ -82,11 +82,17 @@ class Teacher(UserBaseMixin, db.Model):
     state = Column(Enum(TeacherState), nullable=False,
                    server_default=TeacherState.RECRUIT.name)
     level = Column(String(50), nullable=True, comment='教师级别')
+    degree = Column(String(50), nullable=True, comment='大专学历 college graduate，本科学历  university diploma，'
+                                                       '学士学位  bachelor degree，硕士学位  master degree，博士学位  doctor degree')
     nation = Column(String(50), nullable=True, comment='国家')
     city = Column(String(50), nullable=True, comment='城市')
     timezone = Column(Integer, nullable=True, comment='时区')
+    zipone = Column(Integer, nullable=True, comment='时区代码')
     contract = Column(String(255), nullable=True, comment='合同信息')
     cur_school = Column(String(50), nullable=True, comment='当前工作学校')
+    graduation_school = Column(String(50), nullable=True, comment='毕业最高学校')
+    education_history = Column(String(1000), nullable=True, comment='上学历史 json')
+    teaching_history = Column(String(1000), nullable=True, comment='教学历史 json')
     race = Column(String(120), nullable=True, comment='种族')
     ancestral = Column(String(120), nullable=True,
                        comment="e.g. egyptian american")

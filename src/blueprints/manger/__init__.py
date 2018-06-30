@@ -276,12 +276,6 @@ def allot_query():
             username:
               description: '学生账号'
               type: 'integer'
-            family_name:
-              description: 'family_name'
-              type: 'string'
-            given_name:
-              description: 'given_name'
-              type: 'string'
             student_name:
               description: '学生名称'
               type: 'string'
@@ -300,12 +294,6 @@ def allot_query():
             state:
               description: '状态'
               type: 'string'
-            su_family_name:
-              description: '课程顾问family_name'
-              type: 'string'
-            su_given_name:
-              description: '课程顾问given_name'
-              type: 'string'
             su_name:
               description: '课程顾问名称'
               type: 'string'
@@ -322,7 +310,7 @@ def student_allot_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.username,s.`family_name`,s.`given_name`,s.nickname as student_name,s.mobile,s.email,s.`created_at`,c.channel_name,s.state,su.family_name as su_family_name,su.given_name as su_given_name,su.nickname as su_name
+    select s.id,s.username,s.nickname as student_name,s.mobile,s.email,s.`created_at`,c.channel_name,s.state,su.nickname as su_name
     from student s left join sys_user su on  s.consultant_id = su.id   ,enrollment e,channel c
     where 
      s.id = e.`student_id` and e.`channel_id` = c.id
@@ -346,8 +334,8 @@ def student_allot_sql(params):
         sql.append(" and c.channel_name like '%")
         sql.append(params['student_from'])
         sql.append("%'")
-    return ['id', 'username', 'family_name', 'given_name','student_name', 'mobile',
-            'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name','su_name'], ''.join(sql)
+    return ['id', 'username','student_name', 'mobile',
+            'email', 'created_at', 'channel_name', 'state','su_name'], ''.join(sql)
 
 
 @manger.route('/thacher_check', methods=['POST'])
@@ -455,8 +443,8 @@ def thacher_check_sql(params):
         sql.append(
             ' and t.updated_at between :update_at_start and :update_at_end')
 
-    return ['id', 'teacher_name', 'family_name', 'given_name', 'mobile',
-            'email', 'created_at', 'channel_name', 'state', 'su_family_name', 'su_given_name'], ''.join(sql)
+    return ['id', 'teacher_name', 'mobile', 'email', 'updated_at',
+            'state'], ''.join(sql)
 
 
 @manger.route('/thacher_interview', methods=['POST'])
@@ -624,12 +612,6 @@ def students_query():
               type: 'integer'
             username:
               description: '学生账号'
-              type: 'integer'
-            family_name:
-              description: 'family_name'
-              type: 'string'
-            given_name:
-              description: 'given_name'
               type: 'string'
             student_name:
               description: '学生名称'
@@ -659,7 +641,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.username,s.`family_name`,s.`given_name`,s.nickname as student_name,s.mobile,s.email,s.`created_at`
+    select s.id,s.username,s.nickname as student_name,s.mobile,s.email,s.`created_at`
     from student s
     where s.`delete_flag` = 'IN_FORCE'  
     ''']
@@ -677,7 +659,7 @@ def students_sql(params):
     if 'state' in params.keys():
         sql.append(' and s.state =:state')
 
-    return ['id', 'username', 'family_name', 'given_name','student_name', 'mobile',
+    return ['id', 'username','student_name', 'mobile',
             'email', 'created_at'], ''.join(sql)
 
 
