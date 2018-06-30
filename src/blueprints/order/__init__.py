@@ -273,7 +273,7 @@ def establish():
             session.add(course)
             session.flush()
 
-            amount = classes_number*basic_amount
+            amount = int(classes_number)*int(basic_amount)
 
             course_id = getattr(course, 'id')
 
