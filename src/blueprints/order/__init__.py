@@ -194,7 +194,8 @@ def establish():
         type: 'string'
     """
     order_type = request.json['order_type']
-    course_id = request.json['course_id']
+    if 'have_course' in request.json:
+        course_id = request.json['course_id']
     student_parm = request.json['student']
 
     amount = request.json['amount']
