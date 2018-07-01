@@ -29,7 +29,7 @@ class Order(EntityMixin, db.Model):
 
 class PayLog(EntityMixin, db.Model):
     direction = Column(Integer, nullable=False,
-                       comment='receive or return back')
+                       comment='收款还是付款')
     state = Column(Integer, nullable=False,comment='状态')
     state_reason = Column(String(255), nullable=False,comment='该状态原因')
     amount = Column(Integer, nullable=False,comment='退款金额')
