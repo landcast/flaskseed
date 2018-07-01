@@ -1057,7 +1057,7 @@ def thacher_common():
               description: '课程状态'
               type: 'string'
             course_schedule_id
-              description: '课表id,如果为null就是为排课，存在id已经排课'
+              description:'课表id,如果为null就是为排课，存在id已经排课'
               type: 'string'
     """
     j = request.json
