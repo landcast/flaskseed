@@ -30,12 +30,12 @@ class Order(EntityMixin, db.Model):
 class PayLog(EntityMixin, db.Model):
     direction = Column(Integer, nullable=False,
                        comment='receive or return back')
-    state = Column(Integer, nullable=False)
-    state_reason = Column(String(255), nullable=False)
-    amount = Column(Integer, nullable=False)
-    result = Column(Integer, nullable=False)
-    payment_method = Column(Integer, nullable=False)
-    payment_fee = Column(Integer, nullable=False)
+    state = Column(Integer, nullable=False,comment='状态')
+    state_reason = Column(String(255), nullable=False,comment='该状态原因')
+    amount = Column(Integer, nullable=False,comment='退款金额')
+    result = Column(Integer, nullable=False,comment='最终退款金额')
+    payment_method = Column(Integer, nullable=False,comment='支付，退款方式')
+    payment_fee = Column(Integer, nullable=False,comment='订单支付费用')
     remark = Column(String(1000), nullable=True,comment='备注信息')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
