@@ -1056,7 +1056,7 @@ def thacher_common():
             course_schedule_state:
               description: '课程状态'
               type: 'string'
-            course_schedule_id
+            course_schedule_id:
               description:'课表id,如果为null就是为排课，存在id已经排课'
               type: 'string'
     """
