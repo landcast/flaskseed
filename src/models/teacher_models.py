@@ -85,7 +85,9 @@ class Teacher(UserBaseMixin, db.Model):
     degree = Column(String(50), nullable=True, comment='大专学历 college graduate，本科学历  university diploma，'
                                                        '学士学位  bachelor degree，硕士学位  master degree，博士学位  doctor degree')
     nation = Column(String(50), nullable=True, comment='国家')
+    state = Column(String(50), nullable=True, comment='州')
     city = Column(String(50), nullable=True, comment='城市')
+    street = Column(String(200), nullable=True, comment='街道')
     timezone = Column(Integer, nullable=True, comment='时区')
     zipone = Column(Integer, nullable=True, comment='时区代码')
     contract = Column(String(255), nullable=True, comment='合同信息')
