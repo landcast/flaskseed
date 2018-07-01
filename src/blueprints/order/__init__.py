@@ -361,7 +361,7 @@ def refund():
         session.add(order)
 
         paylog = PayLog( direction = 2,
-                         state = 98,
+                         state = 4,
                          amount = amount,
                          payment_fee = amount,
                          result = amount,
