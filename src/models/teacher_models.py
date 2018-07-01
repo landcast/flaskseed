@@ -105,9 +105,15 @@ class Teacher(UserBaseMixin, db.Model):
 
 class InterviewState(IntFlag):
     """
-    CHECK_PASS:审核通过(待预约)、
-    WAIT_FOR_INTERVIEW：已预约(待面试)，
-    """
-    CHECK_PASS = 4
-    WAIT_FOR_INTERVIEW = 10
+    ALREADY_INTERVIEW:已经面试
+    NO_INTERVIEW:未面试
+    CANCEL:取消
+    EFFECTIVE:有效
+    INVALID:无效
+    """
+    ALREADY_INTERVIEW = 1
+    NO_INTERVIEW =2
+    CANCEL = 3
+    EFFECTIVE = 98
+    INVALID = 99
 

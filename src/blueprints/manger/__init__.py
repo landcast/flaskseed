@@ -521,6 +521,12 @@ def thacher_interview():
             end:
               description: '面试结束时间'
               type: 'string'
+            state:
+              description: '教师状态'
+              type: 'string'
+            integerview_state:
+              description: '面试状态'
+              type: 'string'
             courseware_num:
               description: '课件个数0为上传，>0已经上传'
               type: 'integer'
@@ -537,7 +543,7 @@ def thacher_interview_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,c.id as course_id,t.username,t.mobile,t.email,c.`course_name`,i.`updated_by` as interview_name,i.`start`,i.`end`,t.state,
+    select t.id,c.id as course_id,t.username,t.mobile,t.email,c.`course_name`,i.`updated_by` as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
     from teacher t left join interview i  on i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
@@ -566,7 +572,7 @@ def thacher_interview_sql(params):
         sql.append(params['interview_name'])
         sql.append("%'")
     return ['id', 'course_id', 'username', 'mobile', 'email',
-            'course_name', 'interview_name', 'start', 'end', 'state', 'courseware_num'], ''.join(sql)
+            'course_name', 'interview_name', 'start', 'end', 'state','integerview_state','courseware_num'], ''.join(sql)
 
 
 @manger.route('/students', methods=['POST'])
