@@ -1056,6 +1056,9 @@ def thacher_common():
             course_schedule_state:
               description: '课程状态'
               type: 'string'
+            course_schedule_id
+              escription: '课表id,如果为null就是为排课，存在id已经排课'
+              type: 'string'
     """
     j = request.json
     datetime_param_sql_format(j, ['class_at']),
@@ -1072,7 +1075,7 @@ def thacher_common_sql(params):
     sql = ['''
     select * from (select c.id,t.username as teacher_name,c.`course_name`,s.username as student_name,s.`grade`,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
-    cs.`state` as course_schedule_state
+    cs.`state` as course_schedule_state,cs.id as course_schedule_id
     from course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'  ,teacher t ,student s,`order` o
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = t.id 
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' 
@@ -1091,7 +1094,7 @@ def thacher_common_sql(params):
             ' and t.courseware_num =:courseware_state')
 
     return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
-            'start', 'end','course_schedule_state'], ''.join(sql)
+            'start', 'end','course_schedule_state','course_schedule_id'], ''.join(sql)
 
 
 @manger.route('/orders', methods=['POST'])
