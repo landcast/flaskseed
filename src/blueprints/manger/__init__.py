@@ -1282,7 +1282,7 @@ def refund_query():
               type: 'integer'
             subject_name:
               description: '课包 name'
-              type: 'string''
+              type: 'string'
             order_type:
               description: '订单类型'
               type: 'integer'
