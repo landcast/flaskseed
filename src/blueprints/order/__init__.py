@@ -356,6 +356,8 @@ def refund():
 
         setattr(order,'order_type',4)
 
+        setattr(order,'payment_state',7)
+
         session.add(order)
 
         paylog = PayLog( direction = 2,

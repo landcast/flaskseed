@@ -1194,7 +1194,7 @@ def orders_query_sql(params):
     '''
     sql = ['''
     select o.id, su.subject_name, c.classes_number, o.order_type, o.state,
-        o.updated_by, o.created_at, t.nickname, s.nickname, o.amount,o.payment_state
+        o.updated_by, o.created_at, t.nickname as teacher_name, s.nickname  as student_name, o.amount as order_amount ,o.payment_state
     from `order` o, student s, teacher t, course c, subject su
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.subject_id = su.id 
@@ -1227,3 +1227,129 @@ def orders_query_sql(params):
             'order_amount','payment_state'], ''.join(sql)
 
 
+@manger.route('/refunds', methods=['POST'])
+def refund_query():
+    """
+    swagger-doc: 'do refund query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page 分页中每页条数'
+        type: 'integer'
+      page_no:
+        description: 'page no, start from 1 分页中页序号'
+        type: 'integer'
+      order_id:
+        description: '订单编号'
+        type: 'string'
+      subject_name:
+        description: '课包名称'
+        type: 'string'
+      payment_state:
+        description: '支付状态'
+        type: 'string'
+      created_at_start:
+        description: '订单创建时间开始，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
+        type: 'string'
+      created_at_end:
+        description: '订单创建时间结束，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
+        type: 'string'
+      updated_by:
+        description: 'updated by 下单人'
+        type: 'string'
+      order_type:
+        description: 'order type 订单类型'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'course id'
+              type: 'integer'
+            subject_name:
+              description: '课包 name'
+              type: 'string''
+            order_type:
+              description: '订单类型'
+              type: 'integer'
+            order_state:
+              description: '订单状态'
+              type: 'integer'
+            updated_by:
+              description: '订单更新人'
+              type: 'string'
+            created_at:
+              description: '创建时间'
+              type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+            order_amount:
+              description: '订单金额'
+              type: 'integer'
+            payment_state:
+              description: '支付状态'
+              type: 'integer'
+    """
+    j = request.json
+    return jsonify(do_query(
+        datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
+        refund_query_sql))
+
+
+def refund_query_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    sql = ['''
+    select o.id, su.subject_name,  o.order_type, o.state,
+        o.updated_by, o.created_at, t.nickname as teacher_name, s.nickname  as student_name, o.amount as order_amount,o.payment_state
+    from `order` o, student s, teacher t, course c, subject su
+    where o.student_id = s.id and o.course_id = c.id and
+        c.primary_teacher_id = t.id and c.subject_id = su.id and o.payment_state in (4,5,6,7)
+    ''']
+    if 'order_id' in params.keys():
+        sql.append(' and o.id = :order_id')
+    if 'subject_name' in params.keys():
+        sql.append(" and (su.subject_name  like '%")
+        sql.append(params['subject_name'])
+        sql.append("%'")
+        sql.append(" or su.subject_name_zh like '%")
+        sql.append(params['subject_name'])
+        sql.append("%')")
+    if 'order_type' in params.keys():
+        sql.append(' and o.order_type = :order_type')
+    if 'payment_state' in params.keys():
+        sql.append(' and o.payment_state = :payment_state')
+    if 'order_state' in params.keys():
+        sql.append(' and o.state = :order_state')
+    if 'updated_by' in params.keys():
+        sql.append(' and o.updated_by = :updated_by')
+    if 'created_at_start' in params.keys() \
+            and 'created_at_end' in params.keys():
+        sql.append(
+            ' and o.created_at between :created_at_start and :created_at_end')
+
+    # current_app.logger.debug(sql)
+    return ['id', 'subject_name', 'order_type', 'order_state',
+            'updated_by', 'created_at', 'teacher_name', 'student_name',
+            'order_amount','payment_state'], ''.join(sql)
