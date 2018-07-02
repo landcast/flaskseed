@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from flask import g, jsonify, Blueprint, request, current_app
-from src.blueprints import transactional
+from src.blueprints import transactional, db_session
 from sqlalchemy.sql import *
 from src.models import db, Account
 

@@ -28,3 +28,6 @@ def transactional(db):
     return session_injector
 
 
+# just do place holder, if one function without @transactional and refer
+# to db_session, it will get None and raise error immediately
+db_session = None
