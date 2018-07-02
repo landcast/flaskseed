@@ -85,7 +85,8 @@ class Teacher(UserBaseMixin, db.Model):
     skype_account = Column(String(50), nullable=True, comment='skype账号')
     degree = Column(String(50), nullable=True, comment='大专学历 college graduate，本科学历  university diploma，'
                                                        '学士学位  bachelor degree，硕士学位  master degree，博士学位  doctor degree')
-    nation = Column(String(50), nullable=True, comment='国家')
+    nation = Column(String(50), nullable=True, comment='国家国际代码')
+    country = Column(String(50), nullable=True, comment='国家')
     state = Column(String(50), nullable=True, comment='州')
     city = Column(String(50), nullable=True, comment='城市')
     street = Column(String(200), nullable=True, comment='街道')
