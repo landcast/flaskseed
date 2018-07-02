@@ -7,9 +7,12 @@ def transactional(db):
     def session_injector(func):
         @wraps(func)
         def add_global_session(*args, **kwargs):
-            session = db.session()
             g = func.__globals__
-            g['db_session'] = session
+            if not hasattr(g, 'db_session'):
+                session = db.session()
+                g['db_session'] = session
+            else:
+                session = g['db_session']
             try:
                 result = func(*args, **kwargs)
                 session.commit()
