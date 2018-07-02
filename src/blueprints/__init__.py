@@ -8,17 +8,21 @@ def transactional(db):
         @wraps(func)
         def add_global_session(*args, **kwargs):
             g = func.__globals__
+            need_commit = True
             if not hasattr(g, 'db_session'):
                 session = db.session()
                 g['db_session'] = session
             else:
                 session = g['db_session']
+                need_commit = False
             try:
                 result = func(*args, **kwargs)
-                session.commit()
+                if need_commit:
+                    session.commit()
                 return result
             except Exception as e:
-                session.rollback()
+                if need_commit:
+                    session.rollback()
                 raise e
             finally:
                 pass
