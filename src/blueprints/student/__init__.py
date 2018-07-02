@@ -131,10 +131,10 @@ def my_course_sql(params):
             ' and cs.start <:course_time and cs.end >:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
-        sql.append(' and ss.actual_end <now()')
+        sql.append(' and cs.end <now()')
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
-        sql.append(' and ss.actual_end > now()')
+        sql.append(' and cs.end > now()')
 
     return ['id','course_id', 'course_name', 'finish', 'classes_number', 'nickname',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
