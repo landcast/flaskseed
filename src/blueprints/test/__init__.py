@@ -13,6 +13,9 @@ test = Blueprint('test', __name__)
 def add_account():
     j = request.json
     # TODO like flask g or current_app, add global proxy support
-    db_session.add(Account(state=j['state'], account_name=j['account_name'],
-                        account_no=j['account_no']))
-    return jsonify({'message': 'succ'})
+    a = Account(state=j['state'], account_name=j['account_name'],
+                        account_no=j['account_no'])
+    db_session.add(a)
+    db_session.flush()
+    current_app.logger.debug('id=' + str(a.id))
+    return jsonify({'id': str(a.id)})
