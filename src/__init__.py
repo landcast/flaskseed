@@ -22,6 +22,7 @@ from src.blueprints.course import course
 from src.blueprints.student import student
 from src.blueprints.teacher import teacher
 from src.blueprints.manger import manger
+from src.blueprints.test import test
 
 from src.resources.api import api, admin
 from src.models import *
@@ -59,7 +60,7 @@ def auth_check_needed(request):
     if current_app.debug:
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
                          '/auth/*', '/upload', '/download/*', '/admin/*',
-                         '/order/*', '/api/*', '/swagger.json',
+                         '/order/*', '/api/*', '/swagger.json', '/test/*',
                          '/static/*', '/swagger_ui/*', '/swagger', '/student/*',
                          '/teacher/*', '/course/*', '/manger/*']
     else:
@@ -237,12 +238,13 @@ def create_app(config):
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(live, url_prefix='/live')
     app.register_blueprint(order, url_prefix='/order')
-    # register restful endpoints
     app.register_blueprint(admin, url_prefix='/admin')
     app.register_blueprint(course, url_prefix='/course')
     app.register_blueprint(student, url_prefix='/student')
     app.register_blueprint(teacher, url_prefix='/teacher')
     app.register_blueprint(manger, url_prefix='/manger')
+    app.register_blueprint(test, url_prefix='/test')
+    # register restful endpoints
     sw_manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     app.sw_manager = sw_manager
     app.json_encoder = CustomJSONEncoder
