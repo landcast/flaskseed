@@ -119,7 +119,7 @@ class TeacherTime(EntityMixin, db.Model):
     state = Column(Integer, nullable=False, comment='可以授课开始时间')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
-    teachers = db.relationship('Teacher', backref='certificates', lazy=True)
+    teachers = db.relationship('Teacher', backref='teachertime', lazy=True)
 
 
 class TeacherHistory(EntityMixin, db.Model):
@@ -129,7 +129,7 @@ class TeacherHistory(EntityMixin, db.Model):
     type = Column(Integer, nullable=False, comment='类型，1：可以交的科目，2：现在交的科目')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
-    teachers = db.relationship('Teacher', backref='certificates', lazy=True)
+    teachers = db.relationship('Teacher', backref='teacherhistory', lazy=True)
 
 
 class InterviewState(IntFlag):
