@@ -82,6 +82,7 @@ class Teacher(UserBaseMixin, db.Model):
     state = Column(Enum(TeacherState), nullable=False,
                    server_default=TeacherState.RECRUIT.name)
     level = Column(String(50), nullable=True, comment='教师级别')
+    skype_account = Column(String(50), nullable=True, comment='skype账号')
     degree = Column(String(50), nullable=True, comment='大专学历 college graduate，本科学历  university diploma，'
                                                        '学士学位  bachelor degree，硕士学位  master degree，博士学位  doctor degree')
     nation = Column(String(50), nullable=True, comment='国家')
@@ -92,15 +93,43 @@ class Teacher(UserBaseMixin, db.Model):
     zipone = Column(Integer, nullable=True, comment='时区代码')
     contract = Column(String(255), nullable=True, comment='合同信息')
     cur_school = Column(String(50), nullable=True, comment='当前工作学校')
+    cur_zone = Column(String(50), nullable=True, comment='当前地区')
+    cur_state = Column(String(50), nullable=True, comment='当前州')
     graduation_school = Column(String(50), nullable=True, comment='毕业最高学校')
     education_history = Column(String(1000), nullable=True, comment='上学历史 json')
     teaching_history = Column(String(1000), nullable=True, comment='教学历史 json')
+    about_me = Column(String(1000), nullable=True, comment='自我介绍')
     race = Column(String(120), nullable=True, comment='种族')
+    teacher_age = Column(Integer, nullable=False, comment='教龄')
+    resume_url = Column(String(100), nullable=True, comment='简历url')
+    seniority_url = Column(String(100), nullable=True,
+                   comment="教师资格证明url JSON")
+    award_url = Column(String(1000), nullable=True,
+                           comment="获奖文件地址 JSON")
     ancestral = Column(String(120), nullable=True,
-                       comment="e.g. egyptian american")
+                       comment="原籍")
     contract_url = Column(String(255), nullable=True, comment='合同下载地址')
     contract_dollar_price = Column(Float, nullable=True,
                                    comment="dollar price for this teacher")
+
+
+class TeacherTime(EntityMixin, db.Model):
+    week = Column(db.String(10), nullable=False, comment='星期几，1，2，3，4，5，6，7')
+    end = Column(DateTime, nullable=False, comment='可授课结束时间')
+    state = Column(Integer, nullable=False, comment='可以授课开始时间')
+    teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
+                        nullable=False)
+    teachers = db.relationship('Teacher', backref='certificates', lazy=True)
+
+
+class TeacherHistory(EntityMixin, db.Model):
+    subject_id = Column(Integer,nullable=True, comment='可教授的科目id')
+    subject_name = Column(Integer,nullable=True, comment='可教授的科目名称')
+    grade = Column(Integer,nullable=True, comment='幼儿园 小学 初中 高中 大学 成人 JSON串')
+    type = Column(Integer, nullable=False, comment='类型，1：可以交的科目，2：现在交的科目')
+    teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
+                        nullable=False)
+    teachers = db.relationship('Teacher', backref='certificates', lazy=True)
 
 
 class InterviewState(IntFlag):

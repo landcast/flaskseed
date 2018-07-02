@@ -93,3 +93,33 @@ class UserBaseMixin(EntityMixin):
                       comment='im saas services token')
     class_token = Column(String(255), nullable=True,
                          comment='class-room services user token')
+
+
+class ActionEventTypeEnum(enum.IntEnum):
+    """
+    UNKNOWN:未知
+    TEACHER_CHECK:教师审核
+    TEACHER_TALK:教师沟通
+    STUDENT_TALK:学生沟通
+    """
+    UNKNOWN =1
+    TEACHER_CHECK=2
+    TEACHER_TALK=3
+    STUDENT_TALK=4
+
+
+class ActionEvent(EntityMixin, db.Model):
+    user_id = Column(Integer, nullable=False, comment='用户')
+    user_type = Column(db.String(150), nullable=False, comment='用户类型')
+    action_event_type = Column(Enum(ActionEventTypeEnum), nullable=False,
+                               server_default=ActionEventTypeEnum.UNKNOWN.name)
+    action_event_desc = Column(db.String(2000), nullable=True, comment='事件内容')
+    action_event_domain = Column(db.String(50), nullable=True, comment='事件所属业务领域')
+    before_state = Column(db.String(120), nullable=True, comment='事件发生前状态')
+    after_state = Column(db.String(120), nullable=True, comment='事件发生后状态')
+    primary_table_name = Column(db.String(120), nullable=True, comment='事件对应主数据表的名称')
+    primary_data_id = Column(Integer, nullable=False, comment='事件对应主数据表的记录主键')
+    remark = Column(db.String(1000), nullable=True, comment='标记信息')
+
+
+
