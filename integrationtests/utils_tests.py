@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 import sys
 import unittest
@@ -38,6 +39,11 @@ class CourseTest(TestBase):
         status_code, output = subprocess.getstatusoutput(cmd)
         print(output)
         self.assertTrue('200 OK' in output, 'expect http status return 200')
+        json_str = re.findall(r"\{(.*)\}", output, re.S)
+        json_res = json.loads('{' + json_str[0].replace('\n', '') + '}')
+        self.assertEqual(json_res['db_session_id'],
+                         json_res['nested_db_session_id'],
+                         'not using same db_session')
 
 
 if __name__ == "__main__":
