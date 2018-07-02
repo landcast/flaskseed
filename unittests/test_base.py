@@ -139,7 +139,8 @@ class TestBase(unittest.TestCase):
             self.logger.debug(cs_s_ap)
             self.logger.debug(cs_s_ib)
             # add channel
-            channel = Channel(channel_name=str(pid), updated_by=str(pid))
+            channel = Channel(channel_name=str(pid), state=1,
+                              updated_by=str(pid))
             session.add(channel)
             session.flush()
             # add order

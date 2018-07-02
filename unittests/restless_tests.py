@@ -56,6 +56,7 @@ class RestLessTest(TestBase):
                 }
             ],
             "channel_name": self.channel_name,
+            "state": 1,
             "channel_orders": [],
             "updated_by": self.test_student
         }), content_type='application/json',

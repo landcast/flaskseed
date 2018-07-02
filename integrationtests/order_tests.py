@@ -8,7 +8,9 @@ from integrationtests import TestBase, json_header, server_location
 
 
 class OrderCurlTest(TestBase):
+    '''
 
+    '''
     def test_register(self):
         url = f'{server_location}/order/main_query'
         end = (datetime.now() + timedelta(seconds=30)).isoformat()[:-3] + 'Z'
