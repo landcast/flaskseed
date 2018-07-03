@@ -3,7 +3,7 @@ import re
 import subprocess
 import sys
 import unittest
-from datetime import datetime, timedelta
+
 
 sys.path.append('.')
 from integrationtests import TestBase, json_header, server_location
@@ -33,8 +33,8 @@ class CourseTest(TestBase):
             "account_no": "1111111111"
         }) + "'"
         cmd = f'''
-                    curl -sS -i -H '{json_header}' -X POST --data {json_data} {url}
-                    '''
+            curl -sS -i -H '{json_header}' -X POST --data {json_data} {url}
+            '''
         print(cmd)
         status_code, output = subprocess.getstatusoutput(cmd)
         print(output)

@@ -26,8 +26,6 @@ def transactional(db):
                 raise e
             finally:
                 pass
-        add_global_session.__name__ = func.__name__
-        add_global_session.__doc__ = func.__doc__
         return add_global_session
     return session_injector
 
