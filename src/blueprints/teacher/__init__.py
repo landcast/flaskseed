@@ -122,3 +122,233 @@ def my_course_sql(params):
 
     return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
             'updated_by', 'created_at'], ''.join(sql)
+
+
+@teacher.route('/main_query', methods=['POST'])
+def teacher_query():
+    """
+    swagger-doc: 'do teacher query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page 分页中每页条数'
+        type: 'integer'
+      page_no:
+        description: 'page no, start from 1 分页中页序号'
+        type: 'integer'
+      category_1:
+        description: '一级分类id'
+        type: 'string'
+      category_2:
+        description: '二级分类id'
+        type: 'string'
+      category_3:
+        description: '三级分类id'
+        type: 'string'
+      cur_category_1:
+        description: '当前教学一级分类id'
+        type: 'string'
+      cur_category_2:
+        description: '当前教学二级分类id'
+        type: 'string'
+      cur_category_3:
+        description: '当前教学三级分类id'
+        type: 'string'
+      username:
+        description: '教师名称'
+        type: 'string'
+      mobile:
+        description: '电话'
+        type: 'string'
+      email:
+        description: '邮箱'
+        type: 'string'
+      country:
+        description: '国家'
+        type: 'string'
+      province:
+        description: '省/州'
+        type: 'string'
+      timezone:
+        description: '时区'
+        type: 'string'
+      school:
+        description: '学校'
+        type: 'string'
+      cur_grade:
+        description: '当前教授年级'
+        type: 'string'
+      cur_province:
+        description: '当前州/省'
+        type: 'string'
+      cur_area:
+        description: '当前任职地区'
+        type: 'string'
+      grade:
+        description: '可以教授年级'
+        type: 'string'
+      teacher_age:
+        description: '总教龄0-4，5-9，10-15等'
+        type: 'string'
+      have_award:
+        description: '是否有奖励0：无，1：有'
+        type: 'string'
+      have_seniority:
+        description: '是否有资格证明0：无，1：有'
+        type: 'string'
+      week:
+        description: '可上课周'
+        type: 'string'
+      start:
+        description: '选择起始时间，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
+        type: 'string'
+      end:
+        description: '选择结束时间，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
+        type: 'string'
+      state:
+        description: '81，不在岗，80：在岗'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '教师id'
+              type: 'integer'
+            created_at:
+              description: '注册时间'
+              type: 'string'
+            username:
+              description: '教师账号'
+              type: 'integer'
+            mobile:
+              description: '手机'
+              type: 'integer'
+            email:
+              description: '邮箱'
+              type: 'integer'
+            country:
+              description: '国家'
+              type: 'string'
+            province:
+              description: '州，省'
+              type: 'string'
+            timezone:
+              description: '时区'
+              type: 'string'
+            state:
+              description: '教师状态'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(
+        datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
+        teacher_query_sql))
+
+
+def teacher_query_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    sql = ['''
+        select t.id,t.`created_at`,t.`username`,t.`mobile`,t.`email`,t.country,t.`province`,t.timezone,t.`state` 
+        from teacher t 
+        left join teacher_history th on t.id = th.`teacher_id` and th.`delete_flag` = 'IN_FORCE'
+        left join subject s on th.`subject_id` = s.id and s.`delete_flag` = 'IN_FORCE' 
+        left join subject_category sc on s.`subject_category_id` = sc.id and sc.`delete_flag` = 'IN_FORCE'
+        left join curriculum cr on sc.`curriculum_id` = cr.id and cr.`delete_flag` = 'IN_FORCE'  
+        left join teacher_time tt on t.id = tt.`teacher_id` and tt.`delete_flag` = 'IN_FORCE'
+        where t.`delete_flag` = 'IN_FORCE'
+    ''']
+    if 'username' in params.keys():
+        sql.append(' t.username = :username')
+    if 'mobile' in params.keys():
+        sql.append(' and t.mobile = :mobile')
+    if 'email' in params.keys():
+        sql.append(' and t.email = :email')
+    if 'country' in params.keys():
+        sql.append(' and t.country = :country')
+    if 'province' in params.keys():
+        sql.append(' and t.province = :province')
+
+    if 'timezone' in params.keys():
+        sql.append(' and t.timezone = :timezone')
+    if 'school' in params.keys():
+        sql.append(" and t.cur_school like '%")
+        sql.append(params['school'])
+        sql.append("%'")
+    if 'cur_grade' in params.keys():
+        sql.append(" and t.cur_grade like '%")
+        sql.append(params['cur_grade'])
+        sql.append("%'")
+
+    if 'cur_province' in params.keys():
+        sql.append(' and t.cur_province = :cur_province')
+
+    if 'cur_area' in params.keys():
+        sql.append(' and t.cur_area = :cur_area')
+
+    if 'grade' in params.keys():
+        sql.append(" and th.grade like '%")
+        sql.append(params['grade'])
+        sql.append("%'")
+
+    if 'teacher_age' in params.keys() and '-' in 'teacher_age':
+        sql.append(' and t.teacher_age >')
+        sql.append(params['teacher_age'].split('-')[0])
+        sql.append(' and t.teacher_age <')
+        sql.append(params['teacher_age'].split('-')[1])
+
+    if 'have_award' in params.keys() and params['have_award'] == '0':
+        sql.append(' and t.award_url is null')
+
+    if 'have_award' in params.keys() and params['have_award'] == '1':
+        sql.append(' and t.award_url is not null')
+
+    if 'have_seniority' in params.keys() and params['have_seniority'] == '0':
+        sql.append(' and t.seniority_url is null')
+
+    if 'have_seniority' in params.keys() and params['have_seniority'] == '1':
+        sql.append(' and t.seniority_url is not null')
+
+    if 'week' in params.keys():
+        sql.append(' and tt.week = :week')
+
+    if 'start' in params.keys() \
+            and 'end' in params.keys():
+        sql.append(' and ((tt.start >:start and tt.end<:start) or(tt.start >:end and tt.end<:end))')
+
+    if 'state' in params.keys():
+        sql.append(' and t.state  =:state')
+
+    if 'category_1' in params.keys():
+        sql.append(' and sr.id =:category_1 and th.type = 1')
+    if 'category_2' in params.keys():
+        sql.append(' and sc.id =:category_2 and th.type = 1')
+    if 'category_3' in params.keys():
+        sql.append(' and s.id =:category_3 and th.type = 1')
+    if 'cur_category_1' in params.keys():
+        sql.append(' and sr.id =:cur_category_1 and th.type = 2')
+    if 'cur_category_2' in params.keys():
+        sql.append(' and sc.id =:cur_category_2 and th.type = 2')
+    if 'cur_category_3' in params.keys():
+        sql.append(' and s.id =:category_3 and th.type = 2')
+
+    # current_app.logger.debug(sql)
+    return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
+            'updated_by', 'created_at', 'teacher_name', 'student_name',
+            'order_amount'], ''.join(sql)

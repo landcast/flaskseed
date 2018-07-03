@@ -78,6 +78,12 @@ def register():
       verify_code:
         description: 'code sent by calling email verify or sms verify'
         type: 'string'
+      first_name:
+        description: 'first_name'
+        type: 'string'
+      last_name:
+        description: 'last_name'
+        type: 'string'
     res:
       Authorization:
         description: 'Athorization jwt http header'
@@ -88,6 +94,15 @@ def register():
     user_type = request.json['usertype']
     verify_code = request.json['verify_code']
     check_target = redis_store.get('VC:' + user_name)
+
+    firstName = ''
+    lastName = ''
+
+    if 'first_name' in request.json:
+        firstName = request.json['first_name']
+    if 'last_name' in request.json:
+        lastName = request.json['last_name']
+
     if check_target:
         check_target = check_target.decode('utf8')
     else:
@@ -147,7 +162,7 @@ def register():
         user = target_table(username=user_name,
                             password=generate_password_hash(
                                 request.json['password']), state=1,
-                            updated_by=user_name, email=email, mobile=mobile,nickname=user_name)
+                            updated_by=user_name, email=email, mobile=mobile,nickname=user_name,first_name=firstName,last_name=lastName)
         current_app.logger.debug('encrypted password:' + user.password)
         result = session.add(user)
         current_app.logger.debug(result)
