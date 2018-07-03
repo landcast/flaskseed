@@ -275,7 +275,7 @@ def teacher_query_sql(params):
         where t.`delete_flag` = 'IN_FORCE'
     ''']
     if 'username' in params.keys():
-        sql.append(' t.username = :username')
+        sql.append(' and t.username = :username')
     if 'mobile' in params.keys():
         sql.append(' and t.mobile = :mobile')
     if 'email' in params.keys():
@@ -330,19 +330,19 @@ def teacher_query_sql(params):
 
     if 'start' in params.keys() \
             and 'end' in params.keys():
-        sql.append(' and ((tt.start >:start and tt.end<:start) or(tt.start >:end and tt.end<:end))')
+        sql.append(' and ((tt.start >:start and tt.end<:start) or (tt.start >:end and tt.end<:end))')
 
     if 'state' in params.keys():
         sql.append(' and t.state  =:state')
 
     if 'category_1' in params.keys():
-        sql.append(' and sr.id =:category_1 and th.type = 1')
+        sql.append(' and cr.id =:category_1 and th.type = 1')
     if 'category_2' in params.keys():
         sql.append(' and sc.id =:category_2 and th.type = 1')
     if 'category_3' in params.keys():
         sql.append(' and s.id =:category_3 and th.type = 1')
     if 'cur_category_1' in params.keys():
-        sql.append(' and sr.id =:cur_category_1 and th.type = 2')
+        sql.append(' and cr.id =:cur_category_1 and th.type = 2')
     if 'cur_category_2' in params.keys():
         sql.append(' and sc.id =:cur_category_2 and th.type = 2')
     if 'cur_category_3' in params.keys():
