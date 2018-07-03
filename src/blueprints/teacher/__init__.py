@@ -254,7 +254,7 @@ def teacher_query():
     """
     j = request.json
     return jsonify(do_query(
-        datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
+        datetime_param_sql_format(j, ['start', 'end']),
         teacher_query_sql))
 
 
