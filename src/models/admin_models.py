@@ -73,15 +73,15 @@ class Attachment(EntityMixin, db.Model):
 
 
 class Region(EntityMixin, db.Model):
-    pid = Column(Integer, nullable=True)
-    path = Column(String(255), nullable=True)
-    level = Column(Integer, nullable=True)
-    name = Column(String(255), nullable=True)
-    name_zh = Column(String(255), nullable=True)
-    name_pinyin = Column(String(255), nullable=True)
-    code = Column(String(255), nullable=True)
-    region = Column(String(255), nullable=True)
-    location = Column(String(255), nullable=True)
+    pid = Column(Integer, nullable=True, comment='父级id')
+    path = Column(String(255), nullable=True, comment='国家省市县层级')
+    level = Column(Integer, nullable=True, comment='1:大洲，2：国家，3：省/州，4：县/区')
+    name = Column(String(255), nullable=True, comment='英文名称')
+    name_zh = Column(String(255), nullable=True, comment='中文名称')
+    name_pinyin = Column(String(255), nullable=True, comment='拼音')
+    code = Column(String(255), nullable=True, comment='国家代码')
+    region = Column(String(255), nullable=True, comment='')
+    location = Column(String(255), nullable=True, comment='坐标')
 
 
 class SmsLog(EntityMixin, db.Model):
