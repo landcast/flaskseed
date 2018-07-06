@@ -31,7 +31,7 @@ class TeacherSubject(EntityMixin, db.Model):
 class Interview(EntityMixin, db.Model):
     start = Column(DateTime, nullable=False, comment='预计面试开始时间')
     end = Column(DateTime, nullable=False, comment='预计面试结束时间')
-    state = Column(Integer, nullable=False, comment='面试状态，4：已预约，10，待面试')
+    state = Column(Integer, nullable=False, comment='1：未面试，2：已经面试，3：取消')
     reason = Column(String(2000), nullable=True,
                     comment="state change to history, record change reason")
     result = Column(String(2000), nullable=True, comment='面试结果')
@@ -83,8 +83,9 @@ class Teacher(UserBaseMixin, db.Model):
                    server_default=TeacherState.RECRUIT.name)
     level = Column(String(50), nullable=True, comment='教师级别')
     skype_account = Column(String(50), nullable=True, comment='skype账号')
-    degree = Column(String(50), nullable=True, comment='大专学历 college graduate，本科学历  university diploma，'
-                                                       '学士学位  bachelor degree，硕士学位  master degree，博士学位  doctor degree')
+    degree = Column(String(50), nullable=True, comment='大专学历 college_graduate，本科学历  university_diploma，'
+                                                       '学士学位  bachelor_degree，硕士学位  master_degree，博士学位  doctor_degree，'
+                                                       '博士后  post-doctoral，other 其他')
     nation = Column(String(50), nullable=True, comment='国家国际代码')
     country = Column(String(50), nullable=True, comment='国家')
     province = Column(String(50), nullable=True, comment='省/州')
@@ -129,7 +130,8 @@ class TeacherTime(EntityMixin, db.Model):
 class TeacherHistory(EntityMixin, db.Model):
     subject_id = Column(Integer,nullable=True, comment='可教授的科目id')
     subject_name = Column(Integer,nullable=True, comment='可教授的科目名称')
-    grade = Column(Integer,nullable=True, comment='幼儿园 小学 初中 高中 大学 成人 JSON串')
+    grade = Column(Integer,nullable=True, comment='Kindergarten:幼儿园，primary_school:小学，junior_middle_school:初中，'
+                                                  'high_school:高中，university：大学，adult：成人，other:其他 JSON串')
     type = Column(Integer, nullable=False, comment='类型，1：可以交的科目，2：现在交的科目')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
@@ -138,14 +140,14 @@ class TeacherHistory(EntityMixin, db.Model):
 
 class InterviewState(IntFlag):
     """
-    ALREADY_INTERVIEW:已经面试
     NO_INTERVIEW:未面试
+    ALREADY_INTERVIEW:已经面试
     CANCEL:取消
     EFFECTIVE:有效
     INVALID:无效
     """
-    ALREADY_INTERVIEW = 1
-    NO_INTERVIEW =2
+    NO_INTERVIEW =1
+    ALREADY_INTERVIEW = 2
     CANCEL = 3
     EFFECTIVE = 98
     INVALID = 99

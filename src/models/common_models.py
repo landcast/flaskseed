@@ -63,7 +63,7 @@ class UserBaseMixin(EntityMixin):
                     comment='mobile/tel no provided by user')
     email = Column(String(60), nullable=True,
                    comment='email address provided by user')
-    gender = Column(Integer, nullable=True, comment='gender/sex')
+    gender = Column(Integer, nullable=True, comment='UNKNOWN/male/female')
     birth = Column(DateTime, nullable=True, comment='user birth date')
     avatar = Column(String(255), nullable=True, comment='user logo image url')
     lang = Column(String(20), nullable=True, comment='user language setting')
