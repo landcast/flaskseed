@@ -140,15 +140,25 @@ class TeacherHistory(EntityMixin, db.Model):
 
 class InterviewState(IntFlag):
     """
+    WRITE_APPOINT:待预约
     NO_INTERVIEW:未面试
     ALREADY_INTERVIEW:已经面试
     CANCEL:取消
+    NO_COMPLETED:未完成
+    WRITE_ANSWER:等待答复、
+    WRITE_CONFIRM:等待确认时间、
+    UNDETERMINED:待定、
     EFFECTIVE:有效
     INVALID:无效
     """
-    NO_INTERVIEW =1
-    ALREADY_INTERVIEW = 2
-    CANCEL = 3
+    WRITE_APPOINT = 1
+    NO_INTERVIEW =2
+    ALREADY_INTERVIEW = 3
+    CANCEL = 4
+    NO_COMPLETED=5
+    WRITE_ANSWER=6
+    WRITE_CONFIRM=7
+    UNDETERMINED=8
     EFFECTIVE = 98
     INVALID = 99
 
