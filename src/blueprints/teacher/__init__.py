@@ -354,7 +354,7 @@ def teacher_query_sql(params):
             'order_amount'], ''.join(sql)
 
 
-@teacher.route('/check', methods=['POST'])
+@teacher.route('/check_pass', methods=['POST'])
 def refund():
     """
     swagger-doc: 'refund'
