@@ -29,8 +29,8 @@ class TeacherSubject(EntityMixin, db.Model):
 
 
 class Interview(EntityMixin, db.Model):
-    start = Column(DateTime, nullable=False, comment='预计面试开始时间')
-    end = Column(DateTime, nullable=False, comment='预计面试结束时间')
+    start = Column(DateTime, nullable=True, comment='预计面试开始时间')
+    end = Column(DateTime, nullable=True, comment='预计面试结束时间')
     state = Column(Integer, nullable=False, comment='1：未面试，2：已经面试，3：取消')
     reason = Column(String(2000), nullable=True,
                     comment="state change to history, record change reason")
