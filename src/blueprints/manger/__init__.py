@@ -1424,11 +1424,8 @@ def thacher_apponit():
             email:
               description: 'email'
               type: 'string'
-            start:
-              description: '面试开始时间'
-              type: 'string'
-            end:
-              description: '面试结束时间'
+            updated_at:
+              description: '数据更新时间'
               type: 'string'
             integerview_state:
               description: '面试状态'
@@ -1446,7 +1443,7 @@ def thacher_apponit_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`created_at`,i.state as integerview_state
+    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`updated_at`,i.state as integerview_state
     from teacher t , interview i  
     where t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
@@ -1469,7 +1466,7 @@ def thacher_apponit_sql(params):
         sql.append(
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
 
-    return ['id','interview_id', 'username', 'mobile', 'email','created_at','integerview_state'], ''.join(sql)
+    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','integerview_state'], ''.join(sql)
 
 
 
