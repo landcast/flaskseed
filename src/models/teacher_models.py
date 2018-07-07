@@ -35,6 +35,7 @@ class Interview(EntityMixin, db.Model):
     reason = Column(String(2000), nullable=True,
                     comment="state change to history, record change reason")
     result = Column(String(2000), nullable=True, comment='面试结果')
+    set_time = Column(String(2000), nullable=True, comment='设置面试时间 json')
     interviewer_id = Column(db.Integer, db.ForeignKey('sys_user.id'),
                             nullable=False)
     interviewers = db.relationship('SysUser', backref='interviewers', lazy=True)
