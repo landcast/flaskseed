@@ -3,7 +3,7 @@ from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
-from src.models import db, session_scope
+from src.models import db, session_scope,Teacher,Interview,TeacherState
 from src.services import do_query
 import hashlib
 from src.services import do_query, datetime_param_sql_format
@@ -352,3 +352,45 @@ def teacher_query_sql(params):
     return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
             'order_amount'], ''.join(sql)
+
+
+@teacher.route('/check', methods=['POST'])
+def refund():
+    """
+    swagger-doc: 'refund'
+    required: []
+    req:
+      teacher_id:
+        description: '教师id'
+        type: 'string'
+    res:
+      id:
+        description: 'id'
+        type: 'string'
+    """
+    teacher_id = request.json['teacher_id']
+
+
+    with session_scope(db) as session:
+
+        teacher = session.query(Teacher).filter_by(id=teacher_id).one_or_none()
+
+        if teacher is None:
+            return jsonify({
+                "error": "not found teacher_id:{0} ".format(
+                    teacher_id)
+            }), 500
+
+        setattr(teacher,'state',TeacherState.CHECK_PASS.name)
+
+        session.add(teacher)
+
+        interview = Interview(state = 1,
+                         delete_flag = 'IN_FORCE',
+                         updated_by=getattr(g, current_app.config['CUR_USER'])['username'],
+                         interviewer_id =getattr(g, current_app.config['CUR_USER'])['id'],
+                         teacher_id = teacher_id
+                )
+        session.add(interview)
+
+    return jsonify({'id':interview.id })
