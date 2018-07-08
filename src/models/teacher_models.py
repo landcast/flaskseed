@@ -52,8 +52,7 @@ class TeacherState(IntFlag):
     CHECK_PASS:审核通过(待预约)、
     CHECK_ERROR:审核未通过，
     WAIT_FOR_INTERVIEW：已预约(待面试)，
-    INTERVIEW_PASS:面试结果通过(待签约)，
-    INTERVIEW_ERROR:面试结果失败，
+    WAITE_FOR_CONTRACT:待签约，
     CONTRACTOR:已签约，
     WAIT_FOR_TRAIN:待预约培训试讲，
     TRAIN_PASS:培训试讲结果成功，
@@ -68,8 +67,7 @@ class TeacherState(IntFlag):
     CHECK_PASS = 4
     CHECK_ERROR = 5
     WAIT_FOR_INTERVIEW = 10
-    INTERVIEW_PASS = 11
-    INTERVIEW_ERROR = 12
+    WAITE_FOR_CONTRACT = 11
     CONTRACTOR = 20
     WAIT_FOR_TRAIN = 30
     TRAIN_PASS = 31
@@ -149,6 +147,8 @@ class InterviewState(IntFlag):
     WRITE_ANSWER:等待答复、
     WRITE_CONFIRM:等待确认时间、
     UNDETERMINED:待定、
+    INTERVIEW_PASS:面试结果通过，
+    INTERVIEW_ERROR:面试结果失败，
     EFFECTIVE:有效
     INVALID:无效
     """
@@ -160,6 +160,8 @@ class InterviewState(IntFlag):
     WRITE_ANSWER=6
     WRITE_CONFIRM=7
     UNDETERMINED=8
+    INTERVIEW_PASS=9
+    INTERVIEW_ERROR=10
     EFFECTIVE = 98
     INVALID = 99
 

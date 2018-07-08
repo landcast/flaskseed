@@ -545,10 +545,10 @@ def thacher_interview_sql(params):
     sql = ['''
     select t.id,c.id as course_id,t.username,t.mobile,t.email,c.`course_name`,i.`updated_by` as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
-    from teacher t  
+    from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
-    ,interview i 
-    where t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
+    ,interview i ,sys_user su
+    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
     ''']
 
     if 'teacher_name' in params.keys():
@@ -569,7 +569,7 @@ def thacher_interview_sql(params):
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
 
     if 'interview_name' in params.keys():
-        sql.append(" and t.updated_by like '%")
+        sql.append(" and su.username like '%")
         sql.append(params['interview_name'])
         sql.append("%'")
     return ['id', 'course_id', 'username', 'mobile', 'email',
@@ -1427,7 +1427,7 @@ def thacher_apponit():
             updated_at:
               description: '数据更新时间'
               type: 'string'
-            integerview_state:
+            interview_state:
               description: '面试状态'
               type: 'string'
     """
@@ -1443,7 +1443,7 @@ def thacher_apponit_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`updated_at`,i.state as integerview_state
+    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
     from teacher t , interview i  
     where t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
@@ -1460,13 +1460,133 @@ def thacher_apponit_sql(params):
         sql.append(' and t.email =:email')
 
     if 'state' in params.keys():
-        sql.append(' and t.state =:state')
+        sql.append(' and i.state =:state')
 
     if 'interview_at' in params.keys():
         sql.append(
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
 
-    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','integerview_state'], ''.join(sql)
+    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','interview_state'], ''.join(sql)
+
+
+@manger.route('/interview_result', methods=['POST'])
+def interview_result():
+    """
+    swagger-doc: 'do interview_result query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      teacher_name:
+        description: '教师名称'
+        type: 'string'
+      mobile:
+        description: '手机号'
+        type: 'string'
+      email:
+        description: '邮箱'
+        type: 'string'
+      state:
+        description: '0:待填写结果，5：未完成，9：面试通过，10：面试未通过 '
+        type: 'string'
+      interview_at:
+        description: '面试时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      interview_name:
+        description: '面试人名称'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '教师id'
+              type: 'integer'
+            interview_id:
+              description: '面试id'
+              type: 'integer'
+            username:
+              description: '教师账号'
+              type: 'integer'
+            mobile:
+              description: 'mobile'
+              type: 'string'
+            email:
+              description: 'email'
+              type: 'string'
+            updated_at:
+              description: '数据更新时间'
+              type: 'string'
+            interview_state:
+              description: '面试状态'
+              type: 'string'
+            start:
+              description: '面试开始时间'
+              type: 'string'
+            end:
+              description: '面试结束时间'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, interview_result_sql))
+
+
+def interview_result_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`start`,i.end,su.username as intervier_name,i.result,i.state as interview_state
+    from teacher t , interview i, sys_user su 
+    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    ''']
+
+    if 'teacher_name' in params.keys():
+        sql.append(" and t.nickname like '%")
+        sql.append(params['teacher_name'])
+        sql.append("%'")
+    if 'mobile' in params.keys():
+        sql.append(' and t.mobile =:mobile')
+
+    if 'email' in params.keys():
+        sql.append(' and t.email =:email')
+
+    if 'state' in params.keys() and params['state'] == '0':
+        sql.append(' and i.result is null')
+
+    if 'state' in params.keys() and params['state'] != '0':
+        sql.append(' and i.state =:state')
+
+    if 'interview_at' in params.keys():
+        sql.append(
+            ' and i.`start` <:interview_at and i.`end` >:interview_at')
+
+    if 'interview_name' in params.keys():
+        sql.append(" and su.username like '%")
+        sql.append(params['interview_name'])
+        sql.append("%'")
+
+    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','interview_state'], ''.join(sql)
+
 
 
 
