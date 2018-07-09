@@ -49,12 +49,13 @@ def process_options(config, default_host="0.0.0.0",
     return options
 
 
-
 # build options to setup config
 options = process_options(settings)
 # create app using config, keep create_app in global' reason is to support
 # the "flask * *" command, such as "flask db init"
 app = create_app(settings)
+if app.debug:
+    setup_pid_file(app)
 
 
 if __name__ == '__main__':
@@ -67,7 +68,6 @@ if __name__ == '__main__':
                                           restrictions=[30])
         options.debug = True
     # run app
-    setup_pid_file(app)
     app.run(
         host=options.host,
         port=int(options.port)

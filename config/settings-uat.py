@@ -1,10 +1,10 @@
-ENV_NAME = 'dev'
+ENV_NAME = 'uat'
 
 SECRET_KEY = '123'
 
 DEBUG = True
 
-DEBUG_LOGPATH = '/var/log/flaskseed-debug'
+DEBUG_LOGPATH = '/var/log/flaskseed-debug-uat'
 LOG_REQ_RES = True
 
 PID_FILE = 'flaskseed'
