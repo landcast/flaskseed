@@ -215,7 +215,8 @@ def create_app(config):
     app.config.from_object(config)
     try:
         app.config.from_envvar('EXTERNALCFG')
-    except Exception:
+    except Exception as e:
+        app.logger.error(e)
         app.logger.warning('EXTERNALCFG not set, config overrding ignored!')
     else:
         app.logger.info('load config overriding from env-var EXTERNALCFG')

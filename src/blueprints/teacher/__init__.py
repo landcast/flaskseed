@@ -349,9 +349,8 @@ def teacher_query_sql(params):
         sql.append(' and s.id =:category_3 and th.type = 2')
 
     # current_app.logger.debug(sql)
-    return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
-            'updated_by', 'created_at', 'teacher_name', 'student_name',
-            'order_amount'], ''.join(sql)
+    return ['id', 'created_at', 'username', 'mobile', 'email',
+            'country', 'province', 'timezone', 'state'], ''.join(sql)
 
 
 @teacher.route('/check_pass', methods=['POST'])
