@@ -1557,7 +1557,7 @@ def interview_result_sql(params):
     sql = ['''
     select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`start`,i.end,su.username as intervier_name,i.result,i.state as interview_state
     from teacher t , interview i, sys_user su 
-    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     if 'teacher_name' in params.keys():
