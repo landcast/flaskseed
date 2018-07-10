@@ -548,7 +548,7 @@ def thacher_interview_sql(params):
     from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
     ,interview i ,sys_user su
-    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
+    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 10 and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
     ''']
 
     if 'teacher_name' in params.keys():
@@ -1445,7 +1445,7 @@ def thacher_apponit_sql(params):
     sql = ['''
     select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
     from teacher t , interview i  
-    where t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    where t.`delete_flag` = 'IN_FORCE' and t.state = 10 and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
     ''']
 
@@ -1542,6 +1542,13 @@ def interview_result():
             end:
               description: '面试结束时间'
               type: 'string'
+            interview_name:
+              description: '面试人名称'
+              type: 'string'
+            interview_state:
+              description: '面试状态'
+              type: 'string'
+
     """
     j = request.json
     return jsonify(do_query(j, interview_result_sql))
@@ -1555,9 +1562,9 @@ def interview_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`start`,i.end,su.username as intervier_name,i.result,i.state as interview_state
+    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`start`,i.end,su.username as interview_name,i.state as interview_state
     from teacher t , interview i, sys_user su 
-    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 4 and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 10 and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     if 'teacher_name' in params.keys():
@@ -1585,7 +1592,7 @@ def interview_result_sql(params):
         sql.append(params['interview_name'])
         sql.append("%'")
 
-    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','interview_state'], ''.join(sql)
+    return ['id','interview_id', 'username', 'mobile', 'email','start','end','interview_name','interview_state'], ''.join(sql)
 
 
 
