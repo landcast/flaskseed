@@ -28,7 +28,7 @@ def get_chrome_args():
 
 
 def generate_pdf_from_template(html_template, params, pdf_filename):
-    print(CHROME_PATH)
+    # print(CHROME_PATH)
     env = Environment(loader=FileSystemLoader('./pdf_templates', 'utf-8'))
     template = env.get_template(html_template)
     html_str = template.render(**params)
@@ -44,7 +44,7 @@ def generate_pdf(html_str, pdf_filename):
     chrome_args.append(
         '--print-to-pdf="{}"'.format(pdf_filename),
     )
-    chrome_args.append(f.name)
+    chrome_args.append(f.name + '.html')
     status_code, output = subprocess.getstatusoutput(" ".join(chrome_args))
     return status_code, output
 
