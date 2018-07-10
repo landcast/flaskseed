@@ -2,6 +2,52 @@ import socket
 import os
 import signal
 
+from tempfile import NamedTemporaryFile
+import subprocess
+from jinja2 import Environment
+from jinja2 import FileSystemLoader
+
+
+CHROME_PATH = None
+if os.path.exists('/usr/bin/chrome-browser'):
+    CHROME_PATH = 'chrome-browser'
+elif os.path.exists('/usr/bin/chromium-browser'):
+    CHROME_PATH = 'chromium-browser'
+elif os.path.exists('/usr/bin/google-chrome'):
+    CHROME_PATH = 'google-chrome'
+
+
+def get_chrome_args():
+    return [
+        CHROME_PATH,
+        '--no-sandbox',  # Avoids permission issues while dockerized.
+        '--headless',
+        '--disable-extensions',  # Reduces startup overhead.
+        '--disable-gpu',  # Required by chrome's headless mode for now.
+    ]
+
+
+def generate_pdf_from_template(html_template, params, pdf_filename):
+    env = Environment(loader=FileSystemLoader('./pdf_templates', 'utf-8'))
+    template = env.get_template(html_template)
+    html_str = template.render(**params)
+    print(html_str)
+    return generate_pdf(html_str, pdf_filename)
+
+
+def generate_pdf(html_str, pdf_filename):
+    f = NamedTemporaryFile(delete=False)
+    f.write(html_str.encode('utf-8'))
+    f.close()
+    os.rename(f.name, f.name + '.html')
+    chrome_args = get_chrome_args()
+    chrome_args.append(
+        '--print-to-pdf="{}"'.format(pdf_filename),
+    )
+    chrome_args.append(f.name)
+    status_code, output = subprocess.getstatusoutput(" ".join(chrome_args))
+    return status_code, output
+
 
 def setup_pid_file(app):
     """
