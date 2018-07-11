@@ -1,5 +1,6 @@
 import sys
 import unittest
+import uuid
 
 sys.path.append(".")
 from src.utils import generate_pdf_from_template
@@ -13,8 +14,11 @@ class HtmlToPdfTest(unittest.TestCase):
             'effective_date': '2018-07-10',
             'teacher_salary': '6500.00$'
         }
+
+        filename = uuid.uuid1()+'.pdf'
+
         status, output = generate_pdf_from_template('agreement.html',
-                                                    param_dict, './test.pdf')
+                                                    param_dict, filename)
         print(status)
         print('output--->'+output)
 
