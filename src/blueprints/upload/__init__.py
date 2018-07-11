@@ -64,7 +64,7 @@ def download_file(filename):
                                filename)
 
 
-@upload.route('/content')
+@upload.route('/contract', methods=['POST'])
 def content_file():
 
     teacher_id = request.json['teacher_id']
