@@ -444,7 +444,7 @@ def content_file():
             'teacher_salary': date
         }
 
-        file = './src/static/'+str(uuid.uuid1())+'.pdf'
+        file = './src/static/contract/'+str(uuid.uuid1())+'.pdf'
 
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, file)
