@@ -448,6 +448,8 @@ def content_file():
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, filename)
 
+        print('filename------------->'+filename)
+
         with open("/root/code/flaskseed/"+filename, 'w') as f:
 
             hashed_fn = save_attachment(f)
