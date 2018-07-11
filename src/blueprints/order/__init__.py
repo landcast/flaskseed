@@ -360,6 +360,8 @@ def refund():
 
         session.add(order)
 
+        session.flush()
+
         paylog = PayLog( direction = 2,
                          state = 4,
                          amount = amount,
@@ -373,5 +375,7 @@ def refund():
                          updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                          )
         session.add(paylog)
+
+        session.flush()
 
     return jsonify({'id':order_id })
