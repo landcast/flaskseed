@@ -5,7 +5,8 @@ import datetime
 from sqlalchemy.sql import *
 
 from src.blueprints.upload import save_attachment
-from src.models import db, session_scope,Teacher,Interview,TeacherState
+from src.models import db, session_scope,Teacher,Interview,TeacherState,\
+    CourseSchedule,StudySchedule,Homework
 from src.services import do_query
 import hashlib
 from src.services import do_query, datetime_param_sql_format
@@ -419,9 +420,6 @@ def content_file():
       download_file:
         description: '下载地址'
         type: 'string'
-      upload_file:
-        description: '文件名称'
-        type: 'string'
     """
     teacher_id = request.json['teacher_id']
     salary = request.json['salary']
@@ -459,6 +457,66 @@ def content_file():
 
         session.flush()
 
-
-
     return jsonify(result)
+
+
+@teacher.route('/homework', methods=['POST'])
+def teacher_homework():
+    """
+    swagger-doc: 'refund'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课程计划id'
+        type: 'string'
+      title:
+        description: '标题'
+        type: 'string'
+      desc:
+        description: '描述'
+        type: 'string'
+      attachment_url:
+        description: '附件地址'
+        type: 'string'
+    res:
+      id:
+        description: '下载地址'
+        type: 'string'
+    """
+    course_schedule_id = request.json['course_schedule_id']
+    title = request.json['title']
+    desc = request.json['desc']
+    attachment_url = ''
+
+    if 'attachment_url' in request.json :
+        attachment_url = request.json['attachment_url']
+
+    with session_scope(db) as session:
+
+        courseschedule = session.query(CourseSchedule).filter_by(
+            id=course_schedule_id).one_or_none()
+
+        if courseschedule is None:
+            return jsonify({
+                "error": "not found course_schedule_id:{0} ".format(
+                    course_schedule_id)
+            }), 500
+
+        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=courseschedule.id)
+
+        for studyschedule in studyschedules:
+
+            homework = Homework(
+                homework_type = 1,
+                question_name= title,
+                question_text= desc,
+                question_attachment_url=attachment_url,
+                study_schedule_id = studyschedule.id
+            )
+
+            session.add(homework)
+
+            session.flush()
+
+    return jsonify({'id':homework.id })
+

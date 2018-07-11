@@ -319,7 +319,6 @@ def schedule():
                     "error": "courseschedule error"
                 }), 500
 
-
             for order in orders:
 
                 sudyschedule = StudySchedule(
