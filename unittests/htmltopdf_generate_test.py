@@ -15,7 +15,7 @@ class HtmlToPdfTest(unittest.TestCase):
         }
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, './test.pdf')
-        print('status-----'+status)
+        print(status)
         print('output--->'+output)
 
 
