@@ -444,16 +444,16 @@ def content_file():
             'teacher_salary': date
         }
 
-        file = './src/static/contract/'+str(uuid.uuid1())+'.pdf'
+        file = str(uuid.uuid1())+'.pdf'
 
         status, output = generate_pdf_from_template('agreement.html',
-                                                    param_dict, file)
+                                                    param_dict, './src/static/contract/'+file)
 
         result = []
 
-        result.append({'download_file': file})
+        result.append({'download_file': '/static/contract/'+file})
 
-        setattr(teacher,'contract_url',file)
+        setattr(teacher,'contract_url','/static/contract/'+file)
 
         session.add(teacher)
 
