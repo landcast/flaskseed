@@ -96,7 +96,7 @@ class Teacher(UserBaseMixin, db.Model):
     cur_school = Column(String(50), nullable=True, comment='当前工作学校')
     cur_zone = Column(String(50), nullable=True, comment='当前地区')
     cur_grade = Column(String(100), nullable=True, comment='当前教授年级')
-    cur_area = Column(String(100), nullable=True, comment='当前任职地区')
+    cur_country = Column(String(100), nullable=True, comment='当前任职地区')
     cur_province = Column(String(100), nullable=True, comment='当前工作省/州')
     graduation_school = Column(String(50), nullable=True, comment='毕业最高学校')
     education_history = Column(String(1000), nullable=True, comment='上学历史 json')
