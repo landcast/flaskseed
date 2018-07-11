@@ -448,6 +448,7 @@ def content_file():
 
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, filename)
+        current_app.logger.debug(filename+'------'+os.path.exists("/code/flaskseed/"+filename))
 
         with open("/code/flaskseed/"+filename) as f:
 
