@@ -292,23 +292,6 @@ def schedule():
                     course_id)
             }), 500
 
-        courseschedule = CourseSchedule(
-                start = request.json['class_at_start'].replace('T', ' ').replace('Z', ''),
-                end = request.json['class_at_end'].replace('T', ' ').replace('Z', ''),
-                state = 1,
-                override_course_type=course.course_type,
-                course_id = course_id,
-                delete_flag = 'IN_FORCE',
-                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
-            )
-        session.add(courseschedule)
-        session.flush()
-
-        if courseschedule is None:
-            return jsonify({
-                "error": "courseschedule error"
-            }), 500
-
         orders = session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2)
 
         if orders is None:
@@ -317,9 +300,27 @@ def schedule():
                     course_id)
             }), 500
 
-        for order in orders:
+        for index, item in enumerate(schedules):
 
-            for index, item in enumerate(schedules):
+            courseschedule = CourseSchedule(
+                start = item['start'].replace('T', ' ').replace('Z', ''),
+                end = item['end'].replace('T', ' ').replace('Z', ''),
+                state = 1,
+                override_course_type=course.course_type,
+                course_id = course_id,
+                delete_flag = 'IN_FORCE',
+                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+            )
+            session.add(courseschedule)
+            session.flush()
+
+            if courseschedule is None:
+                return jsonify({
+                    "error": "courseschedule error"
+                }), 500
+
+
+            for order in orders:
 
                 sudyschedule = StudySchedule(
                     actual_start = item['start'].replace('T', ' ').replace('Z', ''),
