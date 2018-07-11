@@ -11,6 +11,7 @@ import hashlib
 from src.services import do_query, datetime_param_sql_format
 from src.utils import generate_pdf_from_template
 import uuid
+import os
 
 teacher = Blueprint('teacher', __name__)
 
@@ -448,7 +449,7 @@ def content_file():
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, filename)
 
-        with open("/code/flaskseed/"+filename, 'w') as f:
+        with open("/code/flaskseed/"+filename) as f:
 
             hashed_fn = save_attachment(f)
 
@@ -464,5 +465,7 @@ def content_file():
             session.add(teacher)
 
             session.flush()
+
+            os.remove(f)
 
     return jsonify(result)
