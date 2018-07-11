@@ -1,12 +1,16 @@
 #!/usr/bin/env python
-from flask import g, jsonify, Blueprint, request, abort, current_app
+from flask import g, jsonify, Blueprint, request, abort, current_app,url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
+
+from src.blueprints.upload import save_attachment
 from src.models import db, session_scope,Teacher,Interview,TeacherState
 from src.services import do_query
 import hashlib
 from src.services import do_query, datetime_param_sql_format
+from src.utils import generate_pdf_from_template
+import uuid
 
 teacher = Blueprint('teacher', __name__)
 
@@ -393,3 +397,72 @@ def refund():
         session.add(interview)
 
     return jsonify({'id':interview.id })
+
+
+@teacher.route('/contract', methods=['POST'])
+def content_file():
+    """
+    swagger-doc: 'refund'
+    required: []
+    req:
+      teacher_id:
+        description: '教师id'
+        type: 'string'
+      salary:
+        description: '金额'
+        type: 'string'
+      date:
+        description: '日期'
+        type: 'string'
+    res:
+      download_file:
+        description: '下载地址'
+        type: 'string'
+      upload_file:
+        description: '文件名称'
+        type: 'string'
+    """
+    teacher_id = request.json['teacher_id']
+    salary = request.json['salary']
+    date = request.json['date']
+
+    with session_scope(db) as session:
+
+        teacher = session.query(Teacher).filter_by(
+            id=teacher_id).one_or_none()
+
+        if teacher is None:
+            return jsonify({
+                "error": "not found teacher_id:{0} ".format(
+                    teacher_id)
+            }), 500
+
+        param_dict = {
+            'teacher_name': teacher.username,
+            'effective_date': salary,
+            'teacher_salary': date
+        }
+
+        filename = str(uuid.uuid1())+'.pdf'
+
+        status, output = generate_pdf_from_template('agreement.html',
+                                                    param_dict, filename)
+
+        f = file("/root/code/flaskseed/"+filename)
+
+        hashed_fn = save_attachment(f)
+
+        result = []
+
+        contract_url = url_for('upload.download_file',filename=hashed_fn)
+
+        result.append({'upload_file': output.filename,
+                       'download_file': contract_url})
+
+        setattr(teacher,'contract_url',contract_url)
+
+        session.add(teacher)
+
+        session.flush()
+
+    return jsonify(result)
