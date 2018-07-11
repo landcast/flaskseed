@@ -451,7 +451,7 @@ def content_file():
 
         result = []
 
-        result.append({'upload_file': output.filename,'download_file': file})
+        result.append({'download_file': file})
 
         setattr(teacher,'contract_url',file)
 
