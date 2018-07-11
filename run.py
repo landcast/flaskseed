@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from gevent import monkey
+monkey.patch_all()
+
 # used to start the created app
 
 from src import create_app
