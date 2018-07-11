@@ -15,7 +15,7 @@ class HtmlToPdfTest(unittest.TestCase):
             'teacher_salary': '6500.00$'
         }
 
-        filename = uuid.uuid1()+'.pdf'
+        filename = str(uuid.uuid1())+'.pdf'
 
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, filename)
