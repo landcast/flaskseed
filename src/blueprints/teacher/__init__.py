@@ -448,21 +448,20 @@ def content_file():
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, filename)
 
-        f = file("/root/code/flaskseed/"+filename)
+        with open("/root/code/flaskseed/"+filename, 'r') as f:
+            hashed_fn = save_attachment(f)
 
-        hashed_fn = save_attachment(f)
+            result = []
 
-        result = []
+            contract_url = url_for('upload.download_file',filename=hashed_fn)
 
-        contract_url = url_for('upload.download_file',filename=hashed_fn)
+            result.append({'upload_file': output.filename,
+                           'download_file': contract_url})
 
-        result.append({'upload_file': output.filename,
-                       'download_file': contract_url})
+            setattr(teacher,'contract_url',contract_url)
 
-        setattr(teacher,'contract_url',contract_url)
+            session.add(teacher)
 
-        session.add(teacher)
-
-        session.flush()
+            session.flush()
 
     return jsonify(result)

@@ -7,8 +7,8 @@ import hashlib
 import os
 # from werkzeug.utils import secure_filename
 from src.models import db, session_scope, Teacher
+
 from src.utils import generate_pdf_from_template
-import uuid
 
 
 from src.models import db, session_scope, Attachment
@@ -62,58 +62,6 @@ def upload_file():
 def download_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'],
                                filename)
-
-
-@upload.route('/contract', methods=['POST'])
-def content_file():
-
-    teacher_id = request.json['teacher_id']
-    salary = request.json['salary']
-    date = request.json['date']
-
-    with session_scope(db) as session:
-
-        teacher = session.query(Teacher).filter_by(
-            id=teacher_id).one_or_none()
-
-        if teacher is None:
-            return jsonify({
-                "error": "not found teacher_id:{0} ".format(
-                    teacher_id)
-            }), 500
-
-        param_dict = {
-            'teacher_name': teacher.username,
-            'effective_date': salary,
-            'teacher_salary': date
-        }
-
-        filename = str(uuid.uuid1())+'.pdf'
-
-        status, output = generate_pdf_from_template('agreement.html',
-                                                    param_dict, filename)
-
-        f = file("/root/code/flaskseed/"+filename)
-
-        hashed_fn = save_attachment(f)
-
-        f.close()
-
-        result = []
-
-        contract_url = url_for('upload.download_file',filename=hashed_fn)
-
-        result.append({'upload_file': output.filename,
-                       'download_file': contract_url})
-
-        setattr(teacher,'contract_url',contract_url)
-
-        session.add(teacher)
-
-        session.flush()
-
-    return jsonify(result)
-
 
 def save_attachment(file):
     fn = file.filename
