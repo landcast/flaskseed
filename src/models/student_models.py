@@ -8,11 +8,13 @@ class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
     desc = Column(String(2000), nullable=True, comment='英文描述信息')
     desc_zh = Column(String(2000), nullable=True, comment='中文描述信息')
+    subject_name = Column(Integer,nullable=True, comment='科目名称')
+    subject_type = Column(Integer,nullable=True, comment='1:学习科目，2：意向科目')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
     subject_id = Column(Integer, ForeignKey('subject.id'),
-                        nullable=False)
+                        nullable=True)
     students = db.relationship('Subject', backref='students', lazy=True)
 
 
