@@ -204,8 +204,8 @@ class StudySubjectTarget(EntityMixin, db.Model):
 
 
 class StudyTarget(EntityMixin, db.Model):
-    content = Column(Integer,nullable=False, comment='英文内容')
-    content_zh = Column(Integer,nullable=False, comment='中文内容')
+    content = Column(Integer,nullable=True, comment='英文内容')
+    content_zh = Column(Integer,nullable=True, comment='中文内容')
     translate_by = Column(Integer,nullable=True, comment='翻译人')
     student_id = Column(db.Integer, db.ForeignKey('student.id'),
                         nullable=False)
