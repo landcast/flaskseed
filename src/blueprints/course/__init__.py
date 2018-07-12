@@ -292,7 +292,7 @@ def schedule():
                     course_id)
             }), 500
 
-        orders = session.query(Order).filter_by(course_id == course.id and Order.state==98 and Order.payment_state==2).all()
+        orders = session.query(Order).filter_by(course_id = course.id , state=98 , payment_state=2).all()
 
         if orders is None :
             return jsonify({
