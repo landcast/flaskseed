@@ -208,7 +208,7 @@ class StudySubjectTarget(EntityMixin, db.Model):
     subject_name = Column(Integer,nullable=False, comment='科目名称')
     student_id = Column(db.Integer, db.ForeignKey('student.id'),
                         nullable=False)
-    teachers = db.relationship('Student', backref='studysubjet', lazy=True)
+    teachers = db.relationship('Student', backref='studysubjettarget', lazy=True)
 
 
 class StudyTarget(EntityMixin, db.Model):
