@@ -202,7 +202,7 @@ class StudentRequirements(EntityMixin, db.Model):
     translate__at = Column(DateTime, nullable=True, comment='翻译时间')
     student_id = Column(db.Integer, db.ForeignKey('student.id'),
                         nullable=False)
-    teachers = db.relationship('Student', backref='studenttarget', lazy=True)
+    student_requirements = db.relationship('Student', backref='studentrequirements', lazy=True)
 
 
 class StudentSubjectOptional(IntFlag):
