@@ -151,16 +151,14 @@ class Student(UserBaseMixin, db.Model):
     nation = Column(String(50), nullable=True, comment='国家')
     city = Column(String(50), nullable=True, comment='城市')
     grade = Column(Integer, nullable=False, comment='当前学校班级')
-    requirements = Column(String(2000), nullable=True, comment='学生需求英文，可能是JSON需注意')
-    requirements_zh = Column(String(2000), nullable=True, comment='学生徐需求中文，可能是JSON需注意')
     read_country = Column(String(100), nullable=False, comment='在读国家')
     read_province = Column(String(100), nullable=False, comment='在读省/州')
     read_school = Column(String(100), nullable=True, comment='在读学校英文')
     read_school_zh = Column(String(100), nullable=True, comment='在读学校中文')
     interest = Column(String(1000), nullable=True, comment='兴趣爱好英文')
     interest_zh = Column(String(1000), nullable=True, comment='兴趣爱好中文')
-    award = Column(String(500), nullable=True, comment='获得奖项英文')
-    award_zh = Column(String(500), nullable=True, comment='获得奖项中文')
+    prize = Column(String(500), nullable=True, comment='获得奖项英文')
+    prize_zh = Column(String(500), nullable=True, comment='获得奖项中文')
     go_abroad = Column(String(5), nullable=True, comment='是否出国YES/NO')
     go_abroad_at = Column(DateTime, nullable=True, comment='预计出国时间')
     go_abroad_country = Column(String(50), nullable=True, comment='预计出国国家')
@@ -203,10 +201,11 @@ class StudySubjectTarget(EntityMixin, db.Model):
     study_subject_target = db.relationship('Student', backref='studysubjettarget', lazy=True)
 
 
-class StudyTarget(EntityMixin, db.Model):
+class StudentRequirements(EntityMixin, db.Model):
     content = Column(Integer,nullable=True, comment='英文内容')
     content_zh = Column(Integer,nullable=True, comment='中文内容')
     translate_by = Column(Integer,nullable=True, comment='翻译人')
+    translate__at = Column(DateTime, nullable=True, comment='翻译时间')
     student_id = Column(db.Integer, db.ForeignKey('student.id'),
                         nullable=False)
     teachers = db.relationship('Student', backref='studenttarget', lazy=True)
