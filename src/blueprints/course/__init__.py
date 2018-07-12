@@ -286,14 +286,14 @@ def schedule():
 
         course = session.query(Course).filter_by(id=course_id).one_or_none()
 
-        if course is None:
+        if course is None :
             return jsonify({
                 "error": "not found course: {1}".format(
                     course_id)
             }), 500
 
         orders = session.query(Order).filter_by(course_id = course.id , state=98 , payment_state=2).all()
-        current_app.logger.debug(orders)
+        current_app.logger.debug('----------->'+orders+'=============='+str(orders is None))
         if orders is None :
             return jsonify({
                 "error": "found order existing in {1}".format(
