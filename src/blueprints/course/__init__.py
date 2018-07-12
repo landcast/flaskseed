@@ -294,7 +294,7 @@ def schedule():
 
         orders = session.query(Order).filter_by(course_id=course.id,state=98,payment_state=2)
 
-        if orders is None:
+        if orders is None or len(orders):
             return jsonify({
                 "error": "found order existing in {1}".format(
                     course_id)
