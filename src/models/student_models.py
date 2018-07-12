@@ -8,11 +8,13 @@ class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
     desc = Column(String(2000), nullable=True, comment='英文描述信息')
     desc_zh = Column(String(2000), nullable=True, comment='中文描述信息')
+    subject_name = Column(Integer,nullable=True, comment='科目名称')
+    subject_type = Column(Integer,nullable=True, comment='1:学习科目，2：意向科目')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
     subject_id = Column(Integer, ForeignKey('subject.id'),
-                        nullable=False)
+                        nullable=True)
     students = db.relationship('Subject', backref='students', lazy=True)
 
 
@@ -150,14 +152,30 @@ class Student(UserBaseMixin, db.Model):
     level = Column(String(50), nullable=True, comment='等级')
     nation = Column(String(50), nullable=True, comment='国家')
     city = Column(String(50), nullable=True, comment='城市')
-    cur_school = Column(String(50), nullable=True, comment='当前学校')
-    grade = Column(Integer, nullable=True, comment='当前学校班级')
-    requirements = Column(String(2000), nullable=True, comment='学生需求英文，可能是JSON需注意')
-    requirements_zh = Column(String(2000), nullable=True, comment='学生徐需求中文，可能是JSON需注意')
-    parent = Column(String(50), nullable=True, comment='')
-    parent_mobile = Column(String(20), nullable=True, comment='')
-    parent_email = Column(String(60), nullable=True, comment='')
-    parent_role = Column(String(20), nullable=True, comment='')
+    grade = Column(Integer, nullable=False, comment='当前学校班级')
+    read_country = Column(String(100), nullable=True, comment='在读国家')
+    read_province = Column(String(100), nullable=True, comment='在读省/州')
+    read_school = Column(String(100), nullable=True, comment='在读学校英文')
+    read_school_zh = Column(String(100), nullable=True, comment='在读学校中文')
+    interest = Column(String(1000), nullable=True, comment='兴趣爱好英文')
+    interest_zh = Column(String(1000), nullable=True, comment='兴趣爱好中文')
+    prize = Column(String(500), nullable=True, comment='获得奖项英文')
+    prize_zh = Column(String(500), nullable=True, comment='获得奖项中文')
+    go_abroad = Column(String(5), nullable=True, comment='是否出国YES/NO')
+    go_abroad_at = Column(DateTime, nullable=True, comment='预计出国时间')
+    go_abroad_country = Column(String(50), nullable=True, comment='预计出国国家')
+    go_abroad_province = Column(String(50), nullable=True, comment='预计出国国家省/州')
+    overseas = Column(String(500), nullable=True, comment='海外经历英文')
+    overseas_zh = Column(String(500), nullable=True, comment='海外经历中文中文')
+    english = Column(String(500), nullable=True, comment='英语情况英文')
+    english_zh = Column(String(500), nullable=True, comment='英语情况中文')
+    exam_results = Column(String(500), nullable=True, comment='考试与成绩英文')
+    exam_results_zh = Column(String(500), nullable=True, comment='考试与成绩中文')
+    parent = Column(String(50), nullable=True, comment='家长姓名')
+    parent_mobile = Column(String(20), nullable=True, comment='家长联系电话')
+    parent_email = Column(String(60), nullable=True, comment='家长邮件')
+    parent_role = Column(String(20), nullable=True, comment='家长称谓')
+    remark = Column(String(500), nullable=True, comment='标注信息')
     consultant_id = Column(Integer, ForeignKey('sys_user.id'),
                            nullable=True,
                            comment='sales person provide consultant'
@@ -173,7 +191,18 @@ class Student(UserBaseMixin, db.Model):
                                       backref='student_helpers',
                                       lazy=True,
                                       foreign_keys=student_helper_id)
+    channel_id = Column(Integer, ForeignKey('channel.id'),
+                        nullable=True)
 
+
+class StudentRequirements(EntityMixin, db.Model):
+    content = Column(Integer,nullable=True, comment='英文内容')
+    content_zh = Column(Integer,nullable=True, comment='中文内容')
+    translate_by = Column(Integer,nullable=True, comment='翻译人')
+    translate__at = Column(DateTime, nullable=True, comment='翻译时间')
+    student_id = Column(db.Integer, db.ForeignKey('student.id'),
+                        nullable=False)
+    student_requirements = db.relationship('Student', backref='studentrequirements', lazy=True)
 
 
 class StudentSubjectOptional(IntFlag):
