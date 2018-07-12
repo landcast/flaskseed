@@ -8,11 +8,13 @@ class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
     desc = Column(String(2000), nullable=True, comment='英文描述信息')
     desc_zh = Column(String(2000), nullable=True, comment='中文描述信息')
+    subject_name = Column(Integer,nullable=True, comment='科目名称')
+    subject_type = Column(Integer,nullable=True, comment='1:学习科目，2：意向科目')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
     subject_id = Column(Integer, ForeignKey('subject.id'),
-                        nullable=False)
+                        nullable=True)
     students = db.relationship('Subject', backref='students', lazy=True)
 
 
@@ -191,14 +193,6 @@ class Student(UserBaseMixin, db.Model):
                                       foreign_keys=student_helper_id)
     channel_id = Column(Integer, ForeignKey('channel.id'),
                          nullable=True)
-
-
-class StudySubjectTarget(EntityMixin, db.Model):
-    subject_id = Column(Integer,nullable=False, comment='科目id/可以为0')
-    subject_name = Column(Integer,nullable=False, comment='科目名称')
-    student_id = Column(db.Integer, db.ForeignKey('student.id'),
-                        nullable=False)
-    study_subject_target = db.relationship('Student', backref='studysubjettarget', lazy=True)
 
 
 class StudentRequirements(EntityMixin, db.Model):
