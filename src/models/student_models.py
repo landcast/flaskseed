@@ -195,20 +195,12 @@ class Student(UserBaseMixin, db.Model):
                          nullable=True)
 
 
-class StudySubject(EntityMixin, db.Model):
-    subject_id = Column(Integer,nullable=False, comment='科目id/可以为0')
-    subject_name = Column(Integer,nullable=False, comment='科目名称')
-    student_id = Column(db.Integer, db.ForeignKey('student.id'),
-                        nullable=False)
-    teachers = db.relationship('Student', backref='studysubjet', lazy=True)
-
-
 class StudySubjectTarget(EntityMixin, db.Model):
     subject_id = Column(Integer,nullable=False, comment='科目id/可以为0')
     subject_name = Column(Integer,nullable=False, comment='科目名称')
     student_id = Column(db.Integer, db.ForeignKey('student.id'),
                         nullable=False)
-    teachers = db.relationship('Student', backref='studysubjettarget', lazy=True)
+    study_subject_target = db.relationship('Student', backref='studysubjettarget', lazy=True)
 
 
 class StudyTarget(EntityMixin, db.Model):
