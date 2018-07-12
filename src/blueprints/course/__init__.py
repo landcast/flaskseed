@@ -293,7 +293,7 @@ def schedule():
             }), 500
 
         orders = session.query(Order).filter_by(course_id = course.id , state=98 , payment_state=2).all()
-        current_app.logger.debug('------------>'+len(orders))
+        current_app.logger.debug('------------>'+str(len(orders)))
 
         if orders is None or len(orders) < 1:
             return jsonify({
