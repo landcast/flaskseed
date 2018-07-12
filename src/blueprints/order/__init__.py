@@ -233,7 +233,7 @@ def establish():
 
             if subject is None:
                 return jsonify({
-                    "error": "not found subject: {1}".format(
+                    "error": "not found subject: {0}".format(
                         subject_id)
                 }), 500
 
@@ -246,7 +246,7 @@ def establish():
 
             if teacher is None:
                 return jsonify({
-                    "error": "not found teacher: {1}".format(
+                    "error": "not found teacher: {0}".format(
                         teacher_parm)
                 }), 500
 

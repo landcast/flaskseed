@@ -288,7 +288,7 @@ def schedule():
 
         if course is None :
             return jsonify({
-                "error": "not found course: {1}".format(
+                "error": "not found course: {0}".format(
                     course_id)
             }), 500
 
@@ -297,7 +297,7 @@ def schedule():
 
         if orders is None or len(orders) < 1:
             return jsonify({
-                "error": "found order existing in {1}".format(
+                "error": "found order existing in {0}".format(
                     course_id)
             }), 500
 
