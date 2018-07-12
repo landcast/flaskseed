@@ -8,13 +8,11 @@ class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
     desc = Column(String(2000), nullable=True, comment='英文描述信息')
     desc_zh = Column(String(2000), nullable=True, comment='中文描述信息')
-    subject_name = Column(Integer,nullable=True, comment='科目名称')
-    subject_type = Column(Integer,nullable=True, comment='1:学习科目，2：意向科目')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     subjects = db.relationship('Student', backref='subjects', lazy=True)
     subject_id = Column(Integer, ForeignKey('subject.id'),
-                        nullable=True)
+                        nullable=False)
     students = db.relationship('Subject', backref='students', lazy=True)
 
 
@@ -176,15 +174,6 @@ class Student(UserBaseMixin, db.Model):
                                       lazy=True,
                                       foreign_keys=student_helper_id)
 
-
-class StudentRequirements(EntityMixin, db.Model):
-    content = Column(Integer,nullable=True, comment='英文内容')
-    content_zh = Column(Integer,nullable=True, comment='中文内容')
-    translate_by = Column(Integer,nullable=True, comment='翻译人')
-    translate__at = Column(DateTime, nullable=True, comment='翻译时间')
-    student_id = Column(db.Integer, db.ForeignKey('student.id'),
-                        nullable=False)
-    student_requirements = db.relationship('Student', backref='studentrequirements', lazy=True)
 
 
 class StudentSubjectOptional(IntFlag):
