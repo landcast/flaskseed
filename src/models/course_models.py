@@ -139,10 +139,17 @@ class CoursewareCheckResultEnum(enum.IntEnum):
     The start value should be from 1, not 0
     because generated mysql enum using
     1 as start value by default
+    BEFORE_CHECK:待审核
+    CHECK_PASSED：审核通过
+    CHECK_DENY：审核驳回
+    PREVIEW：可以预览
+    NO_PREVIEW：不可以预览
     """
     BEFORE_CHECK = 1
     CHECK_PASSED = 2
     CHECK_DENY = 3
+    PREVIEW = 4
+    NO_PREVIEW = 5
 
 
 class CourseStatueEnum(enum.IntEnum):
