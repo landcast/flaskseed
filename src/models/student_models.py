@@ -69,6 +69,7 @@ class StudyResult(EntityMixin, db.Model):
     score_remark = Column(String(2000), nullable=True, comment='分数标记')
     score_comment = Column(String(2000), nullable=True, comment='分数确认')
     report_card_url = Column(String(200), nullable=True, comment='成绩单地址')
+    report_card_name = Column(String(100), nullable=True, comment='成绩单名称')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
     student_study_results = db.relationship('Student', backref='study_results',
