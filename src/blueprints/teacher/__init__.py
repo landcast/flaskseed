@@ -918,7 +918,7 @@ def my_course_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select sr.id,s.username student_name,ce.`start`,ce.end,ce.report_card_name,ce.report_card_url
+          select sr.id,s.username student_name,ce.`start`,ce.end,sr.report_card_name,sr.report_card_url
 			from study_result sr,course_exam ce,student s,course c
             where sr.course_exam_id = ce.id and sr.student_id = s.id and ce.course_id = c.id
              and ce.`state` <> 99   and s.`state` <> 99 and c.`state` <> 99
@@ -926,7 +926,7 @@ def my_course_result_sql(params):
             ''']
     sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
-    sql.append('sr.result_type='+params['type'])
+    sql.append('and sr.result_type=:'+params['type'])
 
     if 'course_id' in params.keys():
         sql.append(
