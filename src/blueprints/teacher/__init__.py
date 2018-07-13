@@ -693,3 +693,150 @@ def view_homework_sql(params):
 
     return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at'], ''.join(sql)
 
+
+@teacher.route('/my_course_on', methods=['POST'])
+def my_course_on():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '课节id course_schedule_id'
+              type: 'integer'
+            name:
+              description: '课节名称'
+              type: 'string'
+            start:
+              description: '上课时间'
+              type: 'string'
+            end:
+              description: '下课时间'
+              type: 'string'
+            class_type:
+              description: '课程类型'
+              type: 'integer'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, my_course_on_sql))
+
+
+def my_course_on_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select cs.id,cs.name,c.class_type,cs.start,cs.end from 
+            course_schedule cs,course c
+            where cs.`state` <> 99 and cs.course_id = c.id 
+             and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'
+             and cs.end < now()
+            ''']
+    sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    return ['id', 'name', 'class_type','start', 'end'], ''.join(sql)
+
+
+@teacher.route('/my_course_off', methods=['POST'])
+def my_course_off():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '课节id course_schedule_id'
+              type: 'integer'
+            courseware_id:
+              description: '课件id course_schedule_id'
+              type: 'integer'
+            name:
+              description: '课节名称'
+              type: 'string'
+            start:
+              description: '上课时间'
+              type: 'string'
+            end:
+              description: '下课时间'
+              type: 'string'
+            checked_result:
+              description: '课件审核状态'
+              type: 'string'
+            ware_url:
+              description: '课件地址'
+              type: 'string'
+            ware_uid:
+              description: '多贝课件预览地址'
+              type: 'string'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, my_course_off_sql))
+
+
+def my_course_off_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select cs.id,c.id as courseware_id,cs.name,cs.start,cs.end,c.checked_result,c.ware_url,c.ware_uid from 
+            course_schedule cs,courseware c,course cou
+            where cs.`state` <> 99  and cs.course_id = cou.id 
+             and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
+             and cs.end < now()
+            ''']
+    sql.append("and cou.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    return ['id','courseware_id' ,'name', 'class_type','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
+
