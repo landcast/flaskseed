@@ -206,6 +206,8 @@ class Courseware(EntityMixin, db.Model):
                        nullable=False)
     course_wares = db.relationship('Course', backref='course_wares',
                                    lazy=True)
+    course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
+                                nullable=False)
 
 
 class ClassroomStateEnum(enum.IntEnum):
