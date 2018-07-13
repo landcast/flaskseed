@@ -335,13 +335,13 @@ def schedule():
                     updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
 
-                live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], sudyschedule.id, item['course_name'], 60,'',item['start'],'en')
-
                 session.add(sudyschedule)
                 session.flush()
                 setattr(order,'payment_state',6)
                 session.add(order)
                 session.flush()
+
+                live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], sudyschedule.id, item['course_name'], 60,'',item['start'],'en')
 
         setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
         setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', ''))
