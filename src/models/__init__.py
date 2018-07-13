@@ -11,7 +11,7 @@ from src.models.admin_models import Enrollment, Channel, SysUser, \
 from src.models.order_models import Order, PayLog, Account,OrderStateEnum
 from src.models.course_models import Course, Subject, CourseExam,CourseStatueEnum, \
     CourseSchedule, Curriculum, CourseClassroom, CourseClassParticipant, \
-    Courseware, SubjectCategory, CourseAppointment, CoursewareCheckResultEnum, \
+    Courseware, SubjectCategory, CoursewareCheckResultEnum, \
     ClassroomStateEnum, ClassroomTypeEnum, ClassroomRoleEnum, \
     ClassroomDeviceEnum
 
