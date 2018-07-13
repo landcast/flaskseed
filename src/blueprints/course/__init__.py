@@ -3,9 +3,11 @@ from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
+
+from src import ClassroomTypeEnum
 from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule
 from src.services import do_query, datetime_param_sql_format
-import hashlib
+from src.services import live_service
 
 course = Blueprint('course', __name__)
 
@@ -333,6 +335,15 @@ def schedule():
                     delete_flag = 'IN_FORCE',
                     updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                 )
+
+
+                class_type =ClassroomTypeEnum.ONE_VS_ONE
+
+                if course.class_type != 1:
+                    class_type = ClassroomTypeEnum.ONE_VS_MANY
+
+                live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], sudyschedule.id, item['course_name'], 60,class_type,item['start'],'en')
+
                 session.add(sudyschedule)
                 session.flush()
                 setattr(order,'payment_state',6)
