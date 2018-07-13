@@ -348,7 +348,9 @@ def schedule():
                 if course.class_type != 1:
                     class_type = ClassroomTypeEnum.ONE_VS_MANY.name
 
-                live_service.create_room('test', sudyschedule.id,item['start'], 60,class_type,item['start'],'en')
+                live_service.create_room('test', sudyschedule.id,item['course_name'], 60,class_type,item['start'],0,'en')
+
+
 
         setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
         setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', ''))
