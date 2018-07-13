@@ -1,6 +1,5 @@
 import enum
 
-from src import CoursewareCheckResultEnum, StudyResultTypeEnum
 from src.models.common_models import db, EntityMixin, UserBaseMixin
 from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey, \
     Enum
@@ -63,6 +62,16 @@ class Homework(EntityMixin, db.Model):
     homeworks = db.relationship('StudySchedule', backref='homeworks',
                                 lazy=True)
 
+
+class StudyResultTypeEnum(enum.IntEnum):
+    """
+    SUMMARY:总结
+    ACHIEVEMENT：成绩单
+    """
+    SUMMARY = 1
+    ACHIEVEMENT = 2
+
+
 class StudyResult(EntityMixin, db.Model):
     score = Column(Float, nullable=True, comment='分数')
     evaluation = Column(String(2000), nullable=True, comment='阶段性评价 json')
@@ -87,14 +96,6 @@ class StudyResult(EntityMixin, db.Model):
                                           backref='course_exam_results',
                                           lazy=True)
 
-
-class StudyResultTypeEnum(enum.IntEnum):
-    """
-    SUMMARY:总结
-    ACHIEVEMENT：成绩单
-    """
-    SUMMARY = 1
-    ACHIEVEMENT = 2
 
 
 
