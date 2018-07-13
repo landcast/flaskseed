@@ -1,6 +1,6 @@
 import enum
 
-from src import CoursewareCheckResultEnum
+from src import CoursewareCheckResultEnum, StudyResultTypeEnum
 from src.models.common_models import db, EntityMixin, UserBaseMixin
 from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey, \
     Enum
@@ -73,9 +73,9 @@ class StudyResult(EntityMixin, db.Model):
     score_comment = Column(String(2000), nullable=True, comment='分数确认')
     report_card_url = Column(String(200), nullable=True, comment='成绩单地址')
     report_card_name = Column(String(100), nullable=True, comment='成绩单名称')
-    result_type = Column(Enum(CoursewareCheckResultEnum), nullable=True,
+    result_type = Column(Enum(StudyResultTypeEnum), nullable=True,
                          comment='结果类型',
-                         server_default=CoursewareCheckResultEnum.
+                         server_default=StudyResultTypeEnum.
                          SUMMARY.name)
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
@@ -88,7 +88,7 @@ class StudyResult(EntityMixin, db.Model):
                                           lazy=True)
 
 
-class CoursewareCheckResultEnum(enum.IntEnum):
+class StudyResultTypeEnum(enum.IntEnum):
     """
     SUMMARY:总结
     ACHIEVEMENT：成绩单

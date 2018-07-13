@@ -3,7 +3,7 @@ from src.models.common_models import db, session_scope, row_dict, \
 from src.models.teacher_models import Teacher, Certificate, TeacherSubject,TeacherState, \
     Interview, InterviewState,TeacherTime,TeacherHistory
 from src.models.student_models import Student, StudentAppraisal, StudentState, \
-    StudentSubject, StudySchedule, StudyResult, CourseAppraisal,StudentRequirements,CoursewareCheckResultEnum,\
+    StudentSubject, StudySchedule, StudyResult, CourseAppraisal,StudentRequirements,StudyResultTypeEnum,\
     StudyAppointment, Homework,StudentSubjectOptional, StudyScheduleStudyState
 from src.models.admin_models import Enrollment, Channel, SysUser, \
     Attachment, SmsLog, Menu, Region, Notification, FeedBack, RoleDefinition, \
