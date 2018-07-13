@@ -568,6 +568,9 @@ def my_course():
             course_name:
               description: '课程名称'
               type: 'string'
+            course_name_zh:
+              description: '课程名称'
+              type: 'string'
             finish:
               description: '已经上完的数量'
               type: 'integer'
@@ -599,7 +602,7 @@ def my_course_sql(params):
     sql = ['''
             select * from(
             select 
-            	c.id,c.course_name,c.classes_number,c.start,c.end,
+            	c.id,c.course_name,c.course_name_zh,c.classes_number,c.start,c.end,
             	(select GROUP_CONCAT(s.username) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
             	and cs.`delete_flag` = 'IN_FORCE' and cs.state <> 99  and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
             	(select count(*) from course_schedule where c.`id` = course_id and end < now() ) as finish
@@ -615,7 +618,7 @@ def my_course_sql(params):
         sql.append(" and (t.course_name like '%")
         sql.append(params['course_name'])
         sql.append("%'")
-        sql.append(" or c.course_name_zh like '%")
+        sql.append(" or t.course_name_zh like '%")
         sql.append(params['course_name'])
         sql.append("%')")
     if 'student_name' in params.keys():
@@ -632,7 +635,7 @@ def my_course_sql(params):
             and params['course_status'] == '2':
         sql.append(' and t.end > now()')
 
-    return ['id', 'course_name', 'classes_number', 'start', 'end',
+    return ['id', 'course_name', 'course_name_zh','classes_number', 'start', 'end',
             'student_name', 'finish'], ''.join(sql)
 
 
