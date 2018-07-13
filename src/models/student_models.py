@@ -54,6 +54,7 @@ class Homework(EntityMixin, db.Model):
     score = Column(Float, nullable=True, comment='分数')
     score_remark = Column(String(2000), nullable=True, comment='分数标记')
     score_reason = Column(String(2000), nullable=True, comment='分数得分原因')
+    review_at = Column(DateTime, nullable=True, comment='点评时间')
     study_schedule_id = Column(Integer, ForeignKey('study_schedule.id'),
                                nullable=False)
     homeworks = db.relationship('StudySchedule', backref='homeworks',

@@ -347,7 +347,7 @@ def content_file():
     return jsonify(result)
 
 
-@teacher.route('/homework', methods=['POST'])
+@teacher.route('/create_homework', methods=['POST'])
 def teacher_homework():
     """
     swagger-doc: 'refund'
@@ -654,6 +654,15 @@ def view_homework():
             student_name:
               description: '学生'
               type: 'string'
+            score:
+              description: '得分'
+              type: 'string'
+            score_reason:
+              description: '得分原因'
+              type: 'string'
+            review_at:
+              description: '点评时间'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, view_homework_sql))
@@ -667,7 +676,7 @@ def view_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.username as student_name
+          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.username as student_name,h.score,score_reason,h.review_at
 			from course_schedule cs,homework h,study_schedule ss,student s
             where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id
              and cs.`state` <> 99   and s.`state` <> 99
@@ -678,5 +687,5 @@ def view_homework_sql(params):
         sql.append(
             ' and cs.id = '+params['course_schedule_id'])
 
-    return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name'], ''.join(sql)
+    return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at'], ''.join(sql)
 
