@@ -599,7 +599,7 @@ def my_homework_sql(params):
 
 
 @teacher.route('/view_homework', methods=['POST'])
-def my_homework():
+def view_homework():
     """
     swagger-doc: 'do view_homework query'
     required: []
