@@ -520,3 +520,119 @@ def teacher_homework():
 
     return jsonify({'id':homework.id })
 
+
+@teacher.route('/my_course', methods=['POST'])
+def my_course():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_name:
+        description: '课程名称'
+        type: 'string'
+      student_name:
+        description: '学生名称'
+        type: 'string'
+      course_time:
+        description: '上课时间in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      course_status:
+        description: '课程状态 1：已上完,2:未上'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '课程id'
+              type: 'integer'
+            course_name:
+              description: '课程名称'
+              type: 'string'
+            finish:
+              description: '已经上完的数量'
+              type: 'integer'
+            classes_number:
+              description: '课节总数'
+              type: 'integer'
+            start:
+              description: '上课开始时间'
+              type: 'string'
+            end:
+              description: '上课结束时间'
+              type: 'string'
+            student_name:
+              description: '上课结束时间'
+              type: 'string'
+    """
+    j = request.json
+    datetime_param_sql_format(j, ['course_time']),
+    return jsonify(do_query(j, my_course_sql))
+
+
+def my_course_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+            select * from(
+            select 
+            	c.id,c.course_name,c.classes_number,c.start,c.end,
+            	(select GROUP_CONCAT(s.username) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
+            	and cs.`delete_flag` = 'IN_FORCE' and cs.state <> 99  and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
+            	(select count(*) from course_schedule where c.`id` = course_id and end < now() ) as finish
+            from teacher t, course c
+            where c.primary_teacher_id = t.id 
+            and c.state<> 99
+            and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
+           ) t
+            ''']
+    sql.append("and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    if 'course_name' in params.keys():
+        sql.append(" and (t.course_name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or c.course_name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
+    if 'student_name' in params.keys():
+        sql.append(" and t.student_name like '%")
+        sql.append(params['student_name'])
+        sql.append("%'")
+    if 'course_time' in params.keys():
+        sql.append(
+            ' and t.start <:course_time and t.end >:course_time')
+    if 'course_status' in params.keys() \
+            and params['course_status'] == '1':
+        sql.append(' and t.end <now()')
+    if 'course_status' in params.keys() \
+            and params['course_status'] == '2':
+        sql.append(' and t.end > now()')
+
+    return ['id', 'course_name', 'classes_number', 'start', 'end',
+            'student_name', 'finish'], ''.join(sql)
+
+
