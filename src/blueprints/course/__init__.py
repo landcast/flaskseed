@@ -8,6 +8,8 @@ from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedu
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
 
+from src.models import  ClassroomTypeEnum
+
 course = Blueprint('course', __name__)
 
 
@@ -341,7 +343,12 @@ def schedule():
                 session.add(order)
                 session.flush()
 
-                live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], sudyschedule.id, item['course_name'], 60,'',item['start'],'en')
+                class_type =ClassroomTypeEnum.ONE_VS_ONE
+
+                if course.class_type != 1:
+                    class_type = ClassroomTypeEnum.ONE_VS_MANY
+
+                live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], sudyschedule.id, item['course_name'], 60,class_type,item['start'],'en')
 
         setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
         setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', ''))
