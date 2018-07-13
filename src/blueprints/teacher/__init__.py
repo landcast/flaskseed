@@ -926,7 +926,7 @@ def my_course_result_sql(params):
             ''']
     sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
-    sql.append('and sr.result_type=:'+params['type'])
+    sql.append(' and sr.result_type =:type')
 
     if 'course_id' in params.keys():
         sql.append(
