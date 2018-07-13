@@ -119,6 +119,10 @@ class StudyAppointment(EntityMixin, db.Model):
     course_appointments = db.relationship('CourseAppointment',
                                           backref='student_appointments',
                                           lazy=True)
+    open_time_start = Column(DateTime, nullable=False, comment='试听开始时间')
+    open_time_end = Column(DateTime, nullable=False, comment='试听结束时间')
+    teacher_id = Column(Integer, ForeignKey('teacher.id'),nullable=True)
+
 
 
 class StudentState(IntFlag):
