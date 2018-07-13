@@ -4,7 +4,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src import ClassroomTypeEnum
 from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
