@@ -525,3 +525,77 @@ def my_course_sql(params):
             'student_name', 'finish'], ''.join(sql)
 
 
+@teacher.route('/my_homework', methods=['POST'])
+def my_homework():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_schedule_id:
+        description: '课程计划ID'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '作业id'
+              type: 'integer'
+            question_name:
+              description: '作业名称'
+              type: 'string'
+            question_text:
+              description: '作业'
+              type: 'string'
+            created_at:
+              description: '创建时间'
+              type: 'integer'
+    """
+    j = request.json
+    return jsonify(do_query(j, my_homework_sql))
+
+
+def my_homework_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select h.id,h.question_name,h.question_text,h.created_at from 
+          course_schedule cs,homework h,study_schedule ss
+            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id
+             and cs.`state` <> 99   
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE'
+             where 1=1  
+            ''']
+
+    if 'course_schedule_id' in params.keys():
+        sql.append(
+            ' and cs.id = '+params['course_schedule_id'])
+
+    sql.append(' group by h.question_name')
+
+    return ['id', 'question_name', 'question_text','created_at'], ''.join(sql)
+
+
