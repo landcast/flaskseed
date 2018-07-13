@@ -114,6 +114,7 @@ class CourseSchedule(EntityMixin, db.Model):
     start = Column(DateTime, nullable=False, comment='开始时间')
     end = Column(DateTime, nullable=False, comment='结束时间')
     state = Column(Integer, nullable=False, comment='状态参考枚举值')
+    name = Column(String(50), nullable=False, comment='课程名称')
     override_course_type = Column(Integer, nullable=True,
                                   comment='value used to override course_type '
                                           'defined in course, e.g. in a 1V4 '

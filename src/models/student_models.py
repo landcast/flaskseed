@@ -21,7 +21,7 @@ class StudentSubject(EntityMixin, db.Model):
 class StudySchedule(EntityMixin, db.Model):
     actual_start = Column(DateTime, nullable=False, comment='实际上课开始时间')
     actual_end = Column(DateTime, nullable=False, comment='实际上课结束时间')
-    name = Column(String(255), nullable=False, comment='课程名称')
+    name = Column(String(50), nullable=False, comment='课程名称')
     study_state = Column(Integer, nullable=False, comment='学习状态，1：进行中，2：已经学完')
     student_evaluation = Column(String(255), nullable=True, comment='学生评价')
     student_result = Column(String(255), nullable=True, comment='学生结果反馈')

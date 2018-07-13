@@ -305,6 +305,7 @@ def schedule():
             courseschedule = CourseSchedule(
                 start = item['start'].replace('T', ' ').replace('Z', ''),
                 end = item['end'].replace('T', ' ').replace('Z', ''),
+                name = item['course_name'],
                 state = 1,
                 override_course_type=course.course_type,
                 course_id = course_id,
