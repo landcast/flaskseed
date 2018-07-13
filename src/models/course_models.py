@@ -320,7 +320,7 @@ class CourseAppointment(EntityMixin, db.Model):
     open_time_start = Column(DateTime, nullable=False, comment='试听开始时间')
     open_time_end = Column(DateTime, nullable=False, comment='试听结束时间')
     teacher_id = Column(Integer, ForeignKey('teacher.id'),
-                        nullable=False)
+                        nullable=True)
     appointments = db.relationship('Teacher',
                                    backref='course_appointments',
                                    lazy=True)
