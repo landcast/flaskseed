@@ -583,11 +583,14 @@ def my_homework_sql(params):
     current_app.logger.debug(params)
     sql = ['''
           select h.id,h.question_name,h.question_text,h.created_at from 
-          course_schedule cs,homework h,study_schedule ss
-            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id
+          course_schedule cs,homework h,study_schedule ss,course c
+            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and course_id = c.id
              and cs.`state` <> 99   
-             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE'  and c.`delete_flag` = 'IN_FORCE' 
             ''']
+
+    sql.append(
+        " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'course_schedule_id' in params.keys():
         sql.append(
