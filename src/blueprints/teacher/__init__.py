@@ -499,7 +499,7 @@ def my_course_sql(params):
             and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
            ) t
             ''']
-    sql.append("and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append("where t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'course_name' in params.keys():
         sql.append(" and (t.course_name like '%")
