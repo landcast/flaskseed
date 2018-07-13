@@ -318,6 +318,14 @@ def schedule():
             session.add(courseschedule)
             session.flush()
 
+            class_type =ClassroomTypeEnum.ONE_VS_ONE.name
+
+            if course.class_type != 1:
+                class_type = ClassroomTypeEnum.ONE_VS_MANY.name
+
+            live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,item['course_name'], 60,class_type,item['start'],0,'en')
+
+
             if courseschedule is None:
                 return jsonify({
                     "error": "courseschedule error"
@@ -342,14 +350,6 @@ def schedule():
                 setattr(order,'payment_state',6)
                 session.add(order)
                 session.flush()
-
-                class_type =ClassroomTypeEnum.ONE_VS_ONE.name
-
-                if course.class_type != 1:
-                    class_type = ClassroomTypeEnum.ONE_VS_MANY.name
-
-                live_service.create_room('test', sudyschedule.id,item['course_name'], 60,class_type,item['start'],0,'en')
-
 
 
         setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
