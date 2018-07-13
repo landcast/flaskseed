@@ -706,6 +706,9 @@ def my_course_on():
       page_no:
         description: 'page no'
         type: 'integer'
+      course_id:
+        description: '课程ID'
+        type: 'string'
 
     res:
       num_results:
@@ -760,6 +763,10 @@ def my_course_on_sql(params):
             ''']
     sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
+    if 'course_id' in params.keys():
+        sql.append(
+            ' and c.id = '+params['course_id'])
+
     return ['id', 'name', 'class_type','start', 'end'], ''.join(sql)
 
 
@@ -775,7 +782,9 @@ def my_course_off():
       page_no:
         description: 'page no'
         type: 'integer'
-
+      course_id:
+        description: '课程ID'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -834,9 +843,94 @@ def my_course_off_sql(params):
             course_schedule cs,courseware c,course cou
             where cs.`state` <> 99  and cs.course_id = cou.id 
              and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
-             and cs.end < now()
+             and cs.end > now()
             ''']
     sql.append("and cou.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    if 'course_id' in params.keys():
+        sql.append(
+            ' and c.id = '+params['course_id'])
 
     return ['id','courseware_id' ,'name', 'class_type','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
+
+
+@teacher.route('/my_course_result', methods=['POST'])
+def my_course_result():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_id:
+        description: '课程ID'
+        type: 'string'
+      type:
+        description: '课程ID'
+        type: 'string'
+    res:
+      num_results:
+        description: 'SUMMARY/ACHIEVEMENT'
+        type: 'string'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '课程结果id'
+              type: 'integer'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+            start:
+              description: '评价开始时间'
+              type: 'string'
+            end:
+              description: '评价结束时间'
+              type: 'string'
+            report_card_name:
+              description: '成绩单名称'
+              type: 'string'
+            report_card_url:
+              description: '成绩单地址'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, my_course_result_sql))
+
+
+def my_course_result_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select sr.id,s.username student_name,ce.`start`,ce.end,ce.report_card_name,ce.report_card_url
+			from study_result sr,course_exam ce,student s,course c
+            where sr.course_exam_id = ce.id and sr.student_id = s.id and ce.course_id = c.id
+             and ce.`state` <> 99   and s.`state` <> 99 and c.`state` <> 99
+             and sr.`delete_flag` = 'IN_FORCE'  and ce.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
+            ''']
+    sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    sql.append('sr.result_type='+params['type'])
+
+    if 'course_id' in params.keys():
+        sql.append(
+            ' and c.id = '+params['course_id'])
+
+    return ['id','student_name' ,'start', 'end','report_card_name','report_card_url'], ''.join(sql)
 
