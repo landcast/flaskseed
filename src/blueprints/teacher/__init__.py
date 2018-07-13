@@ -586,8 +586,7 @@ def my_homework_sql(params):
           course_schedule cs,homework h,study_schedule ss
             where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id
              and cs.`state` <> 99   
-             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE'
-             where 1=1  
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
             ''']
 
     if 'course_schedule_id' in params.keys():
