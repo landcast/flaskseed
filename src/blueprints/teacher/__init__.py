@@ -487,19 +487,18 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select * from(
+          select * from(
             select 
             	c.id,c.course_name,c.course_name_zh,c.classes_number,c.start,c.end,
             	(select GROUP_CONCAT(s.username) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
             	and cs.`delete_flag` = 'IN_FORCE' and cs.state <> 99  and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
             	(select count(*) from course_schedule where c.`id` = course_id and end < now() ) as finish
-            from teacher t, course c
-            where c.primary_teacher_id = t.id 
-            and c.state<> 99
-            and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
-           ) t
+            from  course c
+            where  c.state<> 99 and c.`delete_flag` = 'IN_FORCE' 
             ''']
-    sql.append("where t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    sql.append(" ) t where 1=1 ")
 
     if 'course_name' in params.keys():
         sql.append(" and (t.course_name like '%")
