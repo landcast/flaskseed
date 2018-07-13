@@ -294,7 +294,6 @@ def establish():
 
         result = session.add(order)
         session.flush()
-        current_app.logger.debug(result)
 
         order_id = getattr(order, 'id')
 
