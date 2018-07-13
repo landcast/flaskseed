@@ -343,10 +343,10 @@ def schedule():
                 session.add(order)
                 session.flush()
 
-                class_type =ClassroomTypeEnum.ONE_VS_ONE
+                class_type =ClassroomTypeEnum.ONE_VS_ONE.name
 
                 if course.class_type != 1:
-                    class_type = ClassroomTypeEnum.ONE_VS_MANY
+                    class_type = ClassroomTypeEnum.ONE_VS_MANY.name
 
                 live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], sudyschedule.id, item['course_name'], 60,class_type,item['start'],'en')
 
