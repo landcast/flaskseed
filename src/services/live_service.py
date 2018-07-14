@@ -203,6 +203,7 @@ def upload_doc(username, file_url, file_name, course_id,course_schedule_id,room_
                     'EP_LIVE_PATH'] + '/uploadFileUrl',
                 data=json.dumps({
                     'filename': file_name,
+                    'room_id': room_id,
                     'fileUrl': file_url,
                     'username': username
                 }), headers={'Content-type': 'application/json'})
