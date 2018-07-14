@@ -209,7 +209,7 @@ class Courseware(EntityMixin, db.Model):
                             comment='admin check result',
                             server_default=CoursewareCheckResultEnum.
                             BEFORE_CHECK.name)
-    is_view = Column(Enum(String(5)), nullable=False,comment='是否允许查看',server_default='YES')
+    is_view = Column(Enum(String(20)), nullable=False,comment='是否允许查看',server_default='YES')
     course_id = Column(Integer, ForeignKey('course.id'),
                        nullable=False)
     course_wares = db.relationship('Course', backref='course_wares',
