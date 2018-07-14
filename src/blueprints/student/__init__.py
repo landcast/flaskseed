@@ -537,12 +537,12 @@ def student_schedule_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-	select sr.id,name,actual_start as start,actual_end as end,
-	(select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = cs1.course_id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
-	from study_schedule sr,course_schedule cs1
-	where cs1.id = sr.course_schedule_id
-     and cs1.`state` <> 99  
-    and sr.`delete_flag` = 'IN_FORCE' and cs1.`delete_flag` = 'IN_FORCE' 
+        select sr.id,sr.name,actual_start as start,actual_end as end,
+        (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = cs1.course_id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
+        from study_schedule sr,course_schedule cs1
+        where cs1.id = sr.course_schedule_id
+        and cs1.`state` <> 99  
+        and sr.`delete_flag` = 'IN_FORCE' and cs1.`delete_flag` = 'IN_FORCE'
     ''']
 
     if 'student_id' in params.keys():
