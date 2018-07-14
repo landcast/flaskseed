@@ -4,15 +4,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src.blueprints.upload import save_attachment
 from src.models import db, session_scope,Teacher,Interview,TeacherState,\
-    CourseSchedule,StudySchedule,Homework
-from src.services import do_query
-import hashlib
+    CourseSchedule,StudySchedule,Homework,CourseSchedule,CourseClassroom
 from src.services import do_query, datetime_param_sql_format
 from src.utils import generate_pdf_from_template
 import uuid
-import os
+from src.services import live_service
 
 teacher = Blueprint('teacher', __name__)
 
@@ -934,3 +931,56 @@ def my_course_result_sql(params):
 
     return ['id','student_name' ,'start', 'end','report_card_name','report_card_url'], ''.join(sql)
 
+
+@teacher.route('/upload_courseware', methods=['POST'])
+def upload_courseware():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课节id'
+        type: 'string'
+      file_url:
+        description: '上传服务器后返回的地址'
+        type: 'string'
+      ware_name:
+        description: '课件名称'
+        type: 'string'
+      is_view:
+        description: '是否可看'
+        type: 'string，YES/NO'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_schedule_id = request.json['course_schedule_id']
+    file_url = request.json['file_url']
+    ware_name = request.json['ware_name']
+    is_view = request.json['is_view']
+
+    with session_scope(db) as session:
+
+        courseSchedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
+
+        if courseSchedule is None :
+            return jsonify({
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        courseClassroom = session.query(CourseClassroom).filter_by(course_schedule_id=course_schedule_id).one_or_none()
+
+        if courseClassroom is None :
+            return jsonify({
+                "error": "not found Course_Class_room: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        live_service.upload_doc(getattr(g, current_app.config['CUR_USER'])['username'],file_url,ware_name,courseSchedule.course_id,
+                                courseSchedule.id,courseClassroom.room_id,is_view)
+
+        setattr(courseSchedule,'checked_result',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
+
+    return jsonify({'id':courseSchedule.id })

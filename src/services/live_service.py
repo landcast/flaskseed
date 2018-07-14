@@ -189,7 +189,7 @@ def enter_room(username, room_id, nick_name,
     return r.json()['url']
 
 
-def upload_doc(username, file_url, file_name, course_id):
+def upload_doc(username, file_url, file_name, course_id,course_schedule_id,room_id,is_view):
     """
     Upload file as courseware into classroom
     :param username:
@@ -209,11 +209,15 @@ def upload_doc(username, file_url, file_name, course_id):
         current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             cw = Courseware(
+                    ware_name=file_name,
                     ware_desc=file_name,
                     ware_url=file_url,
                     ware_uid=r.json()['uuid'],
                     checked_result=CoursewareCheckResultEnum.BEFORE_CHECK,
-                    course_id=course_id
+                    course_id=course_id,
+                    course_schedule_id = course_schedule_id,
+                    room_id = room_id,
+                    is_view = is_view
             )
             session.add(cw)
     return r.json()['uuid']
