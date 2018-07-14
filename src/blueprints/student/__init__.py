@@ -102,15 +102,15 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select cs.id,c.id as course_id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and course_schedule_id = cs.id) as finish,
+ select cs.id,c.id as course_id,c.`course_name`,(select count(*) from study_schedule where student_id = o.student_id and course_schedule_id = cs.id) as finish,
            c.classes_number,t.`nickname` as teacher_name,cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
-            from `order` o, student s, teacher t, course c,`course_schedule`cs 
-            where o.student_id = s.id and o.course_id = c.id and
+            from `order` o, teacher t, course c,`course_schedule`cs 
+            where  o.course_id = c.id and
             c.primary_teacher_id = t.id and c.`id` = cs.course_id  
             and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
-            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'       
+            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE'        
     ''']
-    sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'course_id' in params.keys():
         sql.append(' and c.id =:course_id')
@@ -352,11 +352,11 @@ def my_homework_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name
-    from homework hm,study_schedule sc,course c,teacher t,`order` o
+    from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
-    hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id
-    and o.`state` <> 99  and c.state<> 99 
-    and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE' 
+    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id
+    and c.state<> 99 
+    and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
     ''']
     sql.append(
         " and sc.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
