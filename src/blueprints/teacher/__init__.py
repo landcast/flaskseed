@@ -981,6 +981,8 @@ def upload_courseware():
         live_service.upload_doc(getattr(g, current_app.config['CUR_USER'])['username'],file_url,ware_name,courseSchedule.course_id,
                                 courseSchedule.id,courseClassroom.room_id,is_view)
 
-        setattr(courseSchedule,'checked_result',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
+        setattr(courseSchedule,'is_view',is_view)
+        session.add(courseSchedule)
+        session.flush()
 
     return jsonify({'id':courseSchedule.id })
