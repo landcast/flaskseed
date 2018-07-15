@@ -407,7 +407,7 @@ def upload_courseware():
 
         setattr(courseclassroom,'duration_start',start)
         setattr(courseclassroom,'duration_end',end)
-        session.add(courseSchedule)
+        session.add(courseclassroom)
         session.flush()
 
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
