@@ -410,7 +410,7 @@ def upload_courseware():
         current_app.logger.debug("start------>"+start)
 
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
-                               getTimeDiff(start,end),start,0,'en')
+                               getTimeDiff(start,end),request.json['start'],0,'en')
 
         current_app.logger.debug("start------>"+start)
 
