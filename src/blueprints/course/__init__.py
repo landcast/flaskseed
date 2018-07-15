@@ -419,7 +419,7 @@ def upload_courseware():
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
                                getTimeDiff(start,end),start,0,'en')
 
-        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).one_or_none()
+        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
 
         if studyschedules is None or len(studyschedules)<1:
             return jsonify({
