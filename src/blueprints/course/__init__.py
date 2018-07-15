@@ -405,13 +405,12 @@ def upload_courseware():
         session.add(courseSchedule)
         session.flush()
 
-        current_app.logger.debug("start------>"+start)
-        current_app.logger.debug("end------>"+end)
-
         current_app.logger.debug("------>"+str(getTimeDiff(start,end)))
 
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
                                getTimeDiff(start,end),start,0,'en')
+
+        current_app.logger.debug("start------>"+start)
 
         studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
 
