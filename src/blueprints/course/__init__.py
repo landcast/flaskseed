@@ -235,7 +235,7 @@ def category_sql(params):
     union all select subject_category as name,subject_category_zh as name_zh,
     id,updated_by,created_at,state,2 'level' from subject_category where state <> 99 and `delete_flag` = 'IN_FORCE'
     union all select subject_name as name,subject_name_zh as name_zh,id,
-    updated_by,created_at,state,3 'level' from subject where  state <> 99 and `delete_flag` = 'IN_FORCE') t
+    updated_by,created_at,state,3 'level' from subject where  state <> 99 and `delete_flag` = 'IN_FORCE') t where 1=1
     ''']
     if 'course_id' in params.keys():
         sql.append(' and t.id = :course_id')
