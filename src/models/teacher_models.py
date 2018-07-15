@@ -105,6 +105,7 @@ class Teacher(UserBaseMixin, db.Model):
     race = Column(String(120), nullable=True, comment='种族')
     teacher_age = Column(Integer, nullable=True, comment='教龄')
     resume_url = Column(String(100), nullable=True, comment='简历url')
+    video_url = Column(String(100), nullable=True, comment='视频介绍url')
     seniority_url = Column(String(100), nullable=True,
                    comment="教师资格证明url JSON")
     award_url = Column(String(1000), nullable=True,
