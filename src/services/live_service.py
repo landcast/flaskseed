@@ -64,7 +64,7 @@ def create_room(username, course_schedule_id, title, length=60,
 
 
 def edit_room(username, room_id, title=None, length=None,
-              start_time=None, user_type=0,
+              start_time=None,start_end=None, user_type=0,
               lang='en'):
     """
     Edit living teaching room created before.
@@ -101,11 +101,9 @@ def edit_room(username, room_id, title=None, length=None,
             if title:
                 course_classroom.room_title = title
             if start_time:
-                course_classroom.duration_start = start_time
+                course_classroom.duration_start = start_time.replace('T', ' ').replace('Z', '')
             if length:
-                course_classroom.duration_end = \
-                    course_classroom.duration_start \
-                                                + timedelta(minutes=length)
+                course_classroom.duration_end = start_end.replace('T', ' ').replace('Z', '')
             course_classroom.updated_by = username
             session.merge(course_classroom)
         else:
