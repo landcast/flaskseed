@@ -118,7 +118,7 @@ def generate_sql(params):
         su.curriculum_id = cr.id and su.subject_category_id = sc.id
     ''']
     if 'course_id' in params.keys():
-        sql.append(' and c.course_id = :course_id')
+        sql.append(' and c.id = :course_id')
     if 'course_name' in params.keys():
         sql.append(' and c.course_name = :course_name')
     if 'order_type' in params.keys():
