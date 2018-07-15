@@ -716,7 +716,7 @@ def my_subject_sql(params):
     if 'teacher_id' in params.keys():
         sql.append(' and th.student_id =:student_id ')
     else:
-        sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+        sql.append("and th.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name','type'], ''.join(sql)
 
 
