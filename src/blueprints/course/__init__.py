@@ -449,5 +449,5 @@ def getTimeDiff(timeStra,timeStrb):
 
     secondsDiff=(dataTimeb-dataTimea).seconds
     #两者相加得转换成分钟的时间差
-    minutesDiff=round(secondsDiff/60,1)
+    minutesDiff=round(secondsDiff/60)
     return minutesDiff
