@@ -435,17 +435,12 @@ def upload_courseware():
 def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
-    ta = timeStra.split('.')[0]
-    tb = timeStrb.split('.')[0]
+
+    ta = datetime.datetime.strptime(timeStra.split('.')[0], "%Y-%m-%d %H:%M:%S")
+    tb = datetime.datetime.strptime(timeStrb.split('.')[0], "%Y-%m-%d %H:%M:%S")
     current_app.logger.debug("ta------>"+ta)
     current_app.logger.debug("tb------>"+tb)
-    y,m,d,H,M,S = ta[0:6]
-    dataTimea=datetime.datetime(y,m,d,H,M,S)
-    y,m,d,H,M,S = tb[0:6]
-    dataTimeb=datetime.datetime(y,m,d,H,M,S)
-    current_app.logger.debug("dataTimea------>"+dataTimea)
-    current_app.logger.debug("dataTimeb------>"+dataTimeb)
-    secondsDiff=(dataTimeb-dataTimea).seconds
+    secondsDiff=(tb-ta).seconds
     #两者相加得转换成分钟的时间差
     minutesDiff=round(secondsDiff/60,1)
     return minutesDiff
