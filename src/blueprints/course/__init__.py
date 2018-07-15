@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+import time
+
 from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule
+from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule,CourseClassroom
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
 
@@ -305,9 +307,12 @@ def schedule():
 
         for index, item in enumerate(schedules):
 
+            start = item['start'].replace('T', ' ').replace('Z', ''),
+            end = item['end'].replace('T', ' ').replace('Z', ''),
+
             courseschedule = CourseSchedule(
-                start = item['start'].replace('T', ' ').replace('Z', ''),
-                end = item['end'].replace('T', ' ').replace('Z', ''),
+                start = start,
+                end = end,
                 name = item['course_name'],
                 state = 1,
                 override_course_type=course.course_type,
@@ -323,7 +328,7 @@ def schedule():
             if course.class_type != 1:
                 class_type = ClassroomTypeEnum.ONE_VS_MANY.name
 
-            live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,item['course_name'], 60,class_type,item['start'],0,'en')
+            live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,item['course_name'], getTimeDiff(start,end),class_type,item['start'],0,'en')
 
 
             if courseschedule is None:
@@ -334,8 +339,8 @@ def schedule():
             for order in orders:
 
                 sudyschedule = StudySchedule(
-                    actual_start = item['start'].replace('T', ' ').replace('Z', ''),
-                    actual_end = item['end'].replace('T', ' ').replace('Z', ''),
+                    actual_start = start,
+                    actual_end = end,
                     name = item['course_name'],
                     study_state = 1,
                     order_id = order.id,
@@ -357,3 +362,86 @@ def schedule():
         session.flush()
 
     return jsonify({'id':courseschedule.id })
+
+
+@course.route('/edit_course_schedule', methods=['POST'])
+def upload_courseware():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课节id'
+        type: 'string'
+      start:
+        description: '开始时间'
+        type: 'string'
+      end:
+        description: '结束时间'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_schedule_id = request.json['course_schedule_id']
+    start = request.json['start'].replace('T', ' ').replace('Z', '')
+    end = request.json['end'].replace('T', ' ').replace('Z', '')
+
+    with session_scope(db) as session:
+
+        courseSchedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id=course_schedule_id).one_or_none()
+
+        if courseSchedule is None or courseclassroom is None:
+            return jsonify({
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        setattr(courseSchedule,'start',start)
+        setattr(courseSchedule,'end',end)
+        session.add(courseSchedule)
+        session.flush()
+
+        setattr(courseclassroom,'duration_start',start)
+        setattr(courseclassroom,'duration_end',end)
+        session.add(courseSchedule)
+        session.flush()
+
+        live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
+                               getTimeDiff(start,end),0,'en')
+
+        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).one_or_none()
+
+        if studyschedules is None or len(studyschedules)<1:
+            return jsonify({
+                "error": "not found Course_Class_room: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        for studyschedule in studyschedules:
+
+            setattr(studyschedule,'actual_start',start)
+            setattr(studyschedule,'actual_end',end)
+            session.add(studyschedule)
+            session.flush()
+
+    return jsonify({'id':courseSchedule.id })
+
+
+
+def getTimeDiff(timeStra,timeStrb):
+    if timeStra<=timeStrb:
+        return 0
+    ta = time.strptime(timeStra, "%Y-%m-%d %H:%M:%S")
+    tb = time.strptime(timeStrb, "%Y-%m-%d %H:%M:%S")
+    y,m,d,H,M,S = ta[0:6]
+    dataTimea=datetime.datetime(y,m,d,H,M,S)
+    y,m,d,H,M,S = tb[0:6]
+    dataTimeb=datetime.datetime(y,m,d,H,M,S)
+    secondsDiff=(dataTimea-dataTimeb).seconds
+    #两者相加得转换成分钟的时间差
+    minutesDiff=round(secondsDiff/60,1)
+    return minutesDiff
