@@ -330,7 +330,6 @@ def schedule():
 
             live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,item['course_name'], getTimeDiff(start,end),class_type,item['start'],0,'en')
 
-
             if courseschedule is None:
                 return jsonify({
                     "error": "courseschedule error"
@@ -405,14 +404,8 @@ def upload_courseware():
         session.add(courseSchedule)
         session.flush()
 
-        current_app.logger.debug("------>"+str(getTimeDiff(start,end)))
-
-        current_app.logger.debug("start------>"+start)
-
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
                                getTimeDiff(start,end),request.json['start'],request.json['end'],0,'en')
-
-        current_app.logger.debug("start------>"+start)
 
         studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
 
@@ -437,8 +430,14 @@ def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
 
-    ta = time.strptime(timeStra.split('.')[0], "%Y-%m-%d %H:%M:%S")
-    tb = time.strptime(timeStrb.split('.')[0], "%Y-%m-%d %H:%M:%S")
+    current_app.logger.debug('timeStrb-------->'+timeStrb)
+
+    if "." in timeStra:
+        timeStra = timeStra.split('.')[0]
+        timeStrb = timeStrb.split('.')[0]
+
+    ta = time.strptime(timeStra, "%Y-%m-%d %H:%M:%S")
+    tb = time.strptime(timeStrb, "%Y-%m-%d %H:%M:%S")
     y,m,d,H,M,S = ta[0:6]
     dataTimea=datetime.datetime(y,m,d,H,M,S)
     y,m,d,H,M,S = tb[0:6]
@@ -447,4 +446,6 @@ def getTimeDiff(timeStra,timeStrb):
     secondsDiff=(dataTimeb-dataTimea).seconds
     #两者相加得转换成分钟的时间差
     minutesDiff=round(secondsDiff/60)
+
+    current_app.logger.debug('minutesDiff-------->'+minutesDiff)
     return minutesDiff
