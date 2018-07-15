@@ -436,10 +436,9 @@ def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
 
-    ta = timeStra.split('.')[0]
-    tb = timeStrb.split('.')[0]
-    current_app.logger.debug("ta------>"+ta)
-    current_app.logger.debug("tb------>"+tb)
+    ta = datetime.datetime.strptime(timeStra.split('.')[0], "%Y-%m-%d %H:%M:%S")
+    tb = datetime.datetime.strptime(timeStrb.split('.')[0], "%Y-%m-%d %H:%M:%S")
+
     secondsDiff=(tb-ta).seconds
     #两者相加得转换成分钟的时间差
     minutesDiff=round(secondsDiff/60,1)
