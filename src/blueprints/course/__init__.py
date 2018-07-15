@@ -405,12 +405,6 @@ def upload_courseware():
         session.add(courseSchedule)
         session.flush()
 
-        setattr(courseclassroom,'duration_start',start)
-        setattr(courseclassroom,'duration_end',end)
-        session.add(courseclassroom)
-        session.flush()
-
-
         current_app.logger.debug("start------>"+start)
         current_app.logger.debug("end------>"+end)
 
@@ -439,7 +433,7 @@ def upload_courseware():
 
 
 def getTimeDiff(timeStra,timeStrb):
-    if timeStra<=timeStrb:
+    if timeStra>=timeStrb:
         return 0
     ta = time.strptime(timeStra, "%Y-%m-%d %H:%M:%S")
     tb = time.strptime(timeStrb, "%Y-%m-%d %H:%M:%S")
