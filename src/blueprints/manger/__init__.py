@@ -690,6 +690,8 @@ def students_sql(params):
         sql.append(' and sc.`curriculum_id` =:category_1')
     if 'category_2' in params.keys():
         sql.append(' and sc.id =:category_2')
+    if 'channel_id' in params.keys():
+        sql.append(' and c.id =:channel_id')
     if 'created_at_start' in params.keys() \
         and 'created_at_end' in params.keys():
         sql.append(' and s.created_at between :created_at_start and :created_at_end')
