@@ -435,8 +435,8 @@ def upload_courseware():
 def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
-    ta = time.strptime(timeStra, "%Y-%m-%d %H:%M:%S")
-    tb = time.strptime(timeStrb, "%Y-%m-%d %H:%M:%S")
+    ta = time.strptime(timeStra.split('-')[0], "%Y-%m-%d %H:%M:%S")
+    tb = time.strptime(timeStrb.split('-')[0], "%Y-%m-%d %H:%M:%S")
     current_app.logger.debug("ta------>"+ta)
     current_app.logger.debug("tb------>"+tb)
     y,m,d,H,M,S = ta[0:6]
