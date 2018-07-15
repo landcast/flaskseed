@@ -120,7 +120,7 @@ class Teacher(UserBaseMixin, db.Model):
 class TeacherTime(EntityMixin, db.Model):
     week = Column(db.String(10), nullable=False, comment='星期几，1，2，3，4，5，6，7')
     end = Column(DateTime, nullable=False, comment='可授课结束时间')
-    start = Column(Integer, nullable=False, comment='可以授课开始时间')
+    start = Column(DateTime, nullable=False, comment='可以授课开始时间')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
     teachers = db.relationship('Teacher', backref='teachertime', lazy=True)
