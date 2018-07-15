@@ -987,7 +987,8 @@ def upload_courseware():
 
     return jsonify({'id':courseSchedule.id })
 
-@teacher.route('/my_subject', methods=['POST'])
+
+@teacher.route('/subject', methods=['POST'])
 def my_subject():
     """
     swagger-doc: 'do my course query'
@@ -1062,7 +1063,6 @@ def my_subject_sql(params):
           left join curriculum cu on sc.`curriculum_id` = cu.id and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
           where th.`delete_flag` = 'IN_FORCE'
             ''']
-
 
     if 'type' in params.keys():
         sql.append(' and th.type =:type ')
