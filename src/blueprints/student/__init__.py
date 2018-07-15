@@ -638,4 +638,89 @@ def growth_report_sql(params):
     return ['id', 'course_name', 'teacher_name', 'created_at', 'evaluation','report_card_url','type'], ''.join(sql)
 
 
+@student.route('/subject', methods=['POST'])
+def my_subject():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      type:
+        description: '科目类别'
+        type: 'string'
+      student_id:
+        description: '学生id，不传默认自己'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'student_subject_id'
+              type: 'integer'
+            subject_id:
+              description: 'subject_id'
+              type: 'integer'
+            subject_category_id:
+              description: 'subject_category_id'
+              type: 'integer'
+            curriculum_id:
+              description: 'curriculum_id'
+              type: 'integer'
+            subject_name:
+              description: '名称'
+              type: 'string'
+            type:
+              description: '类型'
+              type: 'integer'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, my_subject_sql))
+
+
+def my_subject_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select th.id,th.`subject_id`,sc.id as subject_category_id,cu.id as curriculum_id,th.subject_name,th.subject_type as type
+          from student_subject th  left join subject su on th.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
+          left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
+          left join curriculum cu on sc.`curriculum_id` = cu.id and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
+          where th.`delete_flag` = 'IN_FORCE'
+            ''']
+
+    if 'type' in params.keys():
+        sql.append(' and th.subject_type =:type ')
+    if 'teacher_id' in params.keys():
+        sql.append(' and th.student_id =:student_id ')
+    else:
+        sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name','type'], ''.join(sql)
+
+
+
+
+
 
