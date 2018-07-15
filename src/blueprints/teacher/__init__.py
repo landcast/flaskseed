@@ -986,3 +986,90 @@ def upload_courseware():
         session.flush()
 
     return jsonify({'id':courseSchedule.id })
+
+@teacher.route('/my_subject', methods=['POST'])
+def my_subject():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      type:
+        description: '教学类型'
+        type: 'string'
+      teacher_id:
+        description: '教师id，不传默认自己'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'teacher_history_id'
+              type: 'integer'
+            subject_id:
+              description: 'teacher_history_id'
+              type: 'integer'
+            subject_category_id:
+              description: 'teacher_history_id'
+              type: 'integer'
+            curriculum_id:
+              description: 'teacher_history_id'
+              type: 'integer'
+            subject_name:
+              description: '名称'
+              type: 'string'
+            grade:
+              description: '年级'
+              type: 'string'
+            type:
+              description: '类型'
+              type: 'integer'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, my_subject_sql))
+
+
+def my_subject_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select th.id,th.`subject_id`,sc.id as subject_category_id,cu.id as curriculum_id,th.subject_name,th.grade,th.type
+          from teacher_history th  left join subject su on th.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
+          left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
+          left join curriculum cu on sc.`curriculum_id` = cu.id and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
+          where th.`delete_flag` = 'IN_FORCE'
+            ''']
+
+
+    if 'type' in params.keys():
+        sql.append(' and th.type =:type ')
+    if 'teacher_id' in params.keys():
+        sql.append(' and th.teacher_id =:teacher_id ')
+    else:
+        sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    return ['id', 'name', 'class_type','start', 'end'], ''.join(sql)
+
+
