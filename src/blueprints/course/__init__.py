@@ -436,8 +436,8 @@ def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
 
-    ta = datetime.datetime.strptime(timeStra.split('.')[0], "%Y-%m-%d %H:%M:%S")
-    tb = datetime.datetime.strptime(timeStrb.split('.')[0], "%Y-%m-%d %H:%M:%S")
+    ta = timeStra.split('.')[0]
+    tb = timeStrb.split('.')[0]
     current_app.logger.debug("ta------>"+ta)
     current_app.logger.debug("tb------>"+tb)
     secondsDiff=(tb-ta).seconds
