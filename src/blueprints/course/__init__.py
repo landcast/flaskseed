@@ -447,5 +447,5 @@ def getTimeDiff(timeStra,timeStrb):
     #两者相加得转换成分钟的时间差
     minutesDiff=round(secondsDiff/60)
 
-    current_app.logger.debug('minutesDiff-------->'+minutesDiff)
+    current_app.logger.debug('minutesDiff-------->'+str(minutesDiff))
     return minutesDiff
