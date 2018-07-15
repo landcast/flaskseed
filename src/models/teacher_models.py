@@ -101,7 +101,7 @@ class Teacher(UserBaseMixin, db.Model):
     graduation_school = Column(String(50), nullable=True, comment='毕业最高学校')
     education_history = Column(String(1000), nullable=True, comment='上学历史 json')
     teaching_history = Column(String(1000), nullable=True, comment='教学历史 json')
-    experience_sharing = Column(String(1000), nullable=True, comment='教学历史 json')
+    experience_sharing = Column(String(1000), nullable=True, comment='经验分享')
     about_me = Column(String(1000), nullable=True, comment='自我介绍')
     race = Column(String(120), nullable=True, comment='种族')
     teacher_age = Column(Integer, nullable=True, comment='教龄')
