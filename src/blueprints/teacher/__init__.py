@@ -1026,13 +1026,13 @@ def my_subject():
               description: 'teacher_history_id'
               type: 'integer'
             subject_id:
-              description: 'teacher_history_id'
+              description: 'subject_id'
               type: 'integer'
             subject_category_id:
-              description: 'teacher_history_id'
+              description: 'subject_category_id'
               type: 'integer'
             curriculum_id:
-              description: 'teacher_history_id'
+              description: 'curriculum_id'
               type: 'integer'
             subject_name:
               description: '名称'
@@ -1070,6 +1070,6 @@ def my_subject_sql(params):
         sql.append(' and th.teacher_id =:teacher_id ')
     else:
         sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
-    return ['id', 'name', 'class_type','start', 'end'], ''.join(sql)
+    return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name', 'grade','type'], ''.join(sql)
 
 
