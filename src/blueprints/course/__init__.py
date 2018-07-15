@@ -307,8 +307,8 @@ def schedule():
 
         for index, item in enumerate(schedules):
 
-            start = item['start'].replace('T', ' ').replace('Z', ''),
-            end = item['end'].replace('T', ' ').replace('Z', ''),
+            start = item['start'].replace('T', ' ').replace('Z', '')
+            end = item['end'].replace('T', ' ').replace('Z', '')
 
             courseschedule = CourseSchedule(
                 start = start,
