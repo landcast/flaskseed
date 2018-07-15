@@ -407,6 +407,8 @@ def upload_courseware():
 
         current_app.logger.debug("------>"+str(getTimeDiff(start,end)))
 
+        current_app.logger.debug("start------>"+start)
+
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
                                getTimeDiff(start,end),start,0,'en')
 
@@ -435,16 +437,12 @@ def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
 
-
     ta = time.strptime(timeStra.split('.')[0], "%Y-%m-%d %H:%M:%S")
     tb = time.strptime(timeStrb.split('.')[0], "%Y-%m-%d %H:%M:%S")
-    current_app.logger.debug("ta------>a")
-
     y,m,d,H,M,S = ta[0:6]
     dataTimea=datetime.datetime(y,m,d,H,M,S)
     y,m,d,H,M,S = tb[0:6]
     dataTimeb=datetime.datetime(y,m,d,H,M,S)
-    current_app.logger.debug("dataTimea------>b")
 
     secondsDiff=(dataTimeb-dataTimea).seconds
     #两者相加得转换成分钟的时间差
