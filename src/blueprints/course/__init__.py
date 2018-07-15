@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import time
 
 from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -9,8 +8,8 @@ from sqlalchemy.sql import *
 from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule,CourseClassroom
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
-
 from src.models import  ClassroomTypeEnum
+from dateutil.parser import parse
 
 course = Blueprint('course', __name__)
 
@@ -438,20 +437,14 @@ def upload_courseware():
 
 
 
-def getTimeDiff(timeStra,timeStrb):
-    if timeStra<=timeStrb:
+def getTimeDiff(start,end):
+    if start<=end:
         return 0
-    ta = time.strptime(timeStra, "%Y-%m-%d %H:%M:%S")
-    tb = time.strptime(timeStrb, "%Y-%m-%d %H:%M:%S")
-    current_app.logger.debug("ta------>"+ta)
-    current_app.logger.debug("tb------>"+tb)
-    y,m,d,H,M,S = ta[0:6]
-    dataTimea=datetime.datetime(y,m,d,H,M,S)
-    y,m,d,H,M,S = tb[0:6]
-    dataTimeb=datetime.datetime(y,m,d,H,M,S)
-    current_app.logger.debug("dataTimea------>"+dataTimea)
-    current_app.logger.debug("dataTimeb------>"+dataTimeb)
-    secondsDiff=(dataTimea-dataTimeb).seconds
+    a = parse(start)
+    b = parse(end)
+    current_app.logger.debug("ta------>"+a)
+    current_app.logger.debug("tb------>"+b)
+    secondsDiff=(b-a).seconds
     #两者相加得转换成分钟的时间差
     minutesDiff=round(secondsDiff/60,1)
     return minutesDiff
