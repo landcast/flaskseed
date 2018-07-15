@@ -128,7 +128,7 @@ class TeacherTime(EntityMixin, db.Model):
 
 class TeacherHistory(EntityMixin, db.Model):
     subject_id = Column(Integer,nullable=True, comment='可教授的科目id')
-    subject_name = Column(Integer,nullable=True, comment='可教授的科目名称')
+    subject_name = Column(String(120), nullable=True,comment='可教授的科目名称')
     grade = Column(Integer,nullable=True, comment='Kindergarten:幼儿园，primary_school:小学，junior_middle_school:初中，'
                                                   'high_school:高中，university：大学，adult：成人，other:其他 JSON串')
     type = Column(Integer, nullable=False, comment='类型，1：可以交的科目，2：现在交的科目')
