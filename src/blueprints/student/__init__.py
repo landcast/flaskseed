@@ -641,7 +641,7 @@ def growth_report_sql(params):
     if 'study_schedule_id' in params:
         sql.append(" and t.id =:study_schedule_id")
 
-    sql.append("order by created_at desc")
+    sql.append(" order by created_at desc")
 
     return ['id', 'course_name', 'teacher_name', 'created_at', 'evaluation','report_card_url','type'], ''.join(sql)
 
