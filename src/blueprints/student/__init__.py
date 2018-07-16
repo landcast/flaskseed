@@ -570,6 +570,9 @@ def growth_report():
       page_no:
         description: 'page no'
         type: 'integer'
+      study_schedule_id:
+        description: '课程id'
+        type: 'string'
 
     res:
       num_results:
@@ -633,7 +636,12 @@ def growth_report_sql(params):
                "and c.`state` <> 99  and ce.`state` <> 99 and sr.`delete_flag` = 'IN_FORCE' "
                "and ce.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
     sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
-    sql.append(" ) t  order by created_at desc")
+    sql.append(" ) t  where 1=1")
+
+    if 'study_schedule_id' in params:
+        sql.append(" and t.id =:study_schedule_id")
+
+    sql.append("order by created_at desc")
 
     return ['id', 'course_name', 'teacher_name', 'created_at', 'evaluation','report_card_url','type'], ''.join(sql)
 
