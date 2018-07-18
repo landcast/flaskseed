@@ -652,6 +652,12 @@ def students_query():
             state:
               description: '状态'
               type: 'string'
+            gender:
+              description: '年级'
+              type: 'string'
+            parent_mobile:
+              description: '家长联系电话'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, students_sql))
@@ -665,7 +671,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.`created_at`,s.username,s.parent_mobile,s.gender,c.channel_name
+    select s.id,s.`created_at`,s.username,s.parent_mobile,s.gender,c.channel_name,s.gender
     from student s 
     left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
     left join subject su on ss.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
@@ -697,7 +703,7 @@ def students_sql(params):
         sql.append(' and s.created_at between :created_at_start and :created_at_end')
 
     return ['id', 'created_at','username', 'parent_mobile',
-            'gender', 'channel_name'], ''.join(sql)
+            'gender', 'channel_name','gender'], ''.join(sql)
 
 
 @manger.route('/thacher_tryout', methods=['POST'])
