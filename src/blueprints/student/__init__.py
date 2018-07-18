@@ -760,12 +760,10 @@ def apply_tryout():
 
     with session_scope(db) as session:
 
-        list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id and CourseAppointment.open_time_start<start
-                                                                             and CourseAppointment.open_time_end>start).filter(StudyAppointment.student_id == student_id).all()
+        list1 = session.query("select sa.id from study_appointment sa ,course_appointment ca where sa.`course_appointment_id` = sa.id and ca.`open_time_start` <:start and ca.`open_time_end` >:start and sa.`student_id` =:student_id ").all()
 
-        list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id and CourseAppointment.open_time_start<end
-                                                                         and CourseAppointment.open_time_end>end).filter(StudyAppointment.student_id == student_id).all()
-        current_app.logger.debug(str(len(list1))+"------>"+list1[0])
+        list2 = session.query("select sa.id from study_appointment sa ,course_appointment ca where sa.`course_appointment_id` = sa.id and ca.`open_time_start` <:end and ca.`open_time_end` >:end and sa.`student_id` =:student_id ").all()
+
 
         if len(list1)>0 or len(list2) > 0:
             return jsonify({
