@@ -139,6 +139,8 @@ class StudyAppointment(EntityMixin, db.Model):
     course_appointments = db.relationship('CourseAppointment',
                                           backref='student_appointments',
                                           lazy=True)
+    student_id = Column(Integer, ForeignKey('student.id'),
+                        nullable=False)
 
 
 class StudentState(IntFlag):
