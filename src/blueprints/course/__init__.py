@@ -519,7 +519,7 @@ def course_common_sql(params):
          from 
         course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE',
         teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`class_type` < 3 
-        ) t
+        ) t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
