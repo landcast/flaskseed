@@ -424,6 +424,133 @@ def upload_courseware():
 
     return jsonify({'id':courseSchedule.id })
 
+@course.route('/common', methods=['POST'])
+def course_common():
+    """
+    swagger-doc: 'do allot query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      teacher_name:
+        description: '教师名称'
+        type: 'string'
+      course_name:
+        description: '课包名称'
+        type: 'string'
+      student_name:
+        description: '学生名称'
+        type: 'string'
+      class_at:
+        description: '上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      state:
+        description: '课程状态，1：带排课，2：上课中，3：已完成'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '课程id'
+              type: 'integer'
+            teacher_name:
+              description: '教师账号'
+              type: 'integer'
+            course_name:
+              description: '课包英文名称'
+              type: 'string'
+            course_name_zh:
+              description: '课包中文名称'
+              type: 'string'
+            student_name:
+              description: '学生账号'
+              type: 'string'
+            start:
+              description: '开始时间,如果没有就是带排课'
+              type: 'string'
+            end:
+              description: '结束时间'
+              type: 'string'
+            classes_number:
+              description: '总课程数'
+              type: 'string'
+            finish:
+              description: '已经上完的程数'
+              type: 'string'
+            course_schedule_id:
+              description: '课节id'
+              type: 'string'
+    """
+    j = request.json
+    datetime_param_sql_format(j, ['class_at']),
+    return jsonify(do_query(j, course_common_sql))
+
+
+def course_common_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+        select * from (select c.id ,c.course_name,c.course_name_zh,t.username as teacher_name,
+        (select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
+        cs.start,cs.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
+        cs.id as course_schedule_id
+        
+         from 
+        course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE',
+        teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`class_type` < 3 
+        ) t
+    ''']
+
+    if 'teacher_name' in params.keys():
+        sql.append(" and t.teacher_name like '%")
+        sql.append(params['teacher_name'])
+        sql.append("%'")
+    if 'student_name' in params.keys():
+        sql.append(" and t.student_name like '%")
+        sql.append(params['student_name'])
+        sql.append("%'")
+    if 'course_name' in params.keys():
+        sql.append(" and (t.course_name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or t.course_name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
+    if 'class_at' in params.keys() :
+        sql.append(
+            ' and t.`start` <:class_at and t.`end` >:class_at')
+    if 'state' in params.keys() and '1' ==params['state'] :
+        sql.append(' and t.course_schedule_id is null')
+
+    if 'state' in params.keys() and '2' ==params['state'] :
+        sql.append(' and t.finish <= t.classes_number')
+
+    if 'state' in params.keys() and '3' ==params['state'] :
+        sql.append(' and t.finish > t.classes_number')
+
+    return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
+            'start', 'end','course_schedule_state','course_schedule_id'], ''.join(sql)
 
 
 def getTimeDiff(timeStra,timeStrb):
