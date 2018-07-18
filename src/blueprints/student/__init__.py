@@ -762,10 +762,12 @@ def apply_tryout():
 
 
         list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id and CourseAppointment.open_time_start>start
-                                                                         and CourseAppointment.open_time_end>start).filter(StudyAppointment.student_id == student_id).all()
+                                                                             and CourseAppointment.open_time_end>start).filter(StudyAppointment.student_id == student_id).all()
 
         list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id and CourseAppointment.open_time_start>end
                                                                          and CourseAppointment.open_time_end>end).filter(StudyAppointment.student_id == student_id).all()
+
+        current_app.logger.debug('-------->'+list1[0])
 
         if list1 is not None or list2 is not None:
             return jsonify({
