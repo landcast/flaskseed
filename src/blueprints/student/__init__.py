@@ -737,66 +737,7 @@ def my_subject_sql(params):
     return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name','type'], ''.join(sql)
 
 
-@course.route('/edit_course_schedule', methods=['POST'])
-def upload_courseware():
-    """
-    swagger-doc: 'schedule'
-    required: []
-    req:
-      course_schedule_id:
-        description: '课节id'
-        type: 'string'
-      start:
-        description: '开始时间'
-        type: 'string'
-      end:
-        description: '结束时间'
-        type: 'string'
-    res:
-      verify_code:
-        description: 'id'
-        type: ''
-    """
-    course_schedule_id = request.json['course_schedule_id']
-    start = request.json['start'].replace('T', ' ').replace('Z', '')
-    end = request.json['end'].replace('T', ' ').replace('Z', '')
 
-    with session_scope(db) as session:
-
-        courseSchedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
-
-        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id=course_schedule_id).one_or_none()
-
-        if courseSchedule is None or courseclassroom is None:
-            return jsonify({
-                "error": "not found course_schedule: {0}".format(
-                    course_schedule_id)
-            }), 500
-
-        setattr(courseSchedule,'start',start)
-        setattr(courseSchedule,'end',end)
-        session.add(courseSchedule)
-        session.flush()
-
-        live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
-                               getTimeDiff(start,end),request.json['start'],request.json['end'],0,'en')
-
-        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
-
-        if studyschedules is None or len(studyschedules)<1:
-            return jsonify({
-                "error": "not found Course_Class_room: {0}".format(
-                    course_schedule_id)
-            }), 500
-
-        for studyschedule in studyschedules:
-
-            setattr(studyschedule,'actual_start',start)
-            setattr(studyschedule,'actual_end',end)
-            session.add(studyschedule)
-            session.flush()
-
-    return jsonify({'id':courseSchedule.id })
 
 
 
