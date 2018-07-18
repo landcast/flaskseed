@@ -133,7 +133,7 @@ class CourseAppraisal(EntityMixin, db.Model):
 
 
 class StudyAppointment(EntityMixin, db.Model):
-    student_requirements = Column(String(2000), nullable=False, comment='学生需求')
+    student_requirements = Column(String(2000), nullable=True, comment='学生需求')
     course_appointment_id = Column(Integer, ForeignKey('course_appointment.id'),
                                    nullable=False)
     course_appointments = db.relationship('CourseAppointment',

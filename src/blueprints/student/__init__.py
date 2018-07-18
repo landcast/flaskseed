@@ -5,7 +5,7 @@ from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
-from src.models import db, session_scope
+from src.models import db, session_scope,CourseAppointment,StudyAppointment
 from src.services import do_query
 import hashlib
 from src.services import do_query, datetime_param_sql_format
@@ -737,6 +737,62 @@ def my_subject_sql(params):
     return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name','type'], ''.join(sql)
 
 
+@student.route('/apply_tryout', methods=['POST'])
+def apply_tryout():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      start:
+        description: '开始时间'
+        type: 'string'
+      end:
+        description: '结束时间'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    start = request.json['start'].replace('T', ' ').replace('Z', '')
+    end = request.json['end'].replace('T', ' ').replace('Z', '')
+    student_id =  getattr(g, current_app.config['CUR_USER'])['id']
+
+    with session_scope(db) as session:
+
+
+        list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id and CourseAppointment.open_time_start>start
+                                                                         and CourseAppointment.open_time_end>start).filter(StudyAppointment.student_id == student_id).all()
+
+        list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id and CourseAppointment.open_time_start>end
+                                                                         and CourseAppointment.open_time_end>end).filter(StudyAppointment.student_id == student_id).all()
+
+        if list1 is not None or list2 is not None:
+            return jsonify({
+                "error": "time conflict"
+            }), 500
+
+        courseAppointment = CourseAppointment(
+            open_time_start = start,
+            open_time_end = end,
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+
+        session.add(courseAppointment)
+        session.flush()
+
+        studyAppointment = StudyAppointment(
+            course_appointment_id = courseAppointment.id,
+            student_id = student_id,
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+
+        session.add(studyAppointment)
+        session.flush()
+
+    return jsonify({'id':studyAppointment.id })
 
 
 

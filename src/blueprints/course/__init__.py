@@ -424,6 +424,7 @@ def upload_courseware():
 
     return jsonify({'id':courseSchedule.id })
 
+
 @course.route('/common', methods=['POST'])
 def course_common():
     """
