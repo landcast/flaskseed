@@ -585,7 +585,18 @@ def growth_report():
       study_schedule_id:
         description: '课程id'
         type: 'string'
-
+      course_name:
+        description: '课程包名'
+        type: 'string'
+      class_at:
+        description: '上课时间'
+        type: 'string'
+      class_name:
+        description: '课程名称'
+        type: 'string'
+      teacher_name:
+        description: '教师名称'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -608,8 +619,14 @@ def growth_report():
             course_name:
               description: '课程名称'
               type: 'string'
+            course_name_zh:
+              description: '课程名称'
+              type: 'string'
             teacher_name:
               description: '教师名称'
+              type: 'string'
+            clasee_name:
+              description: '课节名称'
               type: 'string'
             evaluation:
               description: '评价内容，json'
@@ -619,6 +636,9 @@ def growth_report():
               type: 'string'
             type:
               description: '类别'
+              type: 'string'
+            result_type:
+              description: '结果类别，NO:课程，SUMMARY：总结，ACHIEVEMENT：成绩单'
               type: 'string'
     """
     j = request.json
@@ -635,14 +655,14 @@ def growth_report_sql(params):
     sql = ['''''']
 
     sql.append(" select * from (")
-    sql.append(" select sr.id ,c.`course_name` as course_name,t.nickname as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type' "
+    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.nickname as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end "
                "from study_schedule sr,course_schedule cs,course c ,teacher t "
                "where cs.id - sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and cs.`state` <> 99  and c.`state` <> 99 and "
                "sr.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
     sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
     sql.append(" union all ")
-    sql.append(" select sr.id, c.`course_name` as course_name,t.nickname as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type' "
+    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.nickname as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end  "
                "from study_result sr,course_exam ce,course c ,teacher t "
                "where sr.`course_exam_id` = ce.id and ce.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and c.`state` <> 99  and ce.`state` <> 99 and sr.`delete_flag` = 'IN_FORCE' "
@@ -650,12 +670,30 @@ def growth_report_sql(params):
     sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
     sql.append(" ) t  where 1=1")
 
-    if 'study_schedule_id' in params:
+    if 'study_schedule_id' in params.keys():
         sql.append(" and t.id =:study_schedule_id")
+    if 'course_name' in params.keys():
+        sql.append(" and (t.course_name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or t.course_name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
+    if 'teacher_name' in params.keys():
+        sql.append(" and t.nickname like '%")
+        sql.append(params['teacher_name'])
+        sql.append("%'")
+    if 'class_name' in params.keys():
+        sql.append(" and t.class_name like '%")
+        sql.append(params['class_name'])
+        sql.append("%'")
+
+    if 'created_at' in params.keys():
+        sql.append(" and t.start <:created_at and t.end <:created_at")
 
     sql.append(" order by created_at desc")
 
-    return ['id', 'course_name', 'teacher_name', 'created_at', 'evaluation','report_card_url','type'], ''.join(sql)
+    return ['id', 'course_name', 'course_name_zh','class_name','teacher_name', 'created_at', 'evaluation','report_card_url','type','result_type','start','end'], ''.join(sql)
 
 
 @student.route('/subject', methods=['POST'])
