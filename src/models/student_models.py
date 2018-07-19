@@ -5,6 +5,8 @@ from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey, \
     Enum
 from enum import IntFlag
 
+from src.models.course_models import CourseScheduleStatueEnum
+
 
 class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
@@ -35,6 +37,9 @@ class StudySchedule(EntityMixin, db.Model):
     teacher_score = Column(Float, nullable=True, comment='教师评分')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
+    schedule_type = Column(Enum(CourseScheduleStatueEnum), nullable=True,
+                           comment='课程类型',
+                           server_default=CourseScheduleStatueEnum.NO_CLASS.name)
     order_studys = db.relationship('Order', backref='order_studys', lazy=True)
     course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
                                 nullable=False)
