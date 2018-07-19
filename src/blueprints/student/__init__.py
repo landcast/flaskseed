@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom
+from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom,Homework
 
 from src.services import do_query
 import hashlib
@@ -904,4 +904,61 @@ def get_enter_room_url():
 
     return jsonify({'url':url })
 
+
+@student.route('/write_homework', methods=['POST'])
+def write_homework():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+      title:
+        description: '标题'
+        type: 'string'
+      desc:
+        description: '描述'
+        type: 'string'
+      attachment:
+        description: '附件，可以考虑JSON地址'
+        type: 'string'
+    res:
+      id:
+        description: ''
+        type: ''
+    """
+    study_schedule_id = request.json['study_schedule_id']
+    attachment = ''
+    title = ''
+    desc =''
+    if 'attachment' in request.json:
+        attachment = request.json['attachment']
+    if 'title' in request.json:
+        title = request.json['title']
+    if 'desc' in request.json:
+        desc = request.json['desc']
+
+    with session_scope(db) as session:
+
+        studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
+
+        if studyschedule is None :
+            return jsonify({
+                "error": "not found Study_Schedule: {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        homework = Homework(homework_type = 2,
+                            answer_text = desc,
+                            answer_attachment_url = attachment,
+                            study_schedule_id = study_schedule_id,
+                            question_name = title,
+                            delete_flag = 'IN_FORCE',
+                            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                            )
+        session.add(homework)
+        session.flush()
+
+    return jsonify({'id':homework.id })
 
