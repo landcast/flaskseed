@@ -5,11 +5,18 @@ from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
-from src.models import db, session_scope,CourseAppointment,StudyAppointment
+
+from src import ClassroomRoleEnum
+from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom
+
 from src.services import do_query
 import hashlib
 from src.services import do_query, datetime_param_sql_format
 import json
+from src.services import live_service
+from src.models import ClassroomRoleEnum, ClassroomDeviceEnum
+
+
 
 student = Blueprint('student', __name__)
 
@@ -857,5 +864,45 @@ def get_preview_doc_sql(params):
     sql.append("and ss.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     return ['ware_uid'], ''.join(sql)
+
+
+@student.route('/get_enter_room_url', methods=['POST'])
+def get_enter_room_url():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      room_id:
+        description: '房间号'
+        type: ''
+    """
+    study_schedule_id = request.json['study_schedule_id']
+
+    with session_scope(db) as session:
+
+        studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
+
+        if studyschedule is None :
+            return jsonify({
+                "error": "not found Study_Schedule: {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =studyschedule.course_schedule_id).one_or_none()
+
+        if courseclassroom is None :
+            return jsonify({
+                "error": "found courseclassroom existing in {0}".format(
+                    study_schedule_id)
+            }), 500
+
+
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['nickname'],ClassroomRoleEnum.STUDENT,ClassroomDeviceEnum.PC)
+
+    return jsonify({'url':url })
 
 
