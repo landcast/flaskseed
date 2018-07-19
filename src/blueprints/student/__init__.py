@@ -510,11 +510,8 @@ def student_schedule():
           type: object
           properties:
             id:
-              description: ''
+              description: '课节id'
               type: 'integer'
-            course_id:
-              description: 'tudy_schedule_id'
-              type: 'string'
             name:
               description: '课节名称'
               type: 'string'
@@ -760,17 +757,17 @@ def apply_tryout():
 
     with session_scope(db) as session:
 
-        list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<start
-                                                                             , CourseAppointment.open_time_end>start,StudyAppointment.student_id == student_id).all()
+        list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<=start
+                                                                             , CourseAppointment.open_time_end>=start,StudyAppointment.student_id == student_id).all()
 
-        list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<end
-                                                                         , CourseAppointment.open_time_end>end,StudyAppointment.student_id == student_id).all()
+        list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<=end
+                                                                         , CourseAppointment.open_time_end>=end,StudyAppointment.student_id == student_id).all()
 
-        list3 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start>start
-                                                                         , CourseAppointment.open_time_start<end,StudyAppointment.student_id == student_id).all()
+        list3 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start>=start
+                                                                         , CourseAppointment.open_time_start<=end,StudyAppointment.student_id == student_id).all()
 
-        list4 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_end>start
-                                                                     , CourseAppointment.open_time_end<end,StudyAppointment.student_id == student_id).all()
+        list4 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_end>=start
+                                                                     , CourseAppointment.open_time_end<=end,StudyAppointment.student_id == student_id).all()
 
 
         if len(list1)>0 or len(list2) > 0 or len(list3) > 0 or len(list4) > 0:
@@ -801,5 +798,64 @@ def apply_tryout():
     return jsonify({'id':studyAppointment.id })
 
 
+@student.route('/get_preview_doc', methods=['POST'])
+def get_preview_doc():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            ware_uid:
+              description: '课件url，多贝'
+              type: 'string'
+
+
+    """
+    j = request.json
+    return jsonify(do_query(j, get_preview_doc_sql))
+
+
+def get_preview_doc_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+           select cw.`ware_uid`
+           from study_schedule ss , courseware cw
+           where ss.course_schedule_id = cw.course_schedule_id  and ss.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE'
+            ''']
+
+
+    sql.append(' and ss.id =:study_schedule_id ')
+    sql.append("and ss.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name', 'grade','type'], ''.join(sql)
 
 
