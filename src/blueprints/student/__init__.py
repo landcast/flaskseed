@@ -655,14 +655,14 @@ def growth_report_sql(params):
     sql = ['''''']
 
     sql.append(" select * from (")
-    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.nickname as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end "
+    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.username as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end "
                "from study_schedule sr,course_schedule cs,course c ,teacher t "
-               "where cs.id - sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
+               "where cs.id = sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and cs.`state` <> 99  and c.`state` <> 99 and "
                "sr.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
     sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
     sql.append(" union all ")
-    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.nickname as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end  "
+    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,'NO' as class_name,t.username as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end  "
                "from study_result sr,course_exam ce,course c ,teacher t "
                "where sr.`course_exam_id` = ce.id and ce.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and c.`state` <> 99  and ce.`state` <> 99 and sr.`delete_flag` = 'IN_FORCE' "
@@ -680,7 +680,7 @@ def growth_report_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'class_name' in params.keys():
