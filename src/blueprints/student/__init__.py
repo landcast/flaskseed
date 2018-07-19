@@ -856,6 +856,6 @@ def get_preview_doc_sql(params):
     sql.append(' and ss.id =:study_schedule_id ')
     sql.append("and ss.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
-    return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name', 'grade','type'], ''.join(sql)
+    return ['ware_uid'], ''.join(sql)
 
 
