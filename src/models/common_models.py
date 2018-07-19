@@ -1,8 +1,10 @@
 import enum
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, String, Integer, DateTime, Float, Enum
+from sqlalchemy import Column, String, Integer, DateTime, Float, Enum, event
 from contextlib import contextmanager
 from datetime import datetime
+from sqlalchemy import event
+
 
 db = SQLAlchemy()
 
@@ -52,6 +54,13 @@ class EntityMixin(object):
                         comment='last updated time')
     updated_by = Column(String(60), nullable=True,
                         comment='last updated operator name')
+
+
+# standard decorator style
+@event.listens_for(EntityMixin, 'after_insert', propagate=True)
+def receive_after_insert(mapper, connection, target):
+    print('after_insert-1', target.__tablename__, target.id)
+    pass
 
 
 class UserBaseMixin(EntityMixin):

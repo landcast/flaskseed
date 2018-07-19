@@ -38,7 +38,7 @@ class TestBase(unittest.TestCase):
         self.test_teacher_id = json.loads(
             self.register(random_username(), 'Teacher').get_data(
                 as_text=True))['id']
-        self.data_prepare()
+        # self.data_prepare()
 
     def tearDown(self):
         self.app_context.pop()
