@@ -793,6 +793,10 @@ def apply_tryout():
       end:
         description: '结束时间'
         type: 'string'
+      student_id:
+        description: '学生id，不传默认自己'
+        type: 'string'
+
     res:
       verify_code:
         description: 'id'
@@ -801,6 +805,9 @@ def apply_tryout():
     start = request.json['start'].replace('T', ' ').replace('Z', '')
     end = request.json['end'].replace('T', ' ').replace('Z', '')
     student_id =  getattr(g, current_app.config['CUR_USER'])['id']
+    if 'student_id' in request.json:
+        student_id = request.json['student_id']
+
 
     with session_scope(db) as session:
 
