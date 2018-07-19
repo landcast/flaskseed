@@ -101,11 +101,13 @@ class Teacher(UserBaseMixin, db.Model):
     graduation_school = Column(String(50), nullable=True, comment='毕业最高学校')
     education_history = Column(String(1000), nullable=True, comment='上学历史 json')
     teaching_history = Column(String(1000), nullable=True, comment='教学历史 json')
+    experience_sharing = Column(String(1000), nullable=True, comment='经验分享')
     about_me = Column(String(1000), nullable=True, comment='自我介绍')
     race = Column(String(120), nullable=True, comment='种族')
     teacher_age = Column(Integer, nullable=True, comment='教龄')
     resume_url = Column(String(100), nullable=True, comment='简历url')
-    seniority_url = Column(String(100), nullable=True,
+    video_url = Column(String(1000), nullable=True, comment='视频介绍url')
+    seniority_url = Column(String(1000), nullable=True,
                    comment="教师资格证明url JSON")
     award_url = Column(String(1000), nullable=True,
                            comment="获奖文件地址 JSON")
@@ -119,7 +121,7 @@ class Teacher(UserBaseMixin, db.Model):
 class TeacherTime(EntityMixin, db.Model):
     week = Column(db.String(10), nullable=False, comment='星期几，1，2，3，4，5，6，7')
     end = Column(DateTime, nullable=False, comment='可授课结束时间')
-    start = Column(Integer, nullable=False, comment='可以授课开始时间')
+    start = Column(DateTime, nullable=False, comment='可以授课开始时间')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
     teachers = db.relationship('Teacher', backref='teachertime', lazy=True)
@@ -127,8 +129,8 @@ class TeacherTime(EntityMixin, db.Model):
 
 class TeacherHistory(EntityMixin, db.Model):
     subject_id = Column(Integer,nullable=True, comment='可教授的科目id')
-    subject_name = Column(Integer,nullable=True, comment='可教授的科目名称')
-    grade = Column(Integer,nullable=True, comment='Kindergarten:幼儿园，primary_school:小学，junior_middle_school:初中，'
+    subject_name = Column(String(50), nullable=True,comment='可教授的科目名称')
+    grade = Column(String(100),nullable=True, comment='Kindergarten:幼儿园，primary_school:小学，junior_middle_school:初中，'
                                                   'high_school:高中，university：大学，adult：成人，other:其他 JSON串')
     type = Column(Integer, nullable=False, comment='类型，1：可以交的科目，2：现在交的科目')
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),

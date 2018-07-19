@@ -5,12 +5,14 @@ from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey, \
     Enum
 from enum import IntFlag
 
+from src.models.course_models import CourseScheduleStatueEnum
+
 
 class StudentSubject(EntityMixin, db.Model):
     optional = Column(Integer, nullable=False, comment='是否必修，1：选修，2；必修')
     desc = Column(String(2000), nullable=True, comment='英文描述信息')
     desc_zh = Column(String(2000), nullable=True, comment='中文描述信息')
-    subject_name = Column(Integer,nullable=True, comment='科目名称')
+    subject_name = Column(String(120), nullable=True, comment='科目名称')
     subject_type = Column(Integer,nullable=True, comment='1:学习科目，2：意向科目')
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
@@ -35,6 +37,9 @@ class StudySchedule(EntityMixin, db.Model):
     teacher_score = Column(Float, nullable=True, comment='教师评分')
     order_id = Column(Integer, ForeignKey('order.id'),
                       nullable=False)
+    schedule_type = Column(Enum(CourseScheduleStatueEnum), nullable=True,
+                           comment='课程类型',
+                           server_default=CourseScheduleStatueEnum.NO_CLASS.name)
     order_studys = db.relationship('Order', backref='order_studys', lazy=True)
     course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
                                 nullable=False)
@@ -133,12 +138,14 @@ class CourseAppraisal(EntityMixin, db.Model):
 
 
 class StudyAppointment(EntityMixin, db.Model):
-    student_requirements = Column(String(2000), nullable=False, comment='学生需求')
+    student_requirements = Column(String(2000), nullable=True, comment='学生需求')
     course_appointment_id = Column(Integer, ForeignKey('course_appointment.id'),
                                    nullable=False)
     course_appointments = db.relationship('CourseAppointment',
                                           backref='student_appointments',
                                           lazy=True)
+    student_id = Column(Integer, ForeignKey('student.id'),
+                        nullable=False)
 
 
 class StudentState(IntFlag):

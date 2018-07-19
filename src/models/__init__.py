@@ -13,6 +13,6 @@ from src.models.course_models import Course, Subject, CourseExam,CourseStatueEnu
     CourseSchedule, Curriculum, CourseClassroom, CourseClassParticipant, \
     Courseware, SubjectCategory, CoursewareCheckResultEnum, \
     ClassroomStateEnum, ClassroomTypeEnum, ClassroomRoleEnum, \
-    ClassroomDeviceEnum
+    ClassroomDeviceEnum,CourseAppointment
 
 user_source = {'Student': Student, 'Teacher': Teacher, 'SysUser': SysUser}

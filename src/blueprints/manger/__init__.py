@@ -591,13 +591,30 @@ def students_query():
       student_name:
         description: '学生名称'
         type: 'string'
-      mobile:
-        description: '手机号'
+      student_id:
+        description: '学生id'
         type: 'string'
-      email:
-        description: '邮箱'
+      gender:
+        description: '年级'
         type: 'string'
-
+      parent_mobile:
+        description: '家长手机号'
+        type: 'string'
+      category_1:
+        description: '一级分类id'
+        type: 'string'
+      category_2:
+        description: '二级id'
+        type: 'string'
+      channel_id:
+        description: '渠道id'
+        type: 'string'
+      created_at_start:
+        description: '订单创建时间开始，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
+        type: 'string'
+      created_at_end:
+        description: '订单创建时间结束，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -635,6 +652,12 @@ def students_query():
             state:
               description: '状态'
               type: 'string'
+            gender:
+              description: '年级'
+              type: 'string'
+            parent_mobile:
+              description: '家长联系电话'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, students_sql))
@@ -648,26 +671,39 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.username,s.nickname as student_name,s.mobile,s.email,s.`created_at`
-    from student s
-    where s.`delete_flag` = 'IN_FORCE'  
+    select s.id,s.`created_at`,s.username,s.parent_mobile,s.gender,c.channel_name,s.gender
+    from student s 
+    left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
+    left join subject su on ss.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
+    left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
+    left join  channel c on s.channel_id = c.id and c.`delete_flag` = 'IN_FORCE' 
+    where s.`delete_flag` = 'IN_FORCE' 
     ''']
 
     if 'student_name' in params.keys():
         sql.append(" and s.nickname like '%")
         sql.append(params['student_name'])
         sql.append("%'")
-    if 'mobile' in params.keys():
-        sql.append(' and s.mobile =:mobile')
+    if 'student_id' in params.keys():
+        sql.append(' and s.id =:student_id')
 
-    if 'email' in params.keys():
-        sql.append(' and s.email =:email')
+    if 'gender' in params.keys():
+        sql.append(' and s.gender =:gender')
 
-    if 'state' in params.keys():
-        sql.append(' and s.state =:state')
+    if 'parent_mobile' in params.keys():
+        sql.append(' and s.parent_mobile =:parent_mobile')
+    if 'category_1' in params.keys():
+        sql.append(' and sc.`curriculum_id` =:category_1')
+    if 'category_2' in params.keys():
+        sql.append(' and sc.id =:category_2')
+    if 'channel_id' in params.keys():
+        sql.append(' and c.id =:channel_id')
+    if 'created_at_start' in params.keys() \
+        and 'created_at_end' in params.keys():
+        sql.append(' and s.created_at between :created_at_start and :created_at_end')
 
-    return ['id', 'username','student_name', 'mobile',
-            'email', 'created_at'], ''.join(sql)
+    return ['id', 'created_at','username', 'parent_mobile',
+            'gender', 'channel_name','gender'], ''.join(sql)
 
 
 @manger.route('/thacher_tryout', methods=['POST'])

@@ -5,11 +5,17 @@ from flask import g, jsonify, Blueprint, request, abort, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
-from src.models import db, session_scope
+
+from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom,Homework
+
 from src.services import do_query
 import hashlib
 from src.services import do_query, datetime_param_sql_format
 import json
+from src.services import live_service
+from src.models import ClassroomRoleEnum, ClassroomDeviceEnum
+
+
 
 student = Blueprint('student', __name__)
 
@@ -102,15 +108,15 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select cs.id,c.id as course_id,c.`course_name`,(select count(*) from study_schedule where student_id = s.id and course_schedule_id = cs.id) as finish,
+ select cs.id,c.id as course_id,c.`course_name`,(select count(*) from study_schedule where student_id = o.student_id and course_schedule_id = cs.id) as finish,
            c.classes_number,t.`nickname` as teacher_name,cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
-            from `order` o, student s, teacher t, course c,`course_schedule`cs 
-            where o.student_id = s.id and o.course_id = c.id and
+            from `order` o, teacher t, course c,`course_schedule`cs 
+            where  o.course_id = c.id and
             c.primary_teacher_id = t.id and c.`id` = cs.course_id  
             and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
-            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE'       
+            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE'        
     ''']
-    sql.append("and s.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'course_id' in params.keys():
         sql.append(' and c.id =:course_id')
@@ -335,6 +341,9 @@ def my_homework():
             teacher_name:
               description: '教师名称'
               type: 'string'
+            teacher_avatar:
+              description: '教师头像'
+              type: 'string'
             course_name:
               description: '课程名称'
               type: 'string'
@@ -351,12 +360,12 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name
-    from homework hm,study_schedule sc,course c,teacher t,`order` o
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,t.avatar as teacher_avatar
+    from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
-    hm.study_schedule_id = sc.id and sc.order_id = o.id and o.course_id = c.id and c.`primary_teacher_id` = t.id
-    and o.`state` <> 99  and c.state<> 99 
-    and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE' 
+    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id
+    and c.state<> 99 
+    and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
     ''']
     sql.append(
         " and sc.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
@@ -381,7 +390,7 @@ def my_homework_sql(params):
 
     return ['id', 'question_name', 'homework_type', 'question_text', 'question_attachment_url',
             'answer_text', 'answer_attachment_url', 'score', 'score_remark', 'score_reason', 'created_at',
-            'teacher_name','course_name'], ''.join(sql)
+            'teacher_name','course_name','teacher_avatar'], ''.join(sql)
 
 
 @student.route('/report_card', methods=['POST'])
@@ -489,6 +498,9 @@ def student_schedule():
       course_schedule_id:
         description: '课程计划id'
         type: 'string'
+      course_schedule_state:
+        description: '课程状态，1：已经上课，2；未上'
+        type: 'string'
 
     res:
       num_results:
@@ -507,11 +519,8 @@ def student_schedule():
           type: object
           properties:
             id:
-              description: ''
+              description: '课节id'
               type: 'integer'
-            course_id:
-              description: 'tudy_schedule_id'
-              type: 'string'
             name:
               description: '课节名称'
               type: 'string'
@@ -537,12 +546,12 @@ def student_schedule_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-	select sr.id,name,actual_start as start,actual_end as end,
-	(select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = cs1.course_id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
-	from study_schedule sr,course_schedule cs1
-	where cs1.id = sr.course_schedule_id
-     and cs1.`state` <> 99  
-    and sr.`delete_flag` = 'IN_FORCE' and cs1.`delete_flag` = 'IN_FORCE' 
+        select sr.id,sr.name,actual_start as start,actual_end as end,
+        (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = cs1.course_id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
+        from study_schedule sr,course_schedule cs1
+        where cs1.id = sr.course_schedule_id
+        and cs1.`state` <> 99  
+        and sr.`delete_flag` = 'IN_FORCE' and cs1.`delete_flag` = 'IN_FORCE'
     ''']
 
     if 'student_id' in params.keys():
@@ -553,7 +562,13 @@ def student_schedule_sql(params):
     if 'course_id' in params.keys():
         sql.append(' and cs1.course_id =:course_id')
     if 'course_schedule_id' in params.keys():
-        sql.append(' and cs1.id =:course_schedule_id')
+            sql.append(' and cs1.id =:course_schedule_id')
+
+    if 'course_schedule_state' in params.keys() and '1'==params['course_schedule_state']:
+        sql.append(' and cs1.end < now()')
+
+    if 'course_schedule_state' in params.keys() and '2'==params['course_schedule_state']:
+        sql.append(' and cs1.end >= now()')
 
     return ['id', 'name', 'start', 'end', 'courseware_num'], ''.join(sql)
 
@@ -570,7 +585,21 @@ def growth_report():
       page_no:
         description: 'page no'
         type: 'integer'
-
+      study_schedule_id:
+        description: '课程id'
+        type: 'string'
+      course_name:
+        description: '课程包名'
+        type: 'string'
+      class_at:
+        description: '上课时间'
+        type: 'string'
+      class_name:
+        description: '课程名称'
+        type: 'string'
+      teacher_name:
+        description: '教师名称'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -593,8 +622,14 @@ def growth_report():
             course_name:
               description: '课程名称'
               type: 'string'
+            course_name_zh:
+              description: '课程名称'
+              type: 'string'
             teacher_name:
               description: '教师名称'
+              type: 'string'
+            clasee_name:
+              description: '课节名称'
               type: 'string'
             evaluation:
               description: '评价内容，json'
@@ -604,6 +639,9 @@ def growth_report():
               type: 'string'
             type:
               description: '类别'
+              type: 'string'
+            result_type:
+              description: '结果类别，NO:课程，SUMMARY：总结，ACHIEVEMENT：成绩单'
               type: 'string'
     """
     j = request.json
@@ -620,22 +658,355 @@ def growth_report_sql(params):
     sql = ['''''']
 
     sql.append(" select * from (")
-    sql.append(" select sr.id ,c.`course_name` as course_name,t.nickname as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type' "
+    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.username as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end "
                "from study_schedule sr,course_schedule cs,course c ,teacher t "
-               "where cs.id - sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
+               "where cs.id = sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and cs.`state` <> 99  and c.`state` <> 99 and "
                "sr.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
     sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
     sql.append(" union all ")
-    sql.append(" select sr.id, c.`course_name` as course_name,t.nickname as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type' "
+    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,'NO' as class_name,t.username as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end  "
                "from study_result sr,course_exam ce,course c ,teacher t "
                "where sr.`course_exam_id` = ce.id and ce.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and c.`state` <> 99  and ce.`state` <> 99 and sr.`delete_flag` = 'IN_FORCE' "
                "and ce.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'")
     sql.append(" and sr.student_id = "+ getattr(g, current_app.config['CUR_USER'])['id'])
-    sql.append(" ) t  order by created_at desc")
+    sql.append(" ) t  where 1=1")
 
-    return ['id', 'course_name', 'teacher_name', 'created_at', 'evaluation','report_card_url','type'], ''.join(sql)
+    if 'study_schedule_id' in params.keys():
+        sql.append(" and t.id =:study_schedule_id")
+    if 'course_name' in params.keys():
+        sql.append(" and (t.course_name like '%")
+        sql.append(params['course_name'])
+        sql.append("%'")
+        sql.append(" or t.course_name_zh like '%")
+        sql.append(params['course_name'])
+        sql.append("%')")
+    if 'teacher_name' in params.keys():
+        sql.append(" and t.teacher_name like '%")
+        sql.append(params['teacher_name'])
+        sql.append("%'")
+    if 'class_name' in params.keys():
+        sql.append(" and t.class_name like '%")
+        sql.append(params['class_name'])
+        sql.append("%'")
+
+    if 'created_at' in params.keys():
+        sql.append(" and t.start <:created_at and t.end <:created_at")
+
+    sql.append(" order by created_at desc")
+
+    return ['id', 'course_name', 'course_name_zh','class_name','teacher_name', 'created_at', 'evaluation','report_card_url','type','result_type','start','end'], ''.join(sql)
 
 
+@student.route('/subject', methods=['POST'])
+def my_subject():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      type:
+        description: '科目类别'
+        type: 'string'
+      student_id:
+        description: '学生id，不传默认自己'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'student_subject_id'
+              type: 'integer'
+            subject_id:
+              description: 'subject_id'
+              type: 'integer'
+            subject_category_id:
+              description: 'subject_category_id'
+              type: 'integer'
+            curriculum_id:
+              description: 'curriculum_id'
+              type: 'integer'
+            subject_name:
+              description: '名称'
+              type: 'string'
+            type:
+              description: '类型'
+              type: 'integer'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, my_subject_sql))
+
+
+def my_subject_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select th.id,th.`subject_id`,sc.id as subject_category_id,cu.id as curriculum_id,th.subject_name,th.subject_type as type
+          from student_subject th  left join subject su on th.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
+          left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
+          left join curriculum cu on sc.`curriculum_id` = cu.id and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
+          where th.`delete_flag` = 'IN_FORCE'
+            ''']
+
+    if 'type' in params.keys():
+        sql.append(' and th.subject_type =:type ')
+    if 'teacher_id' in params.keys():
+        sql.append(' and th.student_id =:student_id ')
+    else:
+        sql.append("and th.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name','type'], ''.join(sql)
+
+
+@student.route('/apply_tryout', methods=['POST'])
+def apply_tryout():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      start:
+        description: '开始时间'
+        type: 'string'
+      end:
+        description: '结束时间'
+        type: 'string'
+      student_id:
+        description: '学生id，不传默认自己'
+        type: 'string'
+
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    start = request.json['start'].replace('T', ' ').replace('Z', '')
+    end = request.json['end'].replace('T', ' ').replace('Z', '')
+    student_id =  getattr(g, current_app.config['CUR_USER'])['id']
+    if 'student_id' in request.json:
+        student_id = request.json['student_id']
+
+
+    with session_scope(db) as session:
+
+        list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<=start
+                                                                             , CourseAppointment.open_time_end>=start,StudyAppointment.student_id == student_id).all()
+
+        list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<=end
+                                                                         , CourseAppointment.open_time_end>=end,StudyAppointment.student_id == student_id).all()
+
+        list3 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start>=start
+                                                                         , CourseAppointment.open_time_start<=end,StudyAppointment.student_id == student_id).all()
+
+        list4 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_end>=start
+                                                                     , CourseAppointment.open_time_end<=end,StudyAppointment.student_id == student_id).all()
+
+
+        if len(list1)>0 or len(list2) > 0 or len(list3) > 0 or len(list4) > 0:
+            return jsonify({
+                "error": "time conflict"
+            }), 500
+
+        courseAppointment = CourseAppointment(
+            open_time_start = start,
+            open_time_end = end,
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+
+        session.add(courseAppointment)
+        session.flush()
+
+        studyAppointment = StudyAppointment(
+            course_appointment_id = courseAppointment.id,
+            student_id = student_id,
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+
+        session.add(studyAppointment)
+        session.flush()
+
+    return jsonify({'id':studyAppointment.id })
+
+
+@student.route('/get_preview_doc', methods=['POST'])
+def get_preview_doc():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            ware_uid:
+              description: '课件url，多贝'
+              type: 'string'
+
+
+    """
+    j = request.json
+    return jsonify(do_query(j, get_preview_doc_sql))
+
+
+def get_preview_doc_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+           select cw.`ware_uid`
+           from study_schedule ss , courseware cw
+           where ss.course_schedule_id = cw.course_schedule_id  and ss.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE'
+            ''']
+
+
+    sql.append(' and ss.id =:study_schedule_id ')
+    sql.append("and ss.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    return ['ware_uid'], ''.join(sql)
+
+
+@student.route('/get_enter_room_url', methods=['POST'])
+def get_enter_room_url():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      room_id:
+        description: '房间号'
+        type: ''
+    """
+    study_schedule_id = request.json['study_schedule_id']
+
+    with session_scope(db) as session:
+
+        studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
+
+        if studyschedule is None :
+            return jsonify({
+                "error": "not found Study_Schedule: {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =studyschedule.course_schedule_id).one_or_none()
+
+        if courseclassroom is None :
+            return jsonify({
+                "error": "found courseclassroom existing in {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['nickname'],
+                                      ClassroomRoleEnum.STUDENT.name,ClassroomDeviceEnum.PC.name)
+
+    return jsonify({'url':url })
+
+
+@student.route('/write_homework', methods=['POST'])
+def write_homework():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+      title:
+        description: '标题'
+        type: 'string'
+      desc:
+        description: '描述'
+        type: 'string'
+      attachment:
+        description: '附件，可以考虑JSON地址'
+        type: 'string'
+    res:
+      id:
+        description: ''
+        type: ''
+    """
+    study_schedule_id = request.json['study_schedule_id']
+    attachment = ''
+    title = ''
+    desc =''
+    if 'attachment' in request.json:
+        attachment = request.json['attachment']
+    if 'title' in request.json:
+        title = request.json['title']
+    if 'desc' in request.json:
+        desc = request.json['desc']
+
+    with session_scope(db) as session:
+
+        studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
+
+        if studyschedule is None :
+            return jsonify({
+                "error": "not found Study_Schedule: {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        homework = Homework(homework_type = 2,
+                            answer_text = desc,
+                            answer_attachment_url = attachment,
+                            study_schedule_id = study_schedule_id,
+                            question_name = title,
+                            delete_flag = 'IN_FORCE',
+                            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                            )
+        session.add(homework)
+        session.flush()
+
+    return jsonify({'id':homework.id })
 
