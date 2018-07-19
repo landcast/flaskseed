@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src import ClassroomRoleEnum
 from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom
 
 from src.services import do_query
