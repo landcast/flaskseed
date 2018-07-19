@@ -766,7 +766,14 @@ def apply_tryout():
         list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<end
                                                                          , CourseAppointment.open_time_end>end,StudyAppointment.student_id == student_id).all()
 
-        if len(list1)>0 or len(list2) > 0:
+        list3 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start>start
+                                                                         , CourseAppointment.open_time_start<end,StudyAppointment.student_id == student_id).all()
+
+        list4 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_end>start
+                                                                     , CourseAppointment.open_time_end<end,StudyAppointment.student_id == student_id).all()
+
+
+        if len(list1)>0 or len(list2) > 0 or len(list3) > 0 or len(list4) > 0:
             return jsonify({
                 "error": "time conflict"
             }), 500
