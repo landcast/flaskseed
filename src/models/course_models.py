@@ -331,15 +331,29 @@ class CourseClassParticipant(EntityMixin, db.Model):
                                              lazy=True)
 
 
+class AppointmentType(enum.IntEnum):
+    """
+    WRITE_APPOINTMENT :待预约
+    WRITE_ACCEPT :待接受
+    WRITE_CLASS :待上课
+    FINISH :完成
+    """
+    WRITE_APPOINTMENT = 1
+    WRITE_ACCEPT =2
+    WRITE_CLASS =3
+    FINISH =4
+
+
 class CourseAppointment(EntityMixin, db.Model):
     open_time_start = Column(DateTime, nullable=False, comment='试听开始时间')
     open_time_end = Column(DateTime, nullable=False, comment='试听结束时间')
     teacher_id = Column(Integer, ForeignKey('teacher.id'),
                         nullable=True)
+    appointment_type = Column(Enum(AppointmentType), nullable=False,
+                       server_default=AppointmentType.WRITE_APPOINTMENT.name)
     appointments = db.relationship('Teacher',
                                    backref='course_appointments',
                                    lazy=True)
-
 
 class CourdeTypeEnum(enum.IntEnum):
     """
