@@ -1940,11 +1940,12 @@ def student_tryout_apply_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-      select ca.id as course_appointment_id,sa.id as study_appointment_id,sa.`created_at`,sa.`apply_by`,s.username as student_name,ca.`open_time_start`,ca.`open_time_end`,t.username as teacher_name,ca.appointment_state
-	 from course_appointment ca left join teacher t on ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE',
-	 study_appointment sa ,student s
-     where ca.`id` = sa.course_appointment_id and sa.student_id = s.id
-     and ca.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE'   ''']
+      select ca.id as course_appointment_id,sa.id as study_appointment_id,sa.`created_at`,sa.`apply_by`,s.username as student_name,sa.`open_time_start`,sa.`open_time_end`,t.username as teacher_name,ca.appointment_state
+	 from study_appointment sa 
+	 left join  course_appointment ca on sa.id = ca.`study_appointment_id` and ca.`delete_flag` = 'IN_FORCE'
+	 left join teacher t on ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE',
+	 student s
+     where  sa.student_id = s.id and ca.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE' ''']
 
     if 'student_name' in params.keys():
         sql.append(" and s.username like '%")
@@ -1954,8 +1955,8 @@ def student_tryout_apply_sql(params):
         sql.append(" and ca.appointment_state =:appointment_state ")
 
     if 'class_at' in params.keys():
-        sql.append(" and ca.open_time_start <=:class_at ")
-        sql.append(" and ca.open_time_end >:class_at ")
+        sql.append(" and sa.open_time_start <=:class_at ")
+        sql.append(" and sa.open_time_end >:class_at ")
 
     return ['course_appointment_id', 'study_appointment_id', 'created_at','apply_by','student_name','open_time_start','open_time_end','teacher_name','appointment_state'], ''.join(sql)
 

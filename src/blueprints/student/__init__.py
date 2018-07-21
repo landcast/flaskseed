@@ -808,23 +808,14 @@ def apply_tryout():
     if 'student_id' in request.json:
         student_id = request.json['student_id']
 
-
     with session_scope(db) as session:
 
-        courseAppointment = CourseAppointment(
-            open_time_start = start,
-            open_time_end = end,
-            delete_flag = 'IN_FORCE',
-            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
-        )
-
-        session.add(courseAppointment)
-        session.flush()
-
         studyAppointment = StudyAppointment(
-            course_appointment_id = courseAppointment.id,
             student_id = student_id,
             delete_flag = 'IN_FORCE',
+            open_time_start= start,
+            open_time_end = end,
+            appointment_state='WRITE_APPOINTMENT',
             updated_by=getattr(g, current_app.config['CUR_USER'])['username'],
             apply_by=getattr(g, current_app.config['CUR_USER'])['username']
         )
