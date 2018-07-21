@@ -137,14 +137,26 @@ class CourseAppraisal(EntityMixin, db.Model):
                                      lazy=True)
 
 
+class StudyAppointmentState(enum.IntEnum):
+    """
+    WRITE_APPOINTMENT :待预约
+    WRITE_ACCEPT :待接受
+    WRITE_CLASS :待上课
+    FINISH :完成
+    """
+    WRITE_APPOINTMENT = 1
+    WRITE_ACCEPT =2
+    WRITE_CLASS =3
+    FINISH =4
+
+
 class StudyAppointment(EntityMixin, db.Model):
     student_requirements = Column(String(2000), nullable=True, comment='学生需求')
     apply_by = Column(String(50), nullable=True, comment='申请人')
-    course_appointment_id = Column(Integer, ForeignKey('course_appointment.id'),
-                                   nullable=False)
-    course_appointments = db.relationship('CourseAppointment',
-                                          backref='student_appointments',
-                                          lazy=True)
+    open_time_start = Column(DateTime, nullable=False, comment='试听开始时间')
+    open_time_end = Column(DateTime, nullable=False, comment='试听结束时间')
+    appointment_state = Column(Enum(StudyAppointmentState), nullable=False,
+                               server_default=StudyAppointmentState.WRITE_APPOINTMENT.name)
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
 
