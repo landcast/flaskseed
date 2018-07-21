@@ -345,7 +345,7 @@ class CourseAppointmentState(enum.IntEnum):
 class CourseAppointment(EntityMixin, db.Model):
     teacher_id = Column(Integer, ForeignKey('teacher.id'),
                         nullable=True)
-    study_appointment_id = Column(Integer, ForeignKey('study_appointment_id.id'),
+    study_appointment_id = Column(Integer, ForeignKey('study_appointment.id'),
                                    nullable=False)
     study_appointment = db.relationship('StudyAppointment',
                                       backref='study_appointment',
