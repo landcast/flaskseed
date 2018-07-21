@@ -1940,12 +1940,12 @@ def student_tryout_apply_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-      select ca.id as course_appointment_id,sa.id as study_appointment_id,sa.`created_at`,sa.`apply_by`,s.username as student_name,sa.`open_time_start`,sa.`open_time_end`,t.username as teacher_name,ca.appointment_state
-	 from study_appointment sa 
-	 left join  course_appointment ca on sa.id = ca.`study_appointment_id` and ca.`delete_flag` = 'IN_FORCE'
-	 left join teacher t on ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE',
+      select sa.id as course_appointment_id,sa.id as study_appointment_id,sa.`created_at`,sa.`apply_by`,s.username as student_name,sa.`open_time_start`,sa.`open_time_end`,
+      (select t.username from  course_appointment ca, teacher t where ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE' and ca.`delete_flag` = 'IN_FORCE' and ca.appointment_state ='ACCEPT' and ca.`study_appointment_id` = sa.id)
+      as teacher_name,appointment_state
+	 from study_appointment sa, 
 	 student s
-     where  sa.student_id = s.id and ca.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE' ''']
+     where  sa.student_id = s.id and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE'; ''']
 
     if 'student_name' in params.keys():
         sql.append(" and s.username like '%")
@@ -1960,6 +1960,79 @@ def student_tryout_apply_sql(params):
 
     return ['course_appointment_id', 'study_appointment_id', 'created_at','apply_by','student_name','open_time_start','open_time_end','teacher_name','appointment_state'], ''.join(sql)
 
+
+@manger.route('/student_tryout_apply_result', methods=['POST'])
+def student_tryout_apply_result():
+    """
+    swagger-doc: 'do view_homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      study_appointment_id:
+        description: '学生预约id'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'id'
+              type: 'integer'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
+            mobile:
+              description: '电话'
+              type: 'string'
+            email:
+              description: '邮箱'
+              type: 'string'
+            timezone:
+              description: '时区'
+              type: 'string'
+            appointment_state:
+              description: '状态'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, student_tryout_apply_result_sql))
+
+
+def student_tryout_apply_result_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+      select ca.id ,t.username as teacher_name,t.mobile,t.email,timezone,ca.appointment_state
+	 from  course_appointment ca
+	 left join teacher t on ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE'
+     where ca.`delete_flag` = 'IN_FORCE'  ''']
+
+
+    sql.append(" and ca.study_appointment_id =:study_appointment_id ")
+
+
+    return ['id', 'teacher_name', 'mobile','email','timezone','appointment_state'], ''.join(sql)
 
 
 
