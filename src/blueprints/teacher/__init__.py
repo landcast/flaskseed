@@ -1080,7 +1080,7 @@ def get_enter_room_url():
     swagger-doc: 'schedule'
     required: []
     req:
-      study_schedule_id:
+      course_schedule_id:
         description: '课节id'
         type: 'string'
     res:
@@ -1088,24 +1088,24 @@ def get_enter_room_url():
         description: '房间号'
         type: ''
     """
-    study_schedule_id = request.json['study_schedule_id']
+    course_schedule_id = request.json['course_schedule_id']
 
     with session_scope(db) as session:
 
-        studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
+        courseschedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
 
-        if studyschedule is None :
+        if courseschedule is None :
             return jsonify({
-                "error": "not found Study_Schedule: {0}".format(
-                    study_schedule_id)
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
             }), 500
 
-        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =studyschedule.course_schedule_id).one_or_none()
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =courseschedule.id).one_or_none()
 
         if courseclassroom is None :
             return jsonify({
                 "error": "found courseclassroom existing in {0}".format(
-                    study_schedule_id)
+                    course_schedule_id)
             }), 500
 
         url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['nickname'],

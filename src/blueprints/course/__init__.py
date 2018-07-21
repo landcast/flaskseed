@@ -554,6 +554,77 @@ def course_common_sql(params):
             'start', 'end','course_schedule_state','course_schedule_id'], ''.join(sql)
 
 
+@course.route('/course_schedule', methods=['POST'])
+def course_schedule():
+    """
+    swagger-doc: 'do allot query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_id:
+        description: '课包id'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'course_schedule_id'
+              type: 'integer'
+            name:
+              description: '课程名称'
+              type: 'integer'
+            start:
+              description: '开始时间'
+              type: 'string'
+            end:
+              description: '结束时间'
+              type: 'string'
+            courseware_num:
+              description: '课件数量'
+              type: 'string'
+            schedule_type:
+              description: '课程状态'
+              type: 'string'
+    """
+    j = request.json
+    datetime_param_sql_format(j, ['class_at']),
+    return jsonify(do_query(j, course_schedule_sql))
+
+
+def course_schedule_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+        select cs.id,cs.`name`,cs.`start`,cs.`end`,(select count(*) from courseware where course_schedule_id = cs.id)  as courseware_num,cs.`schedule_type`
+	    from course_schedule cs
+        where  cs.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    return ['id', 'name', 'start', 'end', 'courseware_num','schedule_type'], ''.join(sql)
+
+
 def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
