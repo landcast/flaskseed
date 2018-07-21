@@ -90,7 +90,7 @@ class Teacher(UserBaseMixin, db.Model):
     province = Column(String(50), nullable=True, comment='省/州')
     city = Column(String(50), nullable=True, comment='城市')
     street = Column(String(200), nullable=True, comment='街道')
-    timezone = Column(Integer, nullable=True, comment='时区')
+    timezone = Column(String(50), nullable=True, comment='时区')
     zipone = Column(Integer, nullable=True, comment='时区代码')
     contract = Column(String(255), nullable=True, comment='合同信息')
     cur_school = Column(String(50), nullable=True, comment='当前工作学校')
