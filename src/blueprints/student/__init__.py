@@ -363,7 +363,7 @@ def my_homework_sql(params):
     select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,t.avatar as teacher_avatar
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
-    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id
+    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 2
     and c.state<> 99 
     and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
     ''']
@@ -811,24 +811,6 @@ def apply_tryout():
 
     with session_scope(db) as session:
 
-        list1 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<=start
-                                                                             , CourseAppointment.open_time_end>=start,StudyAppointment.student_id == student_id).all()
-
-        list2 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start<=end
-                                                                         , CourseAppointment.open_time_end>=end,StudyAppointment.student_id == student_id).all()
-
-        list3 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_start>=start
-                                                                         , CourseAppointment.open_time_start<=end,StudyAppointment.student_id == student_id).all()
-
-        list4 = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.course_appointment_id == CourseAppointment.id , CourseAppointment.open_time_end>=start
-                                                                     , CourseAppointment.open_time_end<=end,StudyAppointment.student_id == student_id).all()
-
-
-        if len(list1)>0 or len(list2) > 0 or len(list3) > 0 or len(list4) > 0:
-            return jsonify({
-                "error": "time conflict"
-            }), 500
-
         courseAppointment = CourseAppointment(
             open_time_start = start,
             open_time_end = end,
@@ -843,7 +825,8 @@ def apply_tryout():
             course_appointment_id = courseAppointment.id,
             student_id = student_id,
             delete_flag = 'IN_FORCE',
-            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username'],
+            apply_by=getattr(g, current_app.config['CUR_USER'])['username']
         )
 
         session.add(studyAppointment)

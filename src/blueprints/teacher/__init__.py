@@ -10,6 +10,7 @@ from src.services import do_query, datetime_param_sql_format
 from src.utils import generate_pdf_from_template
 import uuid
 from src.services import live_service
+from src.models import ClassroomRoleEnum, ClassroomDeviceEnum
 
 teacher = Blueprint('teacher', __name__)
 
@@ -1072,4 +1073,43 @@ def my_subject_sql(params):
         sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name', 'grade','type'], ''.join(sql)
 
+
+@teacher.route('/get_enter_room_url', methods=['POST'])
+def get_enter_room_url():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      room_id:
+        description: '房间号'
+        type: ''
+    """
+    study_schedule_id = request.json['study_schedule_id']
+
+    with session_scope(db) as session:
+
+        studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
+
+        if studyschedule is None :
+            return jsonify({
+                "error": "not found Study_Schedule: {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =studyschedule.course_schedule_id).one_or_none()
+
+        if courseclassroom is None :
+            return jsonify({
+                "error": "found courseclassroom existing in {0}".format(
+                    study_schedule_id)
+            }), 500
+
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['nickname'],
+                                      ClassroomRoleEnum.TEACHER.name,ClassroomDeviceEnum.PC.name)
+
+    return jsonify({'url':url })
 
