@@ -347,6 +347,9 @@ def my_homework():
             course_name:
               description: '课程名称'
               type: 'string'
+            teacher_evaluation:
+              description: '教师评价'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, my_homework_sql))
@@ -360,7 +363,8 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,t.avatar as teacher_avatar
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,
+    t.avatar as teacher_avatar,sc.teacher_evaluation
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
     hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 2
@@ -390,7 +394,7 @@ def my_homework_sql(params):
 
     return ['id', 'question_name', 'homework_type', 'question_text', 'question_attachment_url',
             'answer_text', 'answer_attachment_url', 'score', 'score_remark', 'score_reason', 'created_at',
-            'teacher_name','course_name','teacher_avatar'], ''.join(sql)
+            'teacher_name','course_name','teacher_avatar','teacher_evaluation'], ''.join(sql)
 
 
 @student.route('/report_card', methods=['POST'])
