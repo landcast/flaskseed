@@ -425,6 +425,56 @@ def upload_courseware():
     return jsonify({'id':courseSchedule.id })
 
 
+@course.route('/edit_course_schedule_type', methods=['POST'])
+def edit_course_schedule_type():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课节id'
+        type: 'string'
+      type:
+        description: '类型'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_schedule_id = request.json['course_schedule_id']
+    type = request.json['type']
+
+    with session_scope(db) as session:
+
+        courseSchedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
+
+        if courseSchedule is None :
+            return jsonify({
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        setattr(courseSchedule,'schedule_type',type)
+        session.add(courseSchedule)
+        session.flush()
+
+        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
+
+        if studyschedules is None or len(studyschedules)<1:
+            return jsonify({
+                "error": "not found Course_Class_room: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        for studyschedule in studyschedules:
+
+            setattr(studyschedule,'schedule_type',type)
+            session.add(studyschedule)
+            session.flush()
+
+    return jsonify({'id':courseSchedule.id })
+
 @course.route('/common', methods=['POST'])
 def course_common():
     """
