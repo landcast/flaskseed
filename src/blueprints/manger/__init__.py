@@ -905,7 +905,7 @@ def student_tryout_sql(params):
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
     cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
-    where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = t.id and c.id = cs.course_id and cs.id = ss.course_schedule_id
+    where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = s.id and c.id = cs.course_id and cs.id = ss.course_schedule_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
     and c.`class_type` = 3 )  t where 1=1
     ''']
