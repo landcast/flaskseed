@@ -924,8 +924,8 @@ def student_tryout_sql(params):
         sql.append(
             ' and t.course_schedule_state =:course_schedule_state')
 
-    return ['id', 'teacher_name', 'course_name', 'student_name', 'level',
-            'start', 'end','study_schedule_id'], ''.join(sql)
+    return ['id', 'course_name', 'open_grade', 'teacher_name', 'student_name',
+            'start', 'end','courseware_num','course_schedule_state','study_schedule_id'], ''.join(sql)
 
 
 @manger.route('/course_ware', methods=['POST'])
