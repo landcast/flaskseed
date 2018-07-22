@@ -886,7 +886,10 @@ def student_tryout_query():
               description: '课程状态，枚举name'
               type: 'string'
             study_schedule_id:
-              description: '进入房间id'
+              description: 'study_schedule_id'
+              type: 'string'
+            course_schedule_id:
+              description: 'course_schedule_id'
               type: 'string'
     """
     j = request.json
@@ -903,7 +906,7 @@ def student_tryout_sql(params):
     sql = ['''
     select * from (select c.id,c.`course_name`,c.open_grade,t.username as teacher_name,s.username as student_name,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
-    cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id
+    cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = s.id and c.id = cs.course_id and cs.id = ss.course_schedule_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
@@ -925,7 +928,7 @@ def student_tryout_sql(params):
             ' and t.course_schedule_state =:course_schedule_state')
 
     return ['id', 'course_name', 'open_grade', 'teacher_name', 'student_name',
-            'start', 'end','courseware_num','course_schedule_state','study_schedule_id'], ''.join(sql)
+            'start', 'end','courseware_num','course_schedule_state','study_schedule_id','course_schedule_id'], ''.join(sql)
 
 
 @manger.route('/course_ware', methods=['POST'])
