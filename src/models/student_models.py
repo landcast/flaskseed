@@ -39,7 +39,7 @@ class StudySchedule(EntityMixin, db.Model):
                       nullable=False)
     schedule_type = Column(Enum(CourseScheduleStatueEnum), nullable=True,
                            comment='课程类型',
-                           server_default=CourseScheduleStatueEnum.NO_CLASS.name)
+                           server_default=CourseScheduleStatueEnum.COMMON_CLASS.name)
     order_studys = db.relationship('Order', backref='order_studys', lazy=True)
     course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
                                 nullable=False)
