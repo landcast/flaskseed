@@ -112,16 +112,16 @@ class CourseExam(EntityMixin, db.Model):
 
 class CourseScheduleStatueEnum(enum.IntEnum):
     """
-    NO_CLASS:未上课
-    CLASS_BEGIN:已经上课
+    COMMON_CLASS:未上课
     CANCEL:取消
     TROUBLE_CLASS:问题课程
+    MAKE_UP_CLASS:补偿课
     """
 
-    NO_CLASS = 1
-    CLASS_BEGIN = 2
-    CANCEL =  3
-    TROUBLE_CLASS = 4
+    COMMON_CLASS = 1
+    CANCEL =  2
+    TROUBLE_CLASS = 3
+    MAKE_UP_CLASS = 4
 
 
 class CourseSchedule(EntityMixin, db.Model):
@@ -137,7 +137,7 @@ class CourseSchedule(EntityMixin, db.Model):
                                           'student resorting to help.')
     schedule_type = Column(Enum(CourseScheduleStatueEnum), nullable=True,
                          comment='课程类型',
-                         server_default=CourseScheduleStatueEnum.NO_CLASS.name)
+                         server_default=CourseScheduleStatueEnum.COMMON_CLASS.name)
     progress = Column(String(255), nullable=True,
                       comment='after finish this class, the progress desc of '
                               'this course')
