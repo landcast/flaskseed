@@ -26,19 +26,24 @@ def allowed_file(filename):
 
 @upload.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    current_app.logger.debug('---------->：1')
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
+            current_app.logger.debug('---------->：2')
             flash('No file part')
             return redirect(request.url)
         result = []
+        current_app.logger.debug('---------->：3')
         for file in request.files.getlist('file'):
             # if user does not select file, browser also
             # submit an empty part without filename
+            current_app.logger.debug('---------->：4'+file.filename )
             if file.filename == '':
                 flash('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
+                current_app.logger.debug('---------->：5')
                 # secure_filename can't handle chinese filename correctly
                 # TODO: find another way to do filename check
                 # filename = secure_filename(file.filename)
