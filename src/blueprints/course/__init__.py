@@ -675,6 +675,93 @@ def course_schedule_sql(params):
     return ['id', 'name', 'start', 'end', 'courseware_num','schedule_type'], ''.join(sql)
 
 
+@course.route('/common_homework', methods=['POST'])
+def homework():
+    """
+    swagger-doc: 'do my homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_schedule_id:
+        description: 'course_schedule_id 课节id'
+        type: 'string'
+
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '作业id'
+              type: 'integer'
+            question_name:
+              description: '作业名称'
+              type: 'string'
+            question_text:
+              description: '问题'
+              type: 'string'
+            question_attachment_url:
+              description: '问题附件，可以是json'
+              type: 'string'
+            created_at:
+              description: '创建时间'
+              type: 'string'
+            course_name:
+              description: '课程名称'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, my_homework_sql))
+
+
+def my_homework_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,t.avatar as teacher_avatar
+    from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
+    where 
+    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 1
+    and c.state<> 99 
+    and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    sql.append(' and cs.id =:course_schedule_id')
+
+    current_app.logger.debug(sql)
+
+    return ['id', 'question_name','question_text', 'question_attachment_url', 'created_at'], ''.join(sql)
+
+
+
+
+
+
+
+
+
+
 def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0

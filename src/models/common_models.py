@@ -132,4 +132,10 @@ class ActionEvent(EntityMixin, db.Model):
     remark = Column(db.String(1000), nullable=True, comment='标记信息')
 
 
+class ThirdDateLog(EntityMixin, db.Model):
+    table_name = Column(db.String(150), nullable=False, comment='表名字')
+    table_id = Column(Integer, nullable=False, comment='表中主键id')
+    third_id = Column(db.String(100), nullable=True, comment='第三方主键')
+    third_date = Column(db.String(1000), nullable=True, comment='第三方数据')
+
 

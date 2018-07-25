@@ -1,5 +1,5 @@
 from src.models.common_models import db, session_scope, row_dict, \
-    EntityMixin,ActionEvent
+    EntityMixin,ActionEvent,ThirdDateLog
 from src.models.teacher_models import Teacher, Certificate, TeacherSubject,TeacherState, \
     Interview, InterviewState,TeacherTime,TeacherHistory
 from src.models.student_models import Student, StudentAppraisal, StudentState, \

@@ -2038,6 +2038,3 @@ def student_tryout_apply_result_sql(params):
     return ['id', 'teacher_name', 'mobile','email','timezone','appointment_state'], ''.join(sql)
 
 
-
-
-
