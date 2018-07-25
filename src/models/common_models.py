@@ -4,6 +4,7 @@ from sqlalchemy import Column, String, Integer, DateTime, Float, Enum, event
 from contextlib import contextmanager
 from datetime import datetime
 from sqlalchemy import event
+from flask import current_app
 
 
 db = SQLAlchemy()
@@ -60,6 +61,8 @@ class EntityMixin(object):
 @event.listens_for(EntityMixin, 'after_insert', propagate=True)
 def receive_after_insert(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
+
+    current_app.logger.debug('------------>'+target.__tablename__+'--------------'+target.id)
     pass
 
 

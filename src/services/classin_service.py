@@ -281,7 +281,7 @@ def editCourse(courseName, expiryTime,courseId,user_type=0,lang='en'):
         else:
             raise RuntimeError(r.json()['message'])
 
-def editPasswort(telephone, password,user_type=0,lang='en'):
+def editPasswort(telephone, password,oldPass,user_type=0,lang='en'):
     """
 
     """
@@ -293,6 +293,7 @@ def editPasswort(telephone, password,user_type=0,lang='en'):
             data=json.dumps({
                 'telephone': telephone,
                 'password': password,
+                'oldPass': oldPass,
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
