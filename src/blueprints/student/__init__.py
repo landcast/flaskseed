@@ -978,7 +978,7 @@ def write_homework():
         homework = Homework(homework_type = 2,
                             answer_text = desc,
                             answer_attachment_url = attachment,
-                            study_schedule_id = study_schedule_id,
+                            study_schedule_id = studyschedule.id,
                             question_name = title,
                             delete_flag = 'IN_FORCE',
                             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
