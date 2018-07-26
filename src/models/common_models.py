@@ -62,8 +62,6 @@ class EntityMixin(object):
 def receive_after_insert(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
     current_app.logger.debug('------------>'+target.__tablename__+'--------------'+str(target.id))
-    listen_service.after_insert(target.__tablename__, target.id)
-
 
 
 class UserBaseMixin(EntityMixin):
