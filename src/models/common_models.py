@@ -6,7 +6,6 @@ from datetime import datetime
 from sqlalchemy import event
 from flask import current_app
 
-from src.services import listen_service
 
 db = SQLAlchemy()
 
