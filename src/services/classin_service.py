@@ -22,42 +22,40 @@ def register(telephone, nickname, password, user_type=0,lang='en'):
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
     current_app.logger.debug(r.text)
-    with session_scope(db) as session:
-        if r.json()['code'] == 0:
-            return r.json()['studentId']
-        else:
-            raise RuntimeError(r.json()['message'])
+
+    if r.json()['code'] == 0:
+        return r.json()['studentId']
+    else:
+        raise RuntimeError(r.json()['message'])
 
 
-def addCourse(courseName, expiryTime,user_type=0,lang='en'):
+def addCourse(courseName, expiryTime,folderId,user_type=0,lang='en'):
     """
 
     """
-    with session_scope(db) as session:
 
-        r = requests.post(
+    r = requests.post(
                 current_app.config['EP_LOCATION'] + current_app.config[
                     'EP_CLASSIN_PATH'] + '/addCourse',
                 data=json.dumps({
                     'courseName': courseName,
                     'expiryTime': expiryTime,
+                    'folderId': folderId,
                     'lang': lang,
                     'userType': user_type,
                 }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
-        if r.json()['code'] == 0:
-            return r.json()['courseId']
-        else:
-            raise RuntimeError(r.json()['message'])
+    current_app.logger.debug(r.text)
+    if r.json()['code'] == 0:
+        return r.json()['courseId']
+    else:
+        raise RuntimeError(r.json()['message'])
 
 
 def addCourseStudent(courseId, identity,studentAccount,studentName,user_type=0,lang='en'):
     """
 
     """
-    with session_scope(db) as session:
-
-        r = requests.post(
+    r = requests.post(
             current_app.config['EP_LOCATION'] + current_app.config[
                 'EP_CLASSIN_PATH'] + '/addCourseStudent',
             data=json.dumps({
@@ -68,11 +66,11 @@ def addCourseStudent(courseId, identity,studentAccount,studentName,user_type=0,l
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
-        if r.json()['code'] == 0:
-            return r.json()['code']
-        else:
-            raise RuntimeError(r.json()['message'])
+    current_app.logger.debug(r.text)
+    if r.json()['code'] == 0:
+        return r.json()['code']
+    else:
+        raise RuntimeError(r.json()['message'])
 
 def addTeacher(teacherAccount, teacherName,Filedata,user_type=0,lang='en'):
     """
@@ -97,7 +95,7 @@ def addTeacher(teacherAccount, teacherName,Filedata,user_type=0,lang='en'):
             raise RuntimeError(r.json()['message'])
 
 
-def addOneCourseClass(courseId, className,beginTime,endTime,teacherAccount,teacherName,seatNum,user_type=0,lang='en'):
+def addOneCourseClass(courseId, className,beginTime,endTime,teacherAccount,teacherName,seatNum,folderId,user_type=0,lang='en'):
     """
 
     """
@@ -114,6 +112,7 @@ def addOneCourseClass(courseId, className,beginTime,endTime,teacherAccount,teach
                 'teacherAccount': teacherAccount,
                 'teacherName': teacherName,
                 'seatNum': seatNum,
+                'folderId': folderId,
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
@@ -345,7 +344,7 @@ def getTempLoginKey(telephone,user_type=0,lang='en'):
         else:
             raise RuntimeError(r.json()['message'])
 
-def uploadFile(folderId,Filedata,user_type=0,lang='en'):
+def uploadFile(folderId,url,user_type=0,lang='en'):
     """
 
     """
@@ -356,7 +355,7 @@ def uploadFile(folderId,Filedata,user_type=0,lang='en'):
                 'EP_CLASSIN_PATH'] + '/uploadFile',
             data=json.dumps({
                 'folderId': folderId,
-                'Filedata': Filedata,
+                'url': url,
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
@@ -385,3 +384,23 @@ def delFile(folderId,user_type=0,lang='en'):
             return r.json()['fileId']
         else:
             raise RuntimeError(r.json()['message'])
+
+
+def createFolder(folderId,folderName,user_type=0,lang='en'):
+    """
+
+    """
+    r = requests.post(
+        current_app.config['EP_LOCATION'] + current_app.config[
+                'EP_CLASSIN_PATH'] + '/createFolder',
+        data=json.dumps({
+                'fileId': folderId,
+                'folderName': folderName,
+                'lang': lang,
+                'userType': user_type,
+        }), headers={'Content-type': 'application/json'})
+    current_app.logger.debug(r.text)
+    if r.json()['code'] == 0:
+        return r.json()['folderId']
+    else:
+        raise RuntimeError(r.json()['message'])

@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy import event
 from flask import current_app
 
+from src.services import listen_service
 
 db = SQLAlchemy()
 
@@ -61,9 +62,9 @@ class EntityMixin(object):
 @event.listens_for(EntityMixin, 'after_insert', propagate=True)
 def receive_after_insert(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
-
     current_app.logger.debug('------------>'+target.__tablename__+'--------------'+str(target.id))
-    pass
+    listen_service.after_insert(target.__tablename__, target.id)
+
 
 
 class UserBaseMixin(EntityMixin):
@@ -140,5 +141,7 @@ class ThirdDateLog(EntityMixin, db.Model):
     table_id = Column(Integer, nullable=False, comment='表中主键id')
     third_id = Column(db.String(100), nullable=True, comment='第三方主键')
     third_date = Column(db.String(1000), nullable=True, comment='第三方数据')
+
+
 
 
