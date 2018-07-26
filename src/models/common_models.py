@@ -57,13 +57,6 @@ class EntityMixin(object):
                         comment='last updated operator name')
 
 
-# standard decorator style
-@event.listens_for(EntityMixin, 'after_insert', propagate=True)
-def receive_after_insert(mapper, connection, target):
-    print('after_insert-1', target.__tablename__, target.id)
-    current_app.logger.debug('------------>'+target.__tablename__+'--------------'+str(target.id))
-
-
 class UserBaseMixin(EntityMixin):
     username = Column(String(60), nullable=False, unique=True,
                       comment='user provided unique name')

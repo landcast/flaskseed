@@ -15,4 +15,5 @@ from src.models.course_models import Course, Subject, CourseExam,CourseStatueEnu
     ClassroomStateEnum, ClassroomTypeEnum, ClassroomRoleEnum, \
     ClassroomDeviceEnum,CourseAppointment,CourseAppointmentState
 
+
 user_source = {'Student': Student, 'Teacher': Teacher, 'SysUser': SysUser}

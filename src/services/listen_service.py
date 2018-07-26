@@ -1,5 +1,5 @@
 from flask import current_app
-from src.models import db, session_scope,ThirdDateLog,Student,Teacher,Course,CourseSchedule,ThirdDateLog,\
+from src.models import db, session_scope,Student,Teacher,Course,CourseSchedule,ThirdDateLog,\
     StudySchedule,Courseware
 from src.services import classin_service
 
