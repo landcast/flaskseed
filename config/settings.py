@@ -13,9 +13,9 @@ PID_FILE = 'flaskseed'
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
-USERNAME = 'root'
-PASSWORD = 'lt7116'
-DBHOST = '127.0.0.1'
+USERNAME = 'liu_tes'
+PASSWORD = 'liu_123456'
+DBHOST = '39.106.143.18'
 DBPORT = '3306'
 DATABASE = 'ustutor'
 SQLALCHEMY_DATABASE_URI = f"{DIALECT}+{DRIVER}://{USERNAME}:{PASSWORD}@" \
