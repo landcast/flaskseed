@@ -108,13 +108,13 @@ def my_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
- select cs.id,c.id as course_id,c.`course_name`,(select count(*) from study_schedule where student_id = o.student_id and course_schedule_id = cs.id) as finish,
-           c.classes_number,t.`nickname` as teacher_name,cs.start,cs.end,t.avatar as teacher_avatar,c.course_desc
-            from `order` o, teacher t, course c,`course_schedule`cs 
-            where  o.course_id = c.id and
-            c.primary_teacher_id = t.id and c.`id` = cs.course_id  
-            and o.`state` <> 99  and c.state<> 99 and cs.state <> 99
-            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE'        
+			select c.id as course_id,c.`course_name`,(select count(*) from study_schedule ss,course_schedule cs  where student_id = o.student_id and course_schedule_id = cs.id  and cs.`delete_flag` = 'IN_FORCE' and cs.course_id = c.id
+			and cs.end > now()) as finish,
+           c.classes_number,t.`nickname` as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
+            from  course c,`order` o, teacher t
+            where  o.course_id = c.id and c.primary_teacher_id = t.id  
+            and o.`state` <> 99  and c.state<> 99 
+            and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'       
     ''']
     sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
@@ -134,13 +134,13 @@ def my_course_sql(params):
         sql.append("%'")
     if 'course_time' in params.keys():
         sql.append(
-            ' and cs.start <:course_time and cs.end >:course_time')
+            ' and c.start <:course_time and c.end >:course_time')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
-        sql.append(' and cs.end <now()')
+        sql.append(' and c.end <now()')
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
-        sql.append(' and cs.end > now()')
+        sql.append(' and c.end > now()')
 
     return ['id','course_id', 'course_name', 'finish', 'classes_number', 'nickname',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
