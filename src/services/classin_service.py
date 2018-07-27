@@ -21,8 +21,6 @@ def register(telephone, nickname, password, user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-    current_app.logger.debug(r.text)
-
     if r.json()['code'] == 0:
         return r.json()['studentId']
     else:
@@ -44,7 +42,6 @@ def addCourse(courseName, expiryTime,folderId,user_type=0,lang='en'):
                     'lang': lang,
                     'userType': user_type,
                 }), headers={'Content-type': 'application/json'})
-    current_app.logger.debug(r.text)
     if r.json()['code'] == 0:
         return r.json()['courseId']
     else:
@@ -66,7 +63,6 @@ def addCourseStudent(courseId, identity,studentAccount,studentName,user_type=0,l
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-    current_app.logger.debug(r.text)
     if r.json()['code'] == 0:
         return r.json()['code']
     else:
@@ -88,7 +84,6 @@ def addTeacher(teacherAccount, teacherName,Filedata,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['teachId']
         else:
@@ -116,7 +111,6 @@ def addOneCourseClass(courseId, className,beginTime,endTime,teacherAccount,teach
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['classId']
         else:
@@ -138,7 +132,6 @@ def changeTeacher(courseId, teacherAccount,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -161,7 +154,6 @@ def editTeacher(st_id, teacherName,Filedata,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -182,7 +174,6 @@ def delCourseClass(courseId, classId,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -203,7 +194,6 @@ def delCourse(courseId,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -251,7 +241,6 @@ def editCourseClass(courseId, classId,className,beginTime,endTime,teacherAccount
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -274,7 +263,6 @@ def editCourse(courseName, expiryTime,courseId,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -296,7 +284,6 @@ def editPasswort(telephone, password,oldPass,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -318,7 +305,6 @@ def editUserBasic(telephone, nickname,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['code']
         else:
@@ -338,7 +324,6 @@ def getTempLoginKey(telephone,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['key']
         else:
@@ -359,7 +344,6 @@ def uploadFile(folderId,url,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['fileId']
         else:
@@ -379,7 +363,6 @@ def delFile(folderId,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
             }), headers={'Content-type': 'application/json'})
-        current_app.logger.debug(r.text)
         if r.json()['code'] == 0:
             return r.json()['fileId']
         else:
@@ -399,7 +382,6 @@ def createFolder(folderId,folderName,user_type=0,lang='en'):
                 'lang': lang,
                 'userType': user_type,
         }), headers={'Content-type': 'application/json'})
-    current_app.logger.debug(r.text)
     if r.json()['code'] == 0:
         return r.json()['folderId']
     else:
