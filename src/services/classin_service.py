@@ -3,10 +3,7 @@ from flask import current_app
 import json
 import requests
 
-from src.models import db, session_scope, CourseClassroom, Courseware, \
-    CourseClassParticipant, ClassroomRoleEnum, ClassroomTypeEnum, \
-    ClassroomStateEnum, CoursewareCheckResultEnum, ClassroomDeviceEnum
-
+from src.models import db, session_scope
 
 def register(telephone, nickname, password, user_type=0,lang='en'):
     """

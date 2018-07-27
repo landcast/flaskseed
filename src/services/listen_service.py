@@ -89,10 +89,10 @@ def after_update(table_name, table_id):
 def saveThirdDateLog(table_name,table_id,third_id,third_date):
     current_app.logger.debug('saveThirdDateLog------------>'+table_name+"----"+str(table_id)+"------"+third_id+'-----'+third_date)
     with session_scope(db) as session:
-        thirdDateLog = ThirdDateLog(table_name = table_name,
-                                table_id = table_id,
-                                third_id = str(third_id),
-                                third_date = third_date,
+        thirdDateLog = ThirdDateLog(table_name = 'tesst',
+                                table_id = 1,
+                                third_id = 't1234',
+                                third_date = 'data',
                                 delete_flag = 'IN_FORCE')
         session.add(thirdDateLog)
         session.flush()
