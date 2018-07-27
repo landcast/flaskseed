@@ -87,7 +87,7 @@ def after_update(table_name, table_id):
 
 
 def saveThirdDateLog(table_name,table_id,third_id,third_date):
-    current_app.logger.debug('saveThirdDateLog------------>0')
+    current_app.logger.debug('saveThirdDateLog------------>'+table_name+"----"+str(table_id)+"------"+third_id+'-----'+third_date)
     with session_scope(db) as session:
         thirdDateLog = ThirdDateLog(table_name = table_name,
                                 table_id = table_id,
