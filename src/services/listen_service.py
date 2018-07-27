@@ -20,6 +20,7 @@ def after_insert(table_name, table_id):
             folderId = createFolder('',course.course_name,table_name,course.id)
             course_id = classin_service.addCourse(course.course_name,0,folderId,'en')
             saveThirdDateLog(table_name,table_id,course_id,'')
+
         if 'course_schedule' == table_name:
             courseSchedule = session.query(CourseSchedule).filter_by(id=table_id).one_or_none()
             course = session.query(Course).filter_by(id=courseSchedule.course_id).one_or_none()
