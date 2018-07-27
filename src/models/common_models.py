@@ -30,6 +30,9 @@ def row_dict(row):
     return result
 
 
+
+
+
 class DeleteEnum(enum.IntEnum):
     """
     Using enum.IntEnum instead of enum.Enum
@@ -55,6 +58,7 @@ class EntityMixin(object):
                         comment='last updated time')
     updated_by = Column(String(60), nullable=True,
                         comment='last updated operator name')
+
 
 
 class UserBaseMixin(EntityMixin):

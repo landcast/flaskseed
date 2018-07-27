@@ -5,6 +5,8 @@ from src.services import classin_service
 
 
 def after_insert(table_name, table_id):
+
+    current_app.logger.debug('listen start------------>'+table_name+'--------------'+str(table_id))
     with session_scope(db) as session:
         if 'student' == table_name:
             student = session.query(Student).filter_by(id=table_id).one_or_none()
