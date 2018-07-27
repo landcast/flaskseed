@@ -9,6 +9,27 @@ from flask import current_app
 
 db = SQLAlchemy()
 
+
+@contextmanager
+def session_scope(db):
+    """Provide a transactional scope around a series of operations."""
+    session = db.session()
+    try:
+        yield session
+        session.commit()
+    except (IOError, ValueError) as err:
+        session.rollback()
+        raise
+    finally:
+        pass
+
+
+def row_dict(row):
+    result = {c.name: str(getattr(row, c.name)) for c in
+              row.__table__.columns}
+    return result
+
+
 class DeleteEnum(enum.IntEnum):
     """
     Using enum.IntEnum instead of enum.Enum
