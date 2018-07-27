@@ -24,7 +24,7 @@ def after_insert(table_name, table_id):
             folderId = createFolder('',course.course_name,table_name,course.id)
             current_app.logger.debug('course------------>2')
             course_id = classin_service.addCourse(course.course_name,0,folderId,0,'en')
-            current_app.logger.debug('course------------>3')
+            current_app.logger.debug('course------------>3'+str(course_id))
             saveThirdDateLog(table_name,table_id,course_id,'')
 
         if 'course_schedule' == table_name:
