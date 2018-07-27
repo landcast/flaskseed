@@ -18,6 +18,7 @@ def after_insert(table_name, table_id):
             teacher_id = classin_service.register(teacher.mobile,teacher.nickname,teacher.password,0,'en')
             saveThirdDateLog(table_name,table_id,teacher_id,'')
         if 'course' == table_name:
+            current_app.logger.debug('course------------>0')
             course = session.query(Course).filter_by(id=table_id).one_or_none()
             current_app.logger.debug('course------------>1')
             folderId = createFolder('',course.course_name,table_name,course.id)
