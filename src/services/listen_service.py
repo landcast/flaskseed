@@ -26,6 +26,7 @@ def after_insert(table_name, table_id):
             course_id = classin_service.addCourse(course.course_name,0,folderId,0,'en')
             current_app.logger.debug('course------------>3'+str(course_id))
             saveThirdDateLog(table_name,table_id,course_id,'')
+            current_app.logger.debug('course------------>4')
 
         if 'course_schedule' == table_name:
             courseSchedule = session.query(CourseSchedule).filter_by(id=table_id).one_or_none()
