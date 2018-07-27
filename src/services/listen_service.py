@@ -87,6 +87,7 @@ def after_update(table_name, table_id):
 
 
 def saveThirdDateLog(table_name,table_id,third_id,third_date):
+    current_app.logger.debug('saveThirdDateLog------------>0')
     with session_scope(db) as session:
         thirdDateLog = ThirdDateLog(table_name = table_name,
                                 table_id = table_id,
@@ -95,6 +96,7 @@ def saveThirdDateLog(table_name,table_id,third_id,third_date):
                                 delete_flag = 'IN_FORCE')
         session.add(thirdDateLog)
         session.flush()
+        current_app.logger.debug('saveThirdDateLog------------>2')
 
 
 def createFolder(folderId,folderName,table_name,table_id):
