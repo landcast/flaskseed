@@ -14,7 +14,7 @@ from src.models.course_models import Course, Subject, CourseExam,CourseStatueEnu
     Courseware, SubjectCategory, CoursewareCheckResultEnum, \
     ClassroomStateEnum, ClassroomTypeEnum, ClassroomRoleEnum, \
     ClassroomDeviceEnum,CourseAppointment,CourseAppointmentState
-
+from src.models.listen_models import receive_after_insert
 
 
 user_source = {'Student': Student, 'Teacher': Teacher, 'SysUser': SysUser}
