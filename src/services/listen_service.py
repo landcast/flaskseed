@@ -100,6 +100,7 @@ def saveThirdDateLog(table_name,table_id,third_id,third_date):
 
 def createFolder(folderId,folderName,table_name,table_id):
     folderId = classin_service.createFolder(folderId,folderName)
+    current_app.logger.debug('createFolder------------>'+folderId)
     saveThirdDateLog('folder_'+table_name,table_id,folderId,'')
     return folderId
 
