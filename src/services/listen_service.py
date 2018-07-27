@@ -90,7 +90,7 @@ def saveThirdDateLog(table_name,table_id,third_id,third_date):
     with session_scope(db) as session:
         thirdDateLog = ThirdDateLog(table_name = table_name,
                                 table_id = table_id,
-                                third_id = third_id,
+                                third_id = str(third_id),
                                 third_date = third_date,
                                 delete_flag = 'IN_FORCE')
         session.add(thirdDateLog)
