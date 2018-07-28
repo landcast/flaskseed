@@ -754,9 +754,6 @@ def my_homework_sql(params):
     return ['id', 'question_name','question_text', 'question_attachment_url', 'created_at'], ''.join(sql)
 
 
-
-
-
 @course.route('/common_summary', methods=['POST'])
 def homework():
     """
@@ -822,7 +819,7 @@ def common_summary_sql(params):
 
     current_app.logger.debug(sql)
 
-    return ['id', 'question_name','question_text', 'question_attachment_url', 'created_at'], ''.join(sql)
+    return ['study_schedule_id', 'student_name','teacher_evaluation'], ''.join(sql)
 
 
 
