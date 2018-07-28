@@ -1853,7 +1853,6 @@ def view_homework_sql(params):
             where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id and course_id = c.id and h.homework_type = 2
              and cs.`state` <> 99   and s.`state` <> 99
              and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
-             and c.primary_teacher_id =1 and cs.id = 41
             ''']
     if 'course_schedule_id' in params.keys():
         sql.append(
