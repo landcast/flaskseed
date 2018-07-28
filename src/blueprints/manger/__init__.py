@@ -1855,8 +1855,6 @@ def view_homework_sql(params):
              and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
              and c.primary_teacher_id =1 and cs.id = 41
             ''']
-    sql.append(
-        " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_schedule_id' in params.keys():
         sql.append(
             ' and cs.id = '+params['course_schedule_id'])
