@@ -757,6 +757,73 @@ def my_homework_sql(params):
 
 
 
+@course.route('/common_summary', methods=['POST'])
+def homework():
+    """
+    swagger-doc: 'do my homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_schedule_id:
+        description: 'course_schedule_id 课节id'
+        type: 'string'
+
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'study_schedule_id'
+              type: 'integer'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+            teacher_evaluation:
+              description: '教师评价'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, common_summary_sql))
+
+
+def common_summary_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+    select ss.id as study_schedule_id,s.nickname as student_name,ss.teacher_evaluation
+    from course_schedule cs,study_schedule ss,student s
+    where cs.id = ss.`course_schedule_id` and ss.student_id = s.id
+    and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    sql.append(' and cs.id =:course_schedule_id')
+
+    current_app.logger.debug(sql)
+
+    return ['id', 'question_name','question_text', 'question_attachment_url', 'created_at'], ''.join(sql)
+
 
 
 
