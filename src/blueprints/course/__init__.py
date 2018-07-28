@@ -755,7 +755,7 @@ def my_homework_sql(params):
 
 
 @course.route('/common_summary', methods=['POST'])
-def homework():
+def common_summary():
     """
     swagger-doc: 'do my homework query'
     required: []
