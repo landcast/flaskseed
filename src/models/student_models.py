@@ -1,7 +1,7 @@
 import enum
 
 from src.models.common_models import db, EntityMixin, UserBaseMixin
-from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey, \
+from sqlalchemy import Column, String,Text, Integer, DateTime, Float, ForeignKey, \
     Enum
 from enum import IntFlag
 
@@ -27,12 +27,12 @@ class StudySchedule(EntityMixin, db.Model):
     actual_end = Column(DateTime, nullable=False, comment='实际上课结束时间')
     name = Column(String(50), nullable=False, comment='课程名称')
     study_state = Column(Integer, nullable=False, comment='学习状态，1：进行中，2：已经学完')
-    student_evaluation = Column(String(3000), nullable=True, comment='学生评价')
-    student_result = Column(String(3000), nullable=True, comment='学生结果反馈')
-    teacher_evaluation = Column(String(3000), nullable=True, comment='教师评价')
-    teacher_result = Column(String(3000), nullable=True, comment='教师结果反馈')
+    student_evaluation = Column(Text, nullable=True, comment='学生评价')
+    student_result = Column(String(2000), nullable=True, comment='学生结果反馈')
+    teacher_evaluation = Column(Text, nullable=True, comment='教师评价')
+    teacher_result = Column(String(2000), nullable=True, comment='教师结果反馈')
     homework = Column(String(255), nullable=True, comment='作业')
-    test = Column(String(3000), nullable=True, comment='课后测试')
+    test = Column(String(2000), nullable=True, comment='课后测试')
     student_score = Column(Float, nullable=True, comment='学生评分')
     teacher_score = Column(Float, nullable=True, comment='教师评分')
     order_id = Column(Integer, ForeignKey('order.id'),
