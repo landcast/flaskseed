@@ -939,10 +939,10 @@ def common_summary_add():
             }), 500
 
         courseExam =CourseExam( start= start,
-                                end= end,
-                                state = 98,
-                                exam_desc= 'evaluation',
-                                course_id = course.id,
+                                end=end,
+                                state =98,
+                                exam_desc='evaluation',
+                                course_id =1,
                                 delete_flag = 'IN_FORCE',
                                 updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                         )
