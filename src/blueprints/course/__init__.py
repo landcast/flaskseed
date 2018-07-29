@@ -946,10 +946,8 @@ def common_summary_add():
                                 delete_flag = 'IN_FORCE',
                                 updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                         )
-
         session.add(courseExam)
         session.flush()
-
         studyResult =StudyResult( evaluation= evaluation,
                                   result_type= StudyResultTypeEnum.SUMMARY.name,
                                   state = 98,
@@ -962,7 +960,6 @@ def common_summary_add():
 
         session.add(studyResult)
         session.flush()
-
 
     return jsonify({'id':studyResult.id })
 
