@@ -4,8 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src.models import db, session_scope,Teacher,Interview,TeacherState,\
-    CourseSchedule,StudySchedule,Homework,CourseSchedule,CourseClassroom
+from src.models import db, session_scope,Teacher,Interview,TeacherState, \
+    CourseAppointment,StudySchedule,Homework,CourseSchedule,CourseClassroom,StudyAppointment
 from src.services import do_query, datetime_param_sql_format
 from src.utils import generate_pdf_from_template
 import uuid
@@ -1262,3 +1262,39 @@ def apply_students_sql(params):
 
 
     return ['id', 'start','end','student_name','apply_state'], ''.join(sql)
+
+
+@teacher.route('/accept_students', methods=['POST'])
+def accept_students():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_appointment_id :
+        description: '申请id'
+        type: 'string'
+    """
+    course_appointment_id = request.json['course_appointment_id']
+
+    with session_scope(db) as session:
+
+        courseAppointment = session.query(CourseAppointment).filter_by(id=course_appointment_id).one_or_none()
+
+        if courseAppointment is None :
+            return jsonify({
+                "error": "not found CourseAppointment: {0}".format(
+                    course_appointment_id)
+            }), 500
+
+        studyAppointment = session.query(StudyAppointment).filter_by(id=courseAppointment.study_appointment_id).one_or_none()
+
+        if studyAppointment is None :
+            return jsonify({
+                "error": "not found StudyAppointment: {0}".format(
+                    course_appointment_id)
+            }), 500
+
+
+
+    return jsonify({'id':courseAppointment.id })
+

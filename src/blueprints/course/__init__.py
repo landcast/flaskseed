@@ -566,7 +566,7 @@ def course_common_sql(params):
         select * from (select c.id ,c.course_name,c.course_name_zh,t.username as teacher_name,
         (select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
         cs.start,cs.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
-        cs.id as course_schedule_id
+        cs.id as course_schedule_id,c.open_grade
         
          from 
         course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE',
@@ -601,8 +601,8 @@ def course_common_sql(params):
     if 'state' in params.keys() and '3' ==params['state'] :
         sql.append(' and t.finish > t.classes_number')
 
-    return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
-            'start', 'end','course_schedule_state','course_schedule_id'], ''.join(sql)
+    return ['id', 'course_name', 'course_name_zh', 'teacher_name', 'student_name',
+            'start', 'end','classes_number','finish','course_schedule_id','open_grade'], ''.join(sql)
 
 
 @course.route('/course_schedule', methods=['POST'])
@@ -1114,6 +1114,76 @@ def common_homework_student_sql(params):
     current_app.logger.debug(sql)
 
     return ['id', 'title','answer_text', 'created_at','answer_attachment_url'], ''.join(sql)
+
+
+
+@course.route('/member', methods=['POST'])
+def member():
+    """
+    swagger-doc: 'do my homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_id:
+        description: '课程id'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            teacher_name:
+              description: '教师名称'
+              type: 'integer'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+            assist_teacher_name:
+              description: '助教名称呢'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, member_sql))
+
+
+def member_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+        select t.username as teacher_name,
+        (select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and 			s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
+        (select username from teacher where id = c.`assist_teacher_id`) as assist_teacher_name
+         from 
+        course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE',
+        teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    sql.append(' and c.id =:course_id')
+
+    return ['teacher_name', 'student_name','assist_teacher_name'], ''.join(sql)
+
+
 
 
 
