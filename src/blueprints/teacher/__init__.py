@@ -1270,9 +1270,13 @@ def accept_students():
     swagger-doc: 'schedule'
     required: []
     req:
-      course_appointment_id :
-        description: '申请id'
+      course_appointment_id:
+        description: '试听申请id'
         type: 'string'
+    res:
+      id:
+        description: 'id'
+        type: ''
     """
     course_appointment_id = request.json['course_appointment_id']
 
