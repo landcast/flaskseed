@@ -1051,6 +1051,9 @@ def common_homework_student():
       course_schedule_id:
         description: 'course_schedule_id 课节id'
         type: 'string'
+      homework_id:
+        description: '作业id'
+        type: 'string'
 
 
     res:
@@ -1105,6 +1108,8 @@ def common_homework_student_sql(params):
     ''']
 
     sql.append(' and sc.course_schedule_id =:course_schedule_id')
+
+    sql.append(' and hm.homework_id =:homework_id')
 
     current_app.logger.debug(sql)
 

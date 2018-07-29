@@ -956,12 +956,16 @@ def write_homework():
       attachment:
         description: '附件，可以考虑JSON地址'
         type: 'string'
+      homework_id:
+        description: '作业id'
+        type: 'string'
     res:
       id:
         description: ''
         type: ''
     """
     study_schedule_id = request.json['study_schedule_id']
+    homework_id = request.json['homework_id']
     attachment = ''
     title = ''
     desc =''
@@ -973,6 +977,15 @@ def write_homework():
         desc = request.json['desc']
 
     with session_scope(db) as session:
+
+
+        homework = session.query(Homework).filter_by(id=homework_id).one_or_none()
+
+        if homework is None :
+            return jsonify({
+                "error": "not found homework: {0}".format(
+                    homework_id)
+            }), 500
 
         studyschedule = session.query(StudySchedule).filter_by(id=study_schedule_id).one_or_none()
 
@@ -986,6 +999,7 @@ def write_homework():
                             answer_text = desc,
                             answer_attachment_url = attachment,
                             study_schedule_id = studyschedule.id,
+                            homework_id = homework_id,
                             question_name = title,
                             delete_flag = 'IN_FORCE',
                             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
