@@ -950,7 +950,6 @@ def common_summary_add():
         session.flush()
         studyResult =StudyResult( evaluation= evaluation,
                                   result_type= StudyResultTypeEnum.SUMMARY.name,
-                                  state = 98,
                                  student_id= student_id,
                                  course_id = course.id,
                                  course_exam_id = courseExam.id,
