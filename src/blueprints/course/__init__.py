@@ -924,8 +924,8 @@ def common_summary_add():
     """
     course_id = request.json['course_id']
     student_id = request.json['student_id']
-    start = request.json['start']
-    end = request.json['end']
+    start = request.json['start'].replace('T', ' ').replace('Z', '')
+    end = request.json['end'].replace('T', ' ').replace('Z', '')
     evaluation = request.json['evaluation']
 
     with session_scope(db) as session:
@@ -938,8 +938,8 @@ def common_summary_add():
                     course_id)
             }), 500
 
-        courseExam =CourseExam( start= start.replace('T', ' ').replace('Z', ''),
-                                end= end.replace('T', ' ').replace('Z', ''),
+        courseExam =CourseExam( start= start,
+                                end= end,
                                 state = 98,
                                 exam_desc= 'evaluation',
                                 course_id = course.id,
