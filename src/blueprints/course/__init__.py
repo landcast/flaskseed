@@ -942,15 +942,26 @@ def common_summary_add():
                                 end= end.replace('T', ' ').replace('Z', ''),
                                 state = 98,
                                 exam_desc= 'evaluation',
-                                course_id = course_id,
+                                course_id = course.id,
                                 delete_flag = 'IN_FORCE',
                                 updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                         )
         session.add(courseExam)
         session.flush()
+        studyResult =StudyResult( evaluation= evaluation,
+                                  result_type= StudyResultTypeEnum.SUMMARY.name,
+                                  state = 98,
+                                 student_id= student_id,
+                                 course_id = course.id,
+                                 course_exam_id = courseExam.id,
+                                 delete_flag = 'IN_FORCE',
+                                 updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                                )
 
+        session.add(studyResult)
+        session.flush()
 
-        return jsonify({'id':courseExam.id })
+    return jsonify({'id':studyResult.id })
 
 
 
