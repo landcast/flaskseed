@@ -1192,3 +1192,73 @@ def students_sql(params):
     return ['id', 'student_name'], ''.join(sql)
 
 
+@teacher.route('/apply_students', methods=['POST'])
+def apply_students():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'course_appointment_id操作使用'
+              type: 'integer'
+            start:
+              description: '开始时间'
+              type: 'string'
+            end:
+              description: '结束时间'
+              type: 'string'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+            apply_state:
+              description: '申请状态，0：可以同意，>1:置灰'
+              type: 'string'
+
+
+    """
+    j = request.json
+    return jsonify(do_query(j, apply_students_sql))
+
+
+def apply_students_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.username as student_name,
+          (select count(*) from study_appointment sa1,course_appointment ca1 where sa1.id = ca1.study_appointment_id and sa1.`student_id` = sa.id and ca1.appointment_state = 'ACCEPT') apply_state
+           from study_appointment sa,course_appointment ca,student s
+          where 
+          sa.id = ca.study_appointment_id and sa.student_id = s.id
+          and s.`delete_flag` = 'IN_FORCE'  and sa.`delete_flag` = 'IN_FORCE' and ca.`delete_flag` = 'IN_FORCE' 
+            ''']
+
+    sql.append("and ca.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+
+    return ['id', 'start','end','student_name','apply_state'], ''.join(sql)
