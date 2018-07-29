@@ -1036,6 +1036,79 @@ def common_evaluation_sql(params):
     return ['id', 'student_name','teacher_score','student_score','teacher_evaluation'], ''.join(sql)
 
 
+@course.route('/common_homework_student', methods=['POST'])
+def common_homework_student():
+    """
+    swagger-doc: 'do my homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_schedule_id:
+        description: 'course_schedule_id 课节id'
+        type: 'string'
+
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '作业id'
+              type: 'integer'
+            title:
+              description: '作业名称'
+              type: 'string'
+            answer_text:
+              description: '答案描述'
+              type: 'string'
+            answer_attachment_url:
+              description: '答案附件'
+              type: 'string'
+            created_at:
+              description: '创建时间'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, common_homework_student_sql))
+
+
+def common_homework_student_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+    select hm.id,hm.question_name as title,hm.answer_text,hm.created_at,hm.answer_attachment_url
+    from homework hm,study_schedule sc,student s
+    where 
+    hm.study_schedule_id = sc.id and sc.student_id = s.id and hm.homework_type = 2 
+    and s.`delete_flag` = 'IN_FORCE'  and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    sql.append(' and and sc.course_schedule_id =:course_schedule_id')
+
+    current_app.logger.debug(sql)
+
+    return ['id', 'title','answer_text', 'created_at','answer_attachment_url'], ''.join(sql)
 
 
 
