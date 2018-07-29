@@ -59,7 +59,7 @@ class Homework(EntityMixin, db.Model):
     question_text = Column(String(2000), nullable=True, comment='问题')
     question_attachment_url = Column(String(255), nullable=True, comment='问题附件地址可以多个，JSON')
     answer_text = Column(String(2000), nullable=True, comment='答案')
-    evaluation = Column(String(2000), nullable=True, comment='评价')
+    evaluation = Column(Text, nullable=True, comment='评价')
     answer_attachment_url = Column(String(255), nullable=True, comment='答案附件地址可以多个json')
     score = Column(Float, nullable=True, comment='分数')
     score_remark = Column(String(2000), nullable=True, comment='分数标记')
