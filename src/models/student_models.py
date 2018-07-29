@@ -49,8 +49,7 @@ class StudySchedule(EntityMixin, db.Model):
                         nullable=False)
     study_courses = db.relationship('Student', backref='study_courses',
                                     lazy=True)
-    course_id = Column(Integer, ForeignKey('course.id'),
-                       nullable=True)
+
 
 
 
@@ -103,7 +102,8 @@ class StudyResult(EntityMixin, db.Model):
     course_exam_results = db.relationship('CourseExam',
                                           backref='course_exam_results',
                                           lazy=True)
-
+    course_id = Column(Integer, ForeignKey('course.id'),
+                       nullable=True)
 
 
 
