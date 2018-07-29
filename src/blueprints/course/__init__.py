@@ -424,7 +424,7 @@ def schedule_compensate():
         if course.class_type != 1:
             class_type = ClassroomTypeEnum.ONE_VS_MANY.name
 
-        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,courseSchedule.name, getTimeDiff(start,end),class_type,start,0,'en')
+        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,courseSchedule.name, getTimeDiff(start,end),class_type,request.json['start'],0,'en')
 
         studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
 
