@@ -49,6 +49,9 @@ class StudySchedule(EntityMixin, db.Model):
                         nullable=False)
     study_courses = db.relationship('Student', backref='study_courses',
                                     lazy=True)
+    course_id = Column(Integer, ForeignKey('course.id'),
+                       nullable=True)
+
 
 
 class Homework(EntityMixin, db.Model):
