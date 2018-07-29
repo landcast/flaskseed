@@ -964,6 +964,77 @@ def common_summary_add():
 
 
 
+@course.route('/common_evaluation', methods=['POST'])
+def common_evaluation():
+    """
+    swagger-doc: 'do my homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_schedule_id:
+        description: '课程计划id'
+        type: 'string'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '学生id'
+              type: 'integer'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+            teacher_score:
+              description: '老师的星级'
+              type: 'string'
+            student_score:
+              description: '学生的星级'
+              type: 'string'
+            teacher_evaluation:
+              description: '老师的评价'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, common_evaluation_sql))
+
+
+def common_evaluation_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+            select 
+            s.id,s.username as student_name,ss.teacher_score,student_score,teacher_evaluation
+            from  course_schedule cs,study_schedule ss , student s 
+            where  cs.id = ss.course_schedule_id and ss.student_id = s.id 
+            and cs.delete_flag = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
+    ''']
+
+    sql.append(' and ss.id =:course_schedule_id')
+
+    return ['id', 'student_name','teacher_score','student_score','teacher_evaluation'], ''.join(sql)
+
 
 
 
