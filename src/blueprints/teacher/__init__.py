@@ -1119,3 +1119,76 @@ def get_enter_room_url():
 
     return jsonify({'url':url })
 
+
+
+@teacher.route('/students', methods=['POST'])
+def students():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_id:
+        description: '课程id'
+        type: 'string'
+      teacher_id:
+        description: '教师id，不传默认自己'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '学生id'
+              type: 'integer'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, students_sql))
+
+
+def students_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select 
+                s.id,s.username as student_name
+            from  course_schedule cs,study_schedule ss , student s ,course c
+            where  cs.id = ss.course_schedule_id and ss.student_id = s.id and cs.course_id = c.id
+            and cs.delete_flag = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
+            ''']
+
+    if 'course_id' in params.keys():
+        sql.append(' and c.id =:course_id ')
+    if 'teacher_id' in params.keys():
+        sql.append(' and c.primary_teacher_id =:teacher_id ')
+
+    sql.append("group by s.id ")
+
+    return ['id', 'student_name'], ''.join(sql)
+
+
