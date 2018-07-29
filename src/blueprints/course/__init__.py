@@ -6,7 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule,CourseClassroom
+from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule,CourseClassroom,CourseExam,\
+    StudyResult,StudyResultTypeEnum
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
 
@@ -895,7 +896,75 @@ def common_summary_result_sql(params):
     return ['study_result_id', 'student_name','created_at'], ''.join(sql)
 
 
+@course.route('/common_summary_result_add', methods=['POST'])
+def edit_course_schedule_type():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_id :
+        description: '课程id'
+        type: 'string'
+      student_id :
+        description: '学生id'
+        type: 'string'
+      start :
+        description: '开始时间'
+        type: 'string'
+      end :
+        description: '结束时间'
+        type: 'string'
+      evaluation :
+        description: '评价'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_id = request.json['course_id']
+    student_id = request.json['student_id']
+    start = request.json['start']
+    end = request.json['end']
+    evaluation = request.json['evaluation']
 
+    with session_scope(db) as session:
+
+        course = session.query(Course).filter_by(id=course_id).one_or_none()
+
+        if course is None :
+            return jsonify({
+                "error": "not found course: {0}".format(
+                    course_id)
+            }), 500
+
+        courseExam =CourseExam( start= start.replace('T', ' ').replace('Z', ''),
+                                end= end.replace('T', ' ').replace('Z', ''),
+                                state = 98,
+                                exam_desc= 'evaluation',
+                                course_id = course_id,
+                                delete_flag = 'IN_FORCE',
+                                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                        )
+
+        session.add(courseExam)
+        session.flush()
+
+        studyResult =StudyResult( evaluation= evaluation,
+                                  result_type= StudyResultTypeEnum.SUMMARY.name,
+                                    state = 98,
+                                  student_id= student_id,
+                                    course_id = course_id,
+                                  course_exam_id = courseExam.id,
+                                 delete_flag = 'IN_FORCE',
+                                    updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                                )
+
+        session.add(studyResult)
+        session.flush()
+
+
+    return jsonify({'id':studyResult.id })
 
 
 

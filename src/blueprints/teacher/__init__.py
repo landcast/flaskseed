@@ -418,6 +418,9 @@ def my_course():
       page_no:
         description: 'page no'
         type: 'integer'
+      course_id:
+        description: '课程id'
+        type: 'string'
       course_name:
         description: '课程名称'
         type: 'string'
@@ -512,6 +515,9 @@ def my_course_sql(params):
     if 'course_time' in params.keys():
         sql.append(
             ' and t.start <:course_time and t.end >:course_time')
+    if 'course_id' in params.keys():
+        sql.append(
+            ' and t.id:course_id')
     if 'course_status' in params.keys() \
             and params['course_status'] == '1':
         sql.append(' and t.end <now()')
@@ -848,7 +854,7 @@ def my_course_off_sql(params):
         sql.append(
             ' and c.id = '+params['course_id'])
 
-    return ['id','courseware_id' ,'name', 'class_type','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
+    return ['id','courseware_id' ,'name','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
 
 
 @teacher.route('/my_course_result', methods=['POST'])
@@ -867,7 +873,7 @@ def my_course_result():
         description: '课程ID'
         type: 'string'
       type:
-        description: '课程ID'
+        description: 'SUMMARY:总结 ACHIEVEMENT：成绩单'
         type: 'string'
     res:
       num_results:
