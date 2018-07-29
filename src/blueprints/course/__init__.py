@@ -364,6 +364,92 @@ def schedule():
     return jsonify({'id':courseschedule.id })
 
 
+@course.route('/schedule_compensate', methods=['POST'])
+def schedule_compensate():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课程id'
+        type: 'string'
+      class_at_start:
+        description: '课程开始时间 format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      class_at_end:
+        description: '课程结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      schedule_type:
+        description: '课节类型'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_schedule_id = request.json['course_schedule_id']
+    start = request.json['start'].replace('T', ' ').replace('Z', '')
+    end = request.json['end'].replace('T', ' ').replace('Z', '')
+    schedule_type = request.json['schedule_type']
+
+    with session_scope(db) as session:
+
+        courseSchedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
+
+        if courseSchedule is None:
+            return jsonify({
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+
+        courseschedule = CourseSchedule(
+            start = start,
+            end = end,
+            name = courseSchedule.name,
+            state = 98,
+            override_course_type=courseSchedule.override_course_type,
+            course_id = courseSchedule.course_id,
+            schedule_type = schedule_type,
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+        session.add(courseschedule)
+        session.flush()
+
+        course = session.query(Course).filter_by(id=courseSchedule.course_id).one_or_none()
+
+        class_type =ClassroomTypeEnum.ONE_VS_ONE.name
+
+        if course.class_type != 1:
+            class_type = ClassroomTypeEnum.ONE_VS_MANY.name
+
+        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,courseSchedule.name, getTimeDiff(start,end),class_type,start,0,'en')
+
+        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
+
+        for studyschedule in studyschedules:
+
+            sudyschedule = StudySchedule(
+                actual_start = start,
+                actual_end = end,
+                name = courseSchedule.name,
+                study_state = 1,
+                order_id = studyschedule.order_id,
+                course_schedule_id = courseschedule.id,
+                student_id = studyschedule.student_id,
+                schedule_type = schedule_type,
+                delete_flag = 'IN_FORCE',
+                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+            )
+
+            session.add(sudyschedule)
+            session.flush()
+
+
+    return jsonify({'id':courseschedule.id })
+
+
 @course.route('/edit_course_schedule', methods=['POST'])
 def upload_courseware():
     """
