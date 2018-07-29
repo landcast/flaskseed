@@ -1171,7 +1171,7 @@ def member_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-        select t.username as teacher_name,
+        select t.username as teacher_name,c.course_name,c.course_name_zh,
         (select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and 			s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
         (select username from teacher where id = c.`assist_teacher_id`) as assist_teacher_name
          from 
@@ -1181,7 +1181,7 @@ def member_sql(params):
 
     sql.append(' and c.id =:course_id')
 
-    return ['teacher_name', 'student_name','assist_teacher_name'], ''.join(sql)
+    return ['teacher_name','course_name','course_name_zh','student_name','assist_teacher_name'], ''.join(sql)
 
 
 
