@@ -896,8 +896,8 @@ def common_summary_result_sql(params):
     return ['study_result_id', 'student_name','created_at'], ''.join(sql)
 
 
-@course.route('/common_summary_result_add', methods=['POST'])
-def edit_course_schedule_type():
+@course.route('/common_summary_add', methods=['POST'])
+def common_summary_add():
     """
     swagger-doc: 'schedule'
     required: []
