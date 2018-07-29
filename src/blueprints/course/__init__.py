@@ -1104,7 +1104,7 @@ def common_homework_student_sql(params):
     and s.`delete_flag` = 'IN_FORCE'  and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE' 
     ''']
 
-    sql.append(' and and sc.course_schedule_id =:course_schedule_id')
+    sql.append(' and sc.course_schedule_id =:course_schedule_id')
 
     current_app.logger.debug(sql)
 
