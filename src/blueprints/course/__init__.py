@@ -938,11 +938,11 @@ def common_summary_add():
                     course_id)
             }), 500
 
-        courseExam =CourseExam( start= start,
+        courseExam =CourseExam( course_id=course.id,
+                                start= start,
                                 end=end,
                                 state =98,
-                                exam_desc='1',
-                                course_id =course.id,
+                                exam_desc='evaluation',
                                 delete_flag = 'IN_FORCE',
                                 updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                         )
