@@ -1301,7 +1301,9 @@ def accept_students():
             }), 500
 
 
-        acceptStudyAppointments = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.id==CourseAppointment.study_appointment_id and CourseAppointment.appointment_state=='ACCEPT' and StudyAppointment.student_id ==studyAppointment.student_id).all()
+        acceptStudyAppointments = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.id==CourseAppointment.study_appointment_id).\
+            filter(CourseAppointment.appointment_state=='ACCEPT').\
+            filter(StudyAppointment.student_id ==studyAppointment.student_id).all()
 
 
         if acceptStudyAppointments is not None or len(acceptStudyAppointments)>0:
