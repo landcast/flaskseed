@@ -1407,6 +1407,75 @@ def accept_students():
         return jsonify({'id':courseAppointment.id })
 
 
+@teacher.route('/my_schedule', methods=['POST'])
+def my_schedule():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            class_name:
+              description: '课节名称'
+              type: 'integer'
+            start:
+              description: '开始时间'
+              type: 'string'
+            end:
+              description: '结束时间'
+              type: 'string'
+            student_name:
+              description: '学生名称'
+              type: 'string'
+
+
+    """
+    j = request.json
+    return jsonify(do_query(j, my_schedule_sql))
+
+
+def my_schedule_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select cs.name as class_name,cs.start,cs.end,(select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name
+           from course c,course_schedule cs
+          where 
+          c.id = cs.course_id
+          and c.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE';
+            ''']
+
+    sql.append("and c.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+
+    return ['class_name', 'start','end','student_name'], ''.join(sql)
+
+
+
 
 def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
