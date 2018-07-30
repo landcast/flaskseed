@@ -92,12 +92,15 @@ class OrderTypeEnum(IntFlag):
     COMPENSATE :补偿订单
     FREE :免费订单
     REFUND:退款订单
+    AUDITIONS:试听
     """
     COMMON = 1
     GIVE = 2
     COMPENSATE = 3
     FREE = 4
     REFUND = 5
+    AUDITIONS = 6
+
 
 class PaymentMethodEnum(IntFlag):
     """

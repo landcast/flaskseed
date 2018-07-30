@@ -116,12 +116,14 @@ class CourseScheduleStatueEnum(enum.IntEnum):
     CANCEL:取消
     TROUBLE_CLASS:问题课程
     MAKE_UP_CLASS:补偿课
+    AUDITIONS:试听课
     """
 
     COMMON_CLASS = 1
     CANCEL =  2
     TROUBLE_CLASS = 3
     MAKE_UP_CLASS = 4
+    AUDITIONS = 5
 
 
 class CourseSchedule(EntityMixin, db.Model):

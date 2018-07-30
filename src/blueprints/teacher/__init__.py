@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 from flask import g, jsonify, Blueprint, request, abort, current_app,url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+import datetime,time
+
 from sqlalchemy.sql import *
 
 from src.models import db, session_scope,Teacher,Interview,TeacherState, \
-    CourseAppointment,StudySchedule,Homework,CourseSchedule,CourseClassroom,StudyAppointment
+    CourseAppointment,StudySchedule,Homework,CourseSchedule,CourseClassroom,StudyAppointment,\
+    Course,Order,PayLog,ClassroomTypeEnum
 from src.services import do_query, datetime_param_sql_format
 from src.utils import generate_pdf_from_template
 import uuid
@@ -1299,6 +1301,124 @@ def accept_students():
             }), 500
 
 
+        acceptStudyAppointments = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.id==CourseAppointment.study_appointment_id and CourseAppointment.appointment_state=='ACCEPT' and StudyAppointment.student_id ==studyAppointment.student_id).all()
 
-    return jsonify({'id':courseAppointment.id })
 
+        if acceptStudyAppointments is not None or len(acceptStudyAppointments)>0:
+            return jsonify({
+                "error": "student:{0} have accept ".format(
+                    studyAppointment.student_id)
+            }), 500
+
+        course =Course( course_type= 1,
+                        class_type= 1,
+                        classes_number = 1,
+                        course_desc = '试听课',
+                        state = 98,
+                        price= 0,
+                        primary_teacher_id = courseAppointment.teacher_id,
+                        subject_id = 1,
+                        course_name = "Auditions",
+                        course_name_zh = '试听课',
+                        delete_flag = 'IN_FORCE',
+                        updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                        )
+
+        session.add(course)
+        session.flush()
+
+        order = Order(
+                order_type = 2,
+                order_desc = '试听订单',
+                amount = 0,
+                discount = 0,
+                promotion=course.id,
+                student_id = studyAppointment.student_id,
+                course_id = course.id,
+                payment_state = 2,
+                channel_id = 1,
+                state = 98,
+                delete_flag = 'IN_FORCE',
+                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+            )
+
+        session.add(order)
+        session.flush()
+
+        paylog = PayLog( direction = 1,
+                        state = 98,
+                        amount = 0,
+                        payment_fee = 0,
+                        result = 0,
+                        order_id= order.id,
+                        delete_flag = 'IN_FORCE',
+                        state_reason = '试听订单',
+                        payment_method = 1,
+                        updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                        )
+        session.add(paylog)
+        session.flush()
+
+
+        courseschedule = CourseSchedule(
+            start = studyAppointment.open_time_start,
+            end = studyAppointment.open_time_end,
+            name = '试听课',
+            state = 98,
+            override_course_type=1,
+            course_id = course.id,
+            schedule_type = 'AUDITIONS',
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+        session.add(courseschedule)
+        session.flush()
+
+        class_type =ClassroomTypeEnum.ONE_VS_ONE.name
+
+        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'试听课', getTimeDiff(studyAppointment.open_time_start,studyAppointment.open_time_end),class_type,studyAppointment.open_time_start,0,'en')
+
+        sudyschedule = StudySchedule(
+                actual_start = studyAppointment.open_time_start,
+                actual_end = studyAppointment.open_time_end,
+                name = '试听课',
+                study_state = 1,
+                order_id = order.id,
+                course_schedule_id = courseschedule.id,
+                student_id = studyAppointment.student_id,
+                schedule_type = 'AUDITIONS',
+                delete_flag = 'IN_FORCE',
+                updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+
+        session.add(sudyschedule)
+        session.flush()
+
+
+        return jsonify({'id':courseAppointment.id })
+
+
+
+def getTimeDiff(timeStra,timeStrb):
+    if timeStra>=timeStrb:
+        return 0
+
+    current_app.logger.debug('timeStrb-------->'+timeStrb)
+
+    if "." in timeStra:
+        timeStra = timeStra.split('.')[0]
+        timeStrb = timeStrb.split('.')[0]
+
+    ta = time.strptime(timeStra, "%Y-%m-%d %H:%M:%S")
+    tb = time.strptime(timeStrb, "%Y-%m-%d %H:%M:%S")
+    y,m,d,H,M,S = ta[0:6]
+    dataTimea=datetime.datetime(y,m,d,H,M,S)
+    y,m,d,H,M,S = tb[0:6]
+    dataTimeb=datetime.datetime(y,m,d,H,M,S)
+
+    secondsDiff=(dataTimeb-dataTimea).seconds
+    #两者相加得转换成分钟的时间差
+    minutesDiff=round(secondsDiff/60)
+
+    current_app.logger.debug('minutesDiff-------->'+str(minutesDiff))
+    return minutesDiff
