@@ -1466,7 +1466,7 @@ def my_schedule_sql(params):
            from course c,course_schedule cs
           where 
           c.id = cs.course_id
-          and c.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE';
+          and c.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE'
             ''']
 
     sql.append("and c.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
