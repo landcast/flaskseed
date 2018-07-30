@@ -1301,16 +1301,21 @@ def accept_students():
             }), 500
 
 
-        acceptStudyAppointments = session.query(StudyAppointment,CourseAppointment).filter(StudyAppointment.id==CourseAppointment.study_appointment_id).\
-            filter(CourseAppointment.appointment_state=='ACCEPT').\
-            filter(StudyAppointment.student_id ==studyAppointment.student_id).all()
-
-
-        if acceptStudyAppointments is not None or len(acceptStudyAppointments)>0:
+        if studyAppointment.appointment_state == 'WRITE_CLASS':
             return jsonify({
                 "error": "student:{0} have accept ".format(
                     studyAppointment.student_id)
             }), 500
+
+        setattr(courseAppointment,'appointment_state','ACCEPT')
+        session.add(courseAppointment)
+        session.flush()
+
+        setattr(studyAppointment,'appointment_state','WRITE_CLASS')
+        session.add(studyAppointment)
+        session.flush()
+
+
 
         course =Course( course_type= 1,
                         class_type= 1,
