@@ -1385,7 +1385,7 @@ def accept_students():
 
         live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'试听课',
                                  getTimeDiff(studyAppointment.open_time_start.strftime('%Y-%m-%d %H:%M:%S'),studyAppointment.open_time_end.strftime('%Y-%m-%d %H:%M:%S')),
-                                 class_type,studyAppointment.open_time_start.isoformat() + 'Z',0,'en')
+                                 class_type,studyAppointment.open_time_start.isoformat(),0,'en')
 
         sudyschedule = StudySchedule(
                 actual_start = studyAppointment.open_time_start,
