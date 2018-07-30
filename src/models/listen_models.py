@@ -1,7 +1,9 @@
 from sqlalchemy import event
-from src.models.common_models import EntityMixin
+from src.models.common_models import EntityMixin, db
 from flask import current_app
 from src.services import listen_service
+
+
 
 
 # standard decorator style
@@ -9,4 +11,8 @@ from src.services import listen_service
 def receive_after_insert(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
     current_app.logger.debug('after_insert------------>'+target.__tablename__+'--------------'+str(target.id))
+
+    session = db.session(bind=connection)
+    listen_service.after_insert(target.__tablename__, target.id, session)
+
  #   listen_service.after_insert(target.__tablename__, target.id)
