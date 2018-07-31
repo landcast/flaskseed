@@ -22,6 +22,7 @@ def receive_after_insert(mapper, connection, target):
 @event.listens_for(EntityMixin, 'after_update', propagate=True)
 def receive_after_update(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
-    current_app.logger.debug('after_update------------>'+target.__tablename__+'--------------'+str(target.id))
+    current_app.logger.debug('vafter_update------------>'+target.__tablename__+'--------------'+str(target.id))
 
-    listen_service.after_update(target.__tablename__, target.id)
+    session = db.session(bind=connection)
+    listen_service.after_update(target.__tablename__, target.id, session)

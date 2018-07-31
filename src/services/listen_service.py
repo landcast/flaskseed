@@ -72,39 +72,46 @@ def after_insert(table_name, table_id, session=None):
         session.commit()
 
 
-def after_update(table_name, table_id):
+def after_update(table_name, table_id, session=None):
+    if not session:
+        session = db.session()
+        need_commit = True
+    else:
+        need_commit = False
 
-    with session_scope(db) as session:
-        if 'course' == table_name:
-            course = session.query(Course).filter_by(id=table_id).one_or_none()
-            thirdDate_course = session.query(ThirdDateLog).filter_by(table_id=course.id, table_name='course').one_or_none()
-            if 'DELETED' == course.delete_flag:
-                classin_service.delCourse(thirdDate_course.third_id,0,'en')
-            else:
-                classin_service.editCourse(course.course_name, '0',thirdDate_course.third_id, 0, 'en')
-        if 'course_schedule' == table_name:
-            courseSchedule = session.query(CourseSchedule).filter_by(id=table_id).one_or_none()
-            thirdDate_class = session.query(ThirdDateLog).filter_by(table_id=courseSchedule.id,
-                                                                    table_name='course_schedule').one_or_none()
-            thirdDate_course = session.query(ThirdDateLog).filter_by(table_id=course.id, table_name='course').one_or_none()
+    if 'course' == table_name:
+        course = session.query(Course).filter_by(id=table_id).one_or_none()
+        thirdDate_course = session.query(ThirdDateLog).filter_by(table_id=course.id, table_name='course').one_or_none()
+        if 'DELETED' == course.delete_flag:
+            classin_service.delCourse(thirdDate_course.third_id,0,'en')
+        else:
+            classin_service.editCourse(course.course_name, '0',thirdDate_course.third_id, 0, 'en')
+    if 'course_schedule' == table_name:
+        courseSchedule = session.query(CourseSchedule).filter_by(id=table_id).one_or_none()
+        thirdDate_class = session.query(ThirdDateLog).filter_by(table_id=courseSchedule.id,
+                                                                table_name='course_schedule').one_or_none()
+        thirdDate_course = session.query(ThirdDateLog).filter_by(table_id=course.id, table_name='course').one_or_none()
 
-            if 'DELETED' == courseSchedule.delete_flag:
-                classin_service.delCourseClass(thirdDate_course.third_id,thirdDate_class.third_id,0,'en')
-            else:
-                course = session.query(Course).filter_by(id=courseSchedule.course_id).one_or_none()
+        if 'DELETED' == courseSchedule.delete_flag:
+            classin_service.delCourseClass(thirdDate_course.third_id,thirdDate_class.third_id,0,'en')
+        else:
+            course = session.query(Course).filter_by(id=courseSchedule.course_id).one_or_none()
 
-                teacher = session.query(Teacher).filter_by(id=course.primary_teacher_id).one_or_none()
+            teacher = session.query(Teacher).filter_by(id=course.primary_teacher_id).one_or_none()
 
-                classin_service.editCourseClass(thirdDate_course.third_id, thirdDate_class.third_id, courseSchedule.name,
-                                            courseSchedule.start, courseSchedule.end, teacher.mobile, teacher.nickname, '0', 0, 'en')
+            classin_service.editCourseClass(thirdDate_course.third_id, thirdDate_class.third_id, courseSchedule.name,
+                                        courseSchedule.start, courseSchedule.end, teacher.mobile, teacher.nickname, '0', 0, 'en')
 
-        if 'courseware' == table_name:
-            courseware = session.query(Courseware).filter_by(id=table_id).one_or_none()
-            thirdDate_forder = session.query(ThirdDateLog).filter_by(table_id=courseware.course_schedule_id,
-                                                                     table_name='folder_course_schedule').one_or_none()
-            if 'DELETED' == courseware.delete_flag:
-                classin_service.delFile(thirdDate_forder.third_id,0,'en')
+    if 'courseware' == table_name:
+        courseware = session.query(Courseware).filter_by(id=table_id).one_or_none()
+        thirdDate_forder = session.query(ThirdDateLog).filter_by(table_id=courseware.course_schedule_id,
+                                                                 table_name='folder_course_schedule').one_or_none()
+        if 'DELETED' == courseware.delete_flag:
+            classin_service.delFile(thirdDate_forder.third_id,0,'en')
 
+
+    if need_commit:
+        session.commit()
 
 
 def saveThirdDateLog(table_name, table_id, third_id, third_date, session=None):
