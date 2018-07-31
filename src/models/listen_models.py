@@ -27,5 +27,5 @@ def receive_after_update(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
     current_app.logger.debug('vafter_update------------>'+target.__tablename__+'--------------'+str(target.id))
 
-    session = db.session(bind=connection)
+    session = db.session()
     listen_service.after_update(target.__tablename__, target.id, session)
