@@ -11,6 +11,7 @@ import requests
 from src.models import db, session_scope, user_source, SmsLog
 from src.services import send_email, redis_store
 import hashlib
+from src.services import classin_service
 
 BEARER_TOKEN = 'Bearer '
 
@@ -273,6 +274,8 @@ def resetpassword():
     user_name = request.json['username']
     verify_code = request.json['verify_code']
     password = request.json['password']
+    oldpassword = ''
+    mobile = ''
     check_target = redis_store.get('VC:' + user_name)
     if check_target:
         check_target = check_target.decode('utf8')
@@ -292,10 +295,15 @@ def resetpassword():
             if row1:
                 # update password
                 current_app.logger.debug('password: ' + row1.password)
+                oldpassword = row1.password
+                mobile = row1.moble
                 row1.password = generate_password_hash(password)
                 current_app.logger.debug(
                     'new password: ' + row1.password)
                 session.merge(row1)
+
+                classin_service.editPasswort(mobile,row1.password,oldpassword,0,'en')
+
                 return jsonify({'message': 'reset password succ!'})
 
     return jsonify({'message': user_name + ' not found!'}), 401
