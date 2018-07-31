@@ -1419,6 +1419,12 @@ def my_schedule():
       page_no:
         description: 'page no'
         type: 'integer'
+    start:
+        description: '开始时间'
+        type: 'string'
+    end:
+        description: '结束时间'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -1470,6 +1476,10 @@ def my_schedule_sql(params):
             ''']
 
     sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+
+    if 'start' in params.keys() and 'end' in params.keys() :
+        sql.append(' and cs.`start` >:start and cs.`start` <:end')
 
 
     return ['class_name', 'start','end','student_name'], ''.join(sql)
