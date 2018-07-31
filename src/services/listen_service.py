@@ -6,12 +6,11 @@ from src.services import classin_service
 
 def after_insert(table_name, table_id, session=None):
     current_app.logger.debug('listen start------------>' + table_name + '--------------' + str(table_id))
-
-    need_commit = False
-
     if not session:
         session = db.session()
         need_commit = True
+    else:
+        need_commit = False
 
     current_app.logger.debug('need_commit------------>'+str(need_commit) )
 
