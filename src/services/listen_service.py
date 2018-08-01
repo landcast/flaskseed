@@ -136,6 +136,8 @@ def saveThirdDateLog(table_name, table_id, third_id, third_date, session=None):
                                 delete_flag='IN_FORCE')
     # session.add(thirdDateLog)
     current_app.logger.debug('course------------>7' )
+    session.query('INSERT INTO third_date_log (table_name,table_id,third_id,third_date,delete_flag,created_at,updated_at) VALUES'
+                  ' (table_name,table_id,third_id,third_date,\'IN_FORCE\',now(),now())')
     # if need_commit:
     #     session.commit()
 
