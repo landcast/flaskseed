@@ -128,20 +128,20 @@ def saveThirdDateLog(table_name, table_id, third_id, third_date, session=None):
         need_commit = True
     else:
         need_commit = False
-        current_app.logger.debug('course------------>6' )
+        current_app.logger.debug('course------------>16' )
     thirdDateLog = ThirdDateLog(table_name=table_name,
                                 table_id=table_id,
                                 third_id=third_id,
                                 third_date=third_date,
                                 delete_flag='IN_FORCE')
     # session.add(thirdDateLog)
-    current_app.logger.debug('course------------>7' )
-    session.query('INSERT INTO third_date_log (table_name,table_id,third_id,third_date,delete_flag,created_at,updated_at) VALUES'
+    current_app.logger.debug('course------------>17' )
+    session.execute('INSERT INTO third_date_log (table_name,table_id,third_id,third_date,delete_flag,created_at,updated_at) VALUES'
                   ' (table_name,table_id,third_id,third_date,\'IN_FORCE\',now(),now())')
     # if need_commit:
     #     session.commit()
 
-    current_app.logger.debug('course------------>8' )
+    current_app.logger.debug('course------------>18' )
 def createFolder(folderId, folderName, table_name, table_id, session=None):
     if not session:
         session = db.session()
