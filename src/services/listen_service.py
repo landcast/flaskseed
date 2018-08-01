@@ -134,10 +134,10 @@ def saveThirdDateLog(table_name, table_id, third_id, third_date, session=None):
                                 third_id=third_id,
                                 third_date=third_date,
                                 delete_flag='IN_FORCE')
-    session.add(thirdDateLog)
+    # session.add(thirdDateLog)
     current_app.logger.debug('course------------>7' )
-    if need_commit:
-        session.commit()
+    # if need_commit:
+    #     session.commit()
 
     current_app.logger.debug('course------------>8' )
 def createFolder(folderId, folderName, table_name, table_id, session=None):
