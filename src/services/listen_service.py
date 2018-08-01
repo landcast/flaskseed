@@ -130,7 +130,7 @@ def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, session):
     param = (tableName,tableId,thirdId,thirdDate,)
 
     current_app.logger.debug('course------------>18'+sql )
-    session.execute(sql,param)
+    db.execute(sql,param)
 
 
 
