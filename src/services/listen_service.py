@@ -126,7 +126,7 @@ def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, connection):
 
     current_app.logger.debug('course------------>17' )
 
-    sql = "INSERT  INTO third_date_log(table_name,table_id,third_id,third_date,created_at,updated_at)values(%s,%s,%s,s%,now(),now())"
+    sql = "INSERT  INTO third_date_log(table_name,table_id,third_id,third_date,created_at,updated_at)values(%s,%s,%s,%s,now(),now())"
     param = (tableName,tableId,thirdId,thirdDate,)
     sql.format(param)
     current_app.logger.debug('sql------------>'+sql )
