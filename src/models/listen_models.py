@@ -96,16 +96,15 @@ def receive_after_update(mapper, connection, target):
     #listen_service.after_update(target.__tablename__, target.id,session)
 
 
-
 def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
 
     current_app.logger.debug('course------------>27' )
-    connection.execute(
-        "insert into third_date_log(table_name,table_id, "
-        "third_id,third_date,created_at,updated_at) "
-        "values({}, '{}', '{}', '{}', '{}', '{}')".format(
-            tableName, tableId, thirdId,
-            thirdDate, datetime.now(), datetime.now()))
+  #  connection.execute(
+   #     "insert into third_date_log(table_name,table_id, "
+    #    "third_id,third_date,created_at,updated_at) "
+     #   "values({}, '{}', '{}', '{}', '{}', '{}')".format(
+      #      tableName, tableId, thirdId,
+       #     thirdDate, datetime.now(), datetime.now()))
     current_app.logger.debug('course------------>28' )
 
 
