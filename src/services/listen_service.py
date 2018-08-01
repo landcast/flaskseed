@@ -122,16 +122,16 @@ def after_update(table_name, table_id, session=None):
         session.commit()
 
 
-def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, session):
+def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, connection):
 
     current_app.logger.debug('course------------>17' )
 
     sql = "INSERT  INTO third_date_log(table_name,table_id,third_id,third_date,created_at,updated_at)values(%s,%s,%s,s%,now(),now())"
     param = (tableName,tableId,thirdId,thirdDate,)
-
-    current_app.logger.debug('course------------>18'+sql )
-
-    db.session.execute(sql,param)
+    sql.format(param)
+    current_app.logger.debug('sql------------>'+sql )
+    connection.execute(sql)
+    current_app.logger.debug('course------------>18' )
 
 
 
