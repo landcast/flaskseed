@@ -126,7 +126,7 @@ def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, session):
 
     current_app.logger.debug('course------------>17' )
 
-    sql = 'INSERT INTO third_date_log (table_name,table_id,third_id,third_date,created_at,updated_at) VALUES ('+tableName+','+tableId+','+thirdId+','+thirdDate+',now(),now()'+')'
+    sql = "INSERT INTO third_date_log (table_name,table_id,third_id,third_date,created_at,updated_at) VALUES ("+tableName+','+tableId+','+thirdId+','+thirdDate+",now(),now())"
 
     session.execute()
     current_app.logger.debug('course------------>18'+sql )
