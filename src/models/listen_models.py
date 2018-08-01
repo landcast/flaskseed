@@ -102,7 +102,7 @@ def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
     connection.execute(
         "insert into third_date_log(table_name,table_id, "
         "third_id,third_date,created_at,updated_at) "
-        "values({}, '{}', '{}', '{}', '{}', '{}')".format(
+        "values('{}', '{}', '{}', '{}', '{}', '{}')".format(
             tableName, tableId, thirdId,
             thirdDate, datetime.now(), datetime.now()))
     current_app.logger.debug('course------------>28' )
