@@ -42,7 +42,7 @@ def receive_after_insert(mapper, connection, target):
         current_app.logger.debug('course------------>3' )
         course_id = classin_service.addCourse(course.course_name, 0, folderId, 0, 'en')
         current_app.logger.debug('course------------>4' )
-        saveThirdDateLog(table_name, table_id, course_id, '')
+        saveThirdDateLog(table_name, table_id, course_id, '',connection)
         current_app.logger.debug('course------------>5' )
 
     if 'course_schedule' == table_name:
@@ -99,14 +99,14 @@ def receive_after_update(mapper, connection, target):
 
 def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
 
-    current_app.logger.debug('course------------>17' )
+    current_app.logger.debug('course------------>27' )
     connection.execute(
         "insert into third_date_log(table_name,table_id, "
         "third_id,third_date,created_at,updated_at) "
         "values({}, '{}', '{}', '{}', '{}', '{}')".format(
             tableName, tableId, thirdId,
             thirdDate, datetime.now(), datetime.now()))
-    current_app.logger.debug('course------------>18' )
+    current_app.logger.debug('course------------>28' )
 
 
 
