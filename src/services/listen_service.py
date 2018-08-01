@@ -1,4 +1,5 @@
 from flask import current_app
+from datetime import datetime
 from src.models import db, session_scope, Student, Teacher, Course, CourseSchedule, ThirdDateLog, \
     StudySchedule, Courseware
 from src.services import classin_service
@@ -125,12 +126,12 @@ def after_update(table_name, table_id, session=None):
 def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, connection):
 
     current_app.logger.debug('course------------>17' )
-
-    sql = "INSERT  INTO third_date_log(table_name,table_id,third_id,third_date,created_at,updated_at)values(%s,%s,%s,%s,now(),now())"
-    param = (tableName,tableId,thirdId,thirdDate,)
-    sql.format(param)
-    current_app.logger.debug('sql------------>'+sql )
-    connection.execute(sql)
+    connection.execute(
+        "insert into third_date_log(table_name,table_id, "
+        "third_id,third_date,created_at,updated_at) "
+        "values({}, '{}', '{}', '{}', '{}', '{}')".format(
+            tableName, tableId, thirdId,
+            thirdDate, datetime.now(), datetime.now()))
     current_app.logger.debug('course------------>18' )
 
 
