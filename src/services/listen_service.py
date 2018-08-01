@@ -123,7 +123,7 @@ def after_update(table_name, table_id, session=None):
         session.commit()
 
 
-def saveThirdDateLog(tableName, tableId, thirdId, thirdDate, connection):
+def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
 
     current_app.logger.debug('course------------>17' )
     connection.execute(
