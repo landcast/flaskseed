@@ -108,7 +108,10 @@ def generate_sql(params):
         sql.append(' and rd.id = :role_id')
     if 'user_state' in params.keys():
         sql.append(' and su.state = :user_state')
-    # current_app.logger.debug(sql)
+
+    sql.append(' order by su.id desc')
+
+    current_app.logger.debug(sql)
     return ['id', 'username', 'mobile', 'email', 'created_at',
             'role_name', 'state'], ''.join(sql)
 
@@ -228,6 +231,8 @@ def student_course_sql(params):
             and params['course_status'] == '2':
         sql.append(' and cs.end < now()')
 
+    sql.append(' order by o.id desc')
+
     return ['id', 'course_name', 'finish', 'classes_number', 'teacher_name',
             'start', 'end'], ''.join(sql)
 
@@ -340,6 +345,8 @@ def student_allot_sql(params):
         sql.append(" and c.channel_name like '%")
         sql.append(params['student_from'])
         sql.append("%'")
+    sql.append(' order by s.id desc')
+
     return ['id', 'username','student_name', 'mobile',
             'email', 'created_at', 'channel_name', 'state','su_name'], ''.join(sql)
 
@@ -448,6 +455,8 @@ def thacher_check_sql(params):
             and 'update_at_end' in params.keys():
         sql.append(
             ' and t.updated_at between :update_at_start and :update_at_end')
+
+    sql.append(' order by t.id desc')
 
     return ['id', 'teacher_name', 'mobile', 'email', 'updated_at',
             'state'], ''.join(sql)
@@ -578,6 +587,8 @@ def thacher_interview_sql(params):
         sql.append(" and su.username like '%")
         sql.append(params['interview_name'])
         sql.append("%'")
+    sql.append(' order by t.id desc')
+
     return ['id', 'course_id', 'username', 'mobile', 'email',
             'course_name', 'interview_name', 'start', 'end', 'state','integerview_state','courseware_num'], ''.join(sql)
 
@@ -707,6 +718,7 @@ def students_sql(params):
     if 'created_at_start' in params.keys() \
         and 'created_at_end' in params.keys():
         sql.append(' and s.created_at between :created_at_start and :created_at_end')
+    sql.append(' order by s.id desc')
 
     return ['id', 'created_at','username', 'parent_mobile',
             'gender', 'channel_name','gender'], ''.join(sql)
@@ -813,6 +825,8 @@ def thacher_tryout_sql(params):
     if 'courseware_state' in params.keys():
         sql.append(
             ' and t.courseware_num =:courseware_state')
+    sql.append(' order by t.id desc')
+
 
     return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
             'start', 'end','course_schedule_state'], ''.join(sql)
@@ -926,7 +940,7 @@ def student_tryout_sql(params):
     if 'course_schedule_state' in params.keys():
         sql.append(
             ' and t.course_schedule_state =:course_schedule_state')
-
+    sql.append(' order by t.id desc')
     return ['id', 'course_name', 'open_grade', 'teacher_name', 'student_name',
             'start', 'end','courseware_num','course_schedule_state','study_schedule_id','course_schedule_id'], ''.join(sql)
 
@@ -1042,7 +1056,7 @@ def course_ware_sql(params):
     if 'class_at' in params.keys() :
         sql.append(
             ' and cs.`start` <:class_at and cs.`end` >:class_at')
-
+    sql.append(' order by c.id desc')
     return ['id', 'ware_name', 'room_title', 'subject_name', 'teacher_name',
             'created_at', 'state'], ''.join(sql)
 
@@ -1150,7 +1164,7 @@ def thacher_common_sql(params):
     if 'courseware_state' in params.keys():
         sql.append(
             ' and t.courseware_num =:courseware_state')
-
+    sql.append(' order by t.id desc')
     return ['id', 'teacher_name', 'course_name', 'student_name', 'grade',
             'start', 'end','course_schedule_state','course_schedule_id'], ''.join(sql)
 
@@ -1281,8 +1295,8 @@ def orders_query_sql(params):
             and 'created_at_end' in params.keys():
         sql.append(
             ' and o.created_at between :created_at_start and :created_at_end')
-
-    # current_app.logger.debug(sql)
+    sql.append(' order by o.id desc')
+    current_app.logger.debug(sql)
     return ['id', 'subject_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
             'order_amount','payment_state'], ''.join(sql)
@@ -1409,8 +1423,8 @@ def refund_query_sql(params):
             and 'created_at_end' in params.keys():
         sql.append(
             ' and o.created_at between :created_at_start and :created_at_end')
-
-    # current_app.logger.debug(sql)
+    sql.append(' order by o.id desc')
+    current_app.logger.debug(sql)
     return ['id', 'subject_name', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
             'order_amount','payment_state'], ''.join(sql)
@@ -1516,7 +1530,7 @@ def thacher_apponit_sql(params):
     if 'interview_at' in params.keys():
         sql.append(
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
-
+    sql.append(' order by t.id desc')
     return ['id','interview_id', 'username', 'mobile', 'email','updated_at','interview_state'], ''.join(sql)
 
 
@@ -1642,7 +1656,7 @@ def interview_result_sql(params):
         sql.append(" and su.username like '%")
         sql.append(params['interview_name'])
         sql.append("%'")
-
+    sql.append(' order by t.id desc')
     return ['id','interview_id', 'username', 'mobile', 'email','start','end','interview_name','interview_state'], ''.join(sql)
 
 
@@ -1761,7 +1775,7 @@ def my_homework_sql(params):
     if 'study_schedule_id' in params.keys():
         sql.append(' and sc.id =:study_schedule_id')
 
-
+    sql.append(' order by hm.id desc')
     current_app.logger.debug(sql)
 
     return ['id', 'question_name','question_text', 'question_attachment_url', 'created_at'], ''.join(sql)
@@ -1857,7 +1871,7 @@ def view_homework_sql(params):
     if 'course_schedule_id' in params.keys():
         sql.append(
             ' and cs.id = '+params['course_schedule_id'])
-
+    sql.append(' order by cs.id desc')
     return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at','evaluation'], ''.join(sql)
 
 
@@ -1958,7 +1972,7 @@ def student_tryout_apply_sql(params):
     if 'class_at' in params.keys():
         sql.append(" and sa.open_time_start <=:class_at ")
         sql.append(" and sa.open_time_end >:class_at ")
-
+    sql.append(' order by sa.id desc')
     return ['course_appointment_id', 'study_appointment_id', 'created_at','apply_by','student_name','open_time_start','open_time_end','teacher_name','appointment_state'], ''.join(sql)
 
 
@@ -2032,7 +2046,7 @@ def student_tryout_apply_result_sql(params):
 
     sql.append(" and ca.study_appointment_id =:study_appointment_id ")
 
-
+    sql.append(' order by ca.id desc')
     return ['id', 'teacher_name', 'mobile','email','timezone','appointment_state'], ''.join(sql)
 
 

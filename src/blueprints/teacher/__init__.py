@@ -240,8 +240,8 @@ def teacher_query_sql(params):
         sql.append(' and sc.id =:cur_category_2 and th.type = 2')
     if 'cur_category_3' in params.keys():
         sql.append(' and s.id =:category_3 and th.type = 2')
-
-    # current_app.logger.debug(sql)
+    sql.append(' order by t.id desc')
+    current_app.logger.debug(sql)
     return ['id', 'created_at', 'username', 'mobile', 'email',
             'country', 'province', 'timezone', 'state'], ''.join(sql)
 
@@ -526,7 +526,7 @@ def my_course_sql(params):
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
         sql.append(' and t.end > now()')
-
+    sql.append(' order by t.id desc')
     return ['id', 'course_name', 'course_name_zh','classes_number', 'start', 'end',
             'student_name', 'finish'], ''.join(sql)
 
@@ -603,7 +603,7 @@ def my_homework_sql(params):
             ' and cs.id = '+params['course_schedule_id'])
 
     sql.append(' group by h.question_name')
-
+    sql.append(' order by h.id desc')
     return ['id', 'question_name', 'question_text','created_at'], ''.join(sql)
 
 
@@ -696,7 +696,7 @@ def view_homework_sql(params):
     if 'course_schedule_id' in params.keys():
         sql.append(
             ' and cs.id = '+params['course_schedule_id'])
-
+    sql.append(' order by cs.id desc')
     return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at'], ''.join(sql)
 
 
@@ -772,7 +772,7 @@ def my_course_on_sql(params):
     if 'course_id' in params.keys():
         sql.append(
             ' and c.id = '+params['course_id'])
-
+    sql.append(' order by cs.id desc')
     return ['id', 'name', 'class_type','start', 'end'], ''.join(sql)
 
 
@@ -855,7 +855,7 @@ def my_course_off_sql(params):
     if 'course_id' in params.keys():
         sql.append(
             ' and c.id = '+params['course_id'])
-
+    sql.append(' order by cs.id desc')
     return ['id','courseware_id' ,'name','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
 
 
@@ -937,7 +937,7 @@ def my_course_result_sql(params):
     if 'course_id' in params.keys():
         sql.append(
             ' and c.id = '+params['course_id'])
-
+    sql.append(' order by sr.id desc')
     return ['id','student_name' ,'start', 'end','report_card_name','report_card_url'], ''.join(sql)
 
 
@@ -1079,6 +1079,9 @@ def my_subject_sql(params):
         sql.append(' and th.teacher_id =:teacher_id ')
     else:
         sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    sql.append(' order by h.id desc')
+
     return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name', 'grade','type'], ''.join(sql)
 
 
@@ -1191,6 +1194,8 @@ def students_sql(params):
 
     sql.append("group by s.id ")
 
+    sql.append(' order by s.id desc')
+
     return ['id', 'student_name'], ''.join(sql)
 
 
@@ -1262,7 +1267,7 @@ def apply_students_sql(params):
 
     sql.append("and ca.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
-
+    sql.append(' order by sa.id desc')
     return ['id', 'start','end','student_name','apply_state'], ''.join(sql)
 
 
@@ -1480,7 +1485,7 @@ def my_schedule_sql(params):
 
     if 'start' in params.keys() and 'end' in params.keys() :
         sql.append(' and cs.`start` >:start and cs.`start` <:end')
-
+    sql.append(' order by c.id desc')
 
     return ['class_name', 'start','end','student_name'], ''.join(sql)
 

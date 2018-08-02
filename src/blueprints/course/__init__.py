@@ -148,6 +148,9 @@ def generate_sql(params):
         sql.append(" and su.subject_name  like '%")
         sql.append(params['category_3'])
         sql.append("%'")
+
+    sql.append(' order by c.id desc')
+
     return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
             'updated_by', 'created_at'], ''.join(sql)
 
@@ -257,6 +260,7 @@ def category_sql(params):
         sql.append(
                 ' and t.created_at between :created_at_start and '
                 ':created_at_end')
+    sql.append(' order by t.id desc')
 
     return ['name', 'name_zh', 'id', 'updated_by', 'created_at',
             'state', 'level'], ''.join(sql)
@@ -687,6 +691,8 @@ def course_common_sql(params):
     if 'state' in params.keys() and '3' ==params['state'] :
         sql.append(' and t.finish > t.classes_number')
 
+    sql.append(' order by t.id desc')
+
     return ['id', 'course_name', 'course_name_zh', 'teacher_name', 'student_name',
             'start', 'end','classes_number','finish','course_schedule_id','open_grade'], ''.join(sql)
 
@@ -758,7 +764,7 @@ def course_schedule_sql(params):
 	    from course_schedule cs
         where  cs.`delete_flag` = 'IN_FORCE' 
     ''']
-
+    sql.append(' order by cs.id desc')
     return ['id', 'name', 'start', 'end', 'courseware_num','schedule_type'], ''.join(sql)
 
 
@@ -836,6 +842,8 @@ def my_homework_sql(params):
 
     sql.append(' and cs.id =:course_schedule_id')
 
+    sql.append(' order by hm.id desc')
+
     current_app.logger.debug(sql)
 
     return ['id', 'question_name','question_text', 'question_attachment_url', 'created_at'], ''.join(sql)
@@ -903,6 +911,8 @@ def common_summary_sql(params):
     ''']
 
     sql.append(' and cs.id =:course_schedule_id')
+
+    sql.append(' order by cs.id desc')
 
     current_app.logger.debug(sql)
 
@@ -976,6 +986,8 @@ def common_summary_result_sql(params):
     sql.append(' and ss.course_id =:course_id')
 
     sql.append(' and ss.result_type =:type')
+
+    sql.append(' order by ss.id desc')
 
     current_app.logger.debug(sql)
 
@@ -1119,6 +1131,8 @@ def common_evaluation_sql(params):
 
     sql.append(' and ss.id =:course_schedule_id')
 
+    sql.append(' order by cs.id desc')
+
     return ['id', 'student_name','teacher_score','student_score','teacher_evaluation'], ''.join(sql)
 
 
@@ -1197,6 +1211,8 @@ def common_homework_student_sql(params):
 
     sql.append(' and hm.homework_id =:homework_id')
 
+    sql.append(' order by hm.id desc')
+
     current_app.logger.debug(sql)
 
     return ['id', 'title','answer_text', 'created_at','answer_attachment_url'], ''.join(sql)
@@ -1266,6 +1282,8 @@ def member_sql(params):
     ''']
 
     sql.append(' and c.id =:course_id')
+
+    sql.append(' order by c.id desc')
 
     return ['teacher_name','course_name','course_name_zh','student_name','assist_teacher_name'], ''.join(sql)
 

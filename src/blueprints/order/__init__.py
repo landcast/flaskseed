@@ -137,7 +137,8 @@ def generate_sql(params):
         sql.append(' and sc.subject_category like :category_2')
     if 'category_3' in params.keys():
         sql.append(' and su.subject_name like :category_3')
-    # current_app.logger.debug(sql)
+    sql.append(' order by o.id desc')
+    current_app.logger.debug(sql)
     return ['id', 'course_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
             'order_amount'], ''.join(sql)
