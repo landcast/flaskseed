@@ -35,15 +35,10 @@ def receive_after_insert(mapper, connection, target):
             teacher_id = classin_service.register(teacher.mobile, teacher.nickname, teacher.password, 0, 'en')
             saveThirdDateLog(table_name, table_id, teacher_id, '')
     if 'course' == table_name:
-        current_app.logger.debug('course------------>1' )
         course = session.query(Course).filter_by(id=table_id).one_or_none()
-        current_app.logger.debug('course------------>2' )
         folderId = createFolder('', course.course_name, table_name, course.id, session)
-        current_app.logger.debug('course------------>3' )
         course_id = classin_service.addCourse(course.course_name, 0, folderId, 0, 'en')
-        current_app.logger.debug('course------------>4' )
         saveThirdDateLog(table_name, table_id, course_id, '',connection)
-        current_app.logger.debug('course------------>5' )
 
     if 'course_schedule' == table_name:
         courseSchedule = session.query(CourseSchedule).filter_by(id=table_id).one_or_none()
@@ -53,7 +48,7 @@ def receive_after_insert(mapper, connection, target):
                                                                  table_name='folder_course').one_or_none()
         teacher = session.query(Teacher).filter_by(id=course.primary_teacher_id).one_or_none()
 
-        folderId = createFolder(thirdDate_forder.third_id, course.course_name, table_name, courseSchedule.id, session)
+        folderId = createFolder(thirdDate_forder.third_id, courseSchedule.name, table_name, courseSchedule.id, session)
         num = 0
         if course.class_type == 3:
             num = 3
@@ -93,7 +88,7 @@ def receive_after_update(mapper, connection, target):
     current_app.logger.debug('vafter_update------------>'+target.__tablename__+'--------------'+str(target.id))
 
     session = db.session()
-    #listen_service.after_update(target.__tablename__, target.id,session)
+    listen_service.after_update(target.__tablename__, target.id,session)
 
 
 def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
