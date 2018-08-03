@@ -109,8 +109,10 @@ def user_load(username):
                     dict = row_dict(rs[0])
                     dict['user_type'] = key
                     setattr(g, current_app.config['CUR_USER'], dict)
+                    current_app.logger.debug('a----------------->')
                     redis_store.set('UP:' + username,
                                     json.dumps(dict))
+                    current_app.logger.debug('b----------------->')
                     return True
 
 
