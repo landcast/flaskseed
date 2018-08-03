@@ -328,12 +328,12 @@ def content_file():
             'effective_date': salary,
             'teacher_salary': date
         }
-        current_app.logger.debug('a----------------->')
+        current_app.logger.debug('b----------------->')
         file = str(uuid.uuid1())+'.pdf'
 
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, './src/static/contract/'+file)
-
+        current_app.logger.debug('c----------------->')
         result = []
 
         result.append({'download_file': '/static/contract/'+file})
