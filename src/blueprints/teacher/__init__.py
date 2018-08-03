@@ -322,18 +322,15 @@ def content_file():
                 "error": "not found teacher_id:{0} ".format(
                     teacher_id)
             }), 500
-        current_app.logger.debug('a----------------->')
         param_dict = {
             'teacher_name': teacher.username,
             'effective_date': salary,
             'teacher_salary': date
         }
-        current_app.logger.debug('b----------------->')
         file = str(uuid.uuid1())+'.pdf'
 
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, './src/static/contract/'+file)
-        current_app.logger.debug('c----------------->')
         result = []
 
         result.append({'download_file': '/static/contract/'+file})
