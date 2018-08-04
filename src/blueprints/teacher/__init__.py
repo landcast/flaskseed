@@ -324,8 +324,8 @@ def content_file():
             }), 500
         param_dict = {
             'teacher_name': teacher.username,
-            'effective_date': salary,
-            'teacher_salary': date
+            'effective_date': date,
+            'teacher_salary':salary
         }
         file = str(uuid.uuid1())+'.pdf'
 
