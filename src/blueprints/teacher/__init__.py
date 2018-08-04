@@ -336,7 +336,7 @@ def content_file():
         result.append({'download_file': '/static/contract/'+file})
 
         setattr(teacher,'contract_url','/static/contract/'+file)
-        setattr(teacher,'contract_dollar_price',salary)
+        setattr(teacher,'contract_dollar_price',float(salary))
 
         session.add(teacher)
 
