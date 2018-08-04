@@ -322,6 +322,18 @@ def content_file():
                 "error": "not found teacher_id:{0} ".format(
                     teacher_id)
             }), 500
+
+
+        result = []
+
+        if teacher.contract_url is not None and '.pdf' in teacher.contract_url:
+
+            result.append({'download_file': teacher.contract_url})
+
+            return jsonify(result)
+
+
+
         param_dict = {
             'teacher_name': teacher.username,
             'effective_date': date,
@@ -331,7 +343,6 @@ def content_file():
 
         status, output = generate_pdf_from_template('agreement.html',
                                                     param_dict, './src/static/contract/'+file)
-        result = []
 
         result.append({'download_file': '/static/contract/'+file})
 
