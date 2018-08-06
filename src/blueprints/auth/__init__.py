@@ -8,7 +8,7 @@ import jwt
 import random
 import requests
 
-from src.models import db, session_scope, user_source, SmsLog
+from src.models import db, session_scope, user_source, SmsLog,ThirdDateLog
 from src.services import send_email, redis_store
 import hashlib
 from src.services import classin_service
@@ -175,6 +175,18 @@ def register():
         user_id)
     value = hashlib.md5(str(user).encode('utf-8')).hexdigest()
     redis_store.set(redis_key, value)
+
+    if user.mobile is not None:
+        teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
+        thirdDateLog = ThirdDateLog(table_name = target_table,
+                                table_id = user_id,
+                                third_id = teacher_id,
+                                third_date = '',
+                                delete_flag = 'IN_FORCE')
+        session.add(thirdDateLog)
+        session.flush()
+
+
     return jsonify(token)
 
 

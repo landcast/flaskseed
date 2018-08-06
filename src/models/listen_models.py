@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 # standard decorator style
-#@event.listens_for(EntityMixin, 'after_insert', propagate=True)
+@event.listens_for(EntityMixin, 'after_insert', propagate=True)
 def receive_after_insert(mapper, connection, target):
     print('after_insert-1', target.__tablename__, target.id)
     current_app.logger.debug('after_insert---1--------->'+target.__tablename__+'--------------'+str(target.id))
@@ -23,17 +23,6 @@ def receive_after_insert(mapper, connection, target):
     table_name = target.__tablename__
     table_id = target.id
 
-    if 'student' == table_name:
-        student = session.query(Student).filter_by(id=table_id).one_or_none()
-        if student.mobile is not None:
-            student_id = classin_service.register(student.mobile, student.nickname, student.password, 0, 'en')
-            saveThirdDateLog(table_name, table_id, student_id, '')
-
-    if 'teacher' == table_name:
-        teacher = session.query(Teacher).filter_by(id=table_id).one_or_none()
-        if teacher.mobile is not None:
-            teacher_id = classin_service.register(teacher.mobile, teacher.nickname, teacher.password, 0, 'en')
-            saveThirdDateLog(table_name, table_id, teacher_id, '')
     if 'course' == table_name:
         course = session.query(Course).filter_by(id=table_id).one_or_none()
         folderId = createFolder('', course.course_name, table_name, course.id, session)
