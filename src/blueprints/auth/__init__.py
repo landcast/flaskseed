@@ -110,8 +110,8 @@ def register():
         check_target = 'None'
     current_app.logger.debug(verify_code + ' ' + check_target + ' ' +
                              str(verify_code != check_target))
-    if verify_code != check_target:
-        return jsonify({'message': 'verify code check failed'}), 500
+#    if verify_code != check_target:
+#        return jsonify({'message': 'verify code check failed'}), 500
     target_table = user_source[user_type]
     with session_scope(db) as session:
         # check existing username in all 3 tables
