@@ -176,15 +176,15 @@ def register():
     value = hashlib.md5(str(user).encode('utf-8')).hexdigest()
     redis_store.set(redis_key, value)
 
-    if user.mobile is not None:
-        teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
-        thirdDateLog = ThirdDateLog(table_name = target_table,
-                                table_id = user_id,
-                                third_id = teacher_id,
-                                third_date = '',
-                                delete_flag = 'IN_FORCE')
-        session.add(thirdDateLog)
-        session.flush()
+ #   if user.mobile is not None:
+  #      teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
+   #     thirdDateLog = ThirdDateLog(table_name = target_table,
+     #                           table_id = user_id,
+    ##                            third_id = teacher_id,
+      #                          third_date = '',
+       #                         delete_flag = 'IN_FORCE')
+        #session.add(thirdDateLog)
+        #session.flush()
 
 
     return jsonify(token)
