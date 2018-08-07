@@ -85,6 +85,9 @@ def register():
       last_name:
         description: 'last_name'
         type: 'string'
+      code:
+        description: '国家代码'
+        type: 'int'
     res:
       Authorization:
         description: 'Athorization jwt http header'
@@ -95,6 +98,11 @@ def register():
     user_type = request.json['usertype']
     verify_code = request.json['verify_code']
     check_target = redis_store.get('VC:' + user_name)
+
+    code = 86
+    if code in request.json['username']:
+        code = request.json['username']
+
 
     firstName = ''
     lastName = ''
@@ -163,7 +171,7 @@ def register():
         user = target_table(username=user_name,
                             password=generate_password_hash(
                                 request.json['password']), state=1,
-                            updated_by=user_name, email=email, mobile=mobile,nickname=user_name,first_name=firstName,last_name=lastName)
+                            updated_by=user_name, email=email, mobile=mobile,nickname=user_name,first_name=firstName,last_name=lastName,nation = str(code))
         current_app.logger.debug('encrypted password:' + user.password)
         result = session.add(user)
         current_app.logger.debug(result)
@@ -177,6 +185,10 @@ def register():
     redis_store.set(redis_key, value)
 
     if user.mobile is not None:
+
+        if code is not 86:
+            mobile = code+'-'+mobile
+
         teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
         thirdDateLog = ThirdDateLog(table_name = target_table,
                                table_id = user_id,
