@@ -282,7 +282,6 @@ def refund():
         interview = Interview(state = 1,
                          delete_flag = 'IN_FORCE',
                          updated_by=getattr(g, current_app.config['CUR_USER'])['username'],
-                         interviewer_id =getattr(g, current_app.config['CUR_USER'])['id'],
                          teacher_id = teacher_id
                 )
         session.add(interview)
