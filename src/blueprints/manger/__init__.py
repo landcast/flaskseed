@@ -1516,7 +1516,7 @@ def thacher_apponit_sql(params):
     sql = ['''
     select t.id,i.id as interview_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
     from teacher t , interview i  
-    where t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    where t.`delete_flag` = 'IN_FORCE' and t.state = 'CHECK_PASS' and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
     ''']
 
