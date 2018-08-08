@@ -234,7 +234,7 @@ def category_sql(params):
     :param params:
     :return:
     '''
-    current_app.logger.debug(params)
+
     sql = ['''
     select t.* from (select full_name as name,full_name_zh as name_zh,id,
     updated_by,created_at,state,1 'level' from `curriculum` cu where cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE' 
@@ -261,7 +261,7 @@ def category_sql(params):
                 ' and t.created_at between :created_at_start and '
                 ':created_at_end')
     sql.append(' order by t.id desc')
-
+    current_app.logger.debug(sql)
     return ['name', 'name_zh', 'id', 'updated_by', 'created_at',
             'state', 'level'], ''.join(sql)
 

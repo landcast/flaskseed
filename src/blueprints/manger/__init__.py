@@ -91,21 +91,27 @@ def generate_sql(params):
     :return:
     '''
     sql = ['''
-    select su.id,su.username,su.mobile,su.email,su.`created_at`,rd.role_name,su.state,sur.id
-    from sys_user su,sys_user_role sur,role_definition rd 
-    where su.`id`=sur.sys_user_id and sur.role_definition_id = rd.id
-    and su.`delete_flag` = 'IN_FORCE' and sur.`delete_flag` = 'IN_FORCE' and rd.`delete_flag` = 'IN_FORCE' 
+        select su.id,su.username,su.mobile,su.email,su.`created_at`,
+        (select GROUP_CONCAT(role_name) from sys_user_role sur1,role_definition rd1 where sur1.role_definition_id = rd1.id and  sur1.sys_user_id = su.id  and sur1.`delete_flag` = 'IN_FORCE' and rd1.`delete_flag` = 'IN_FORCE') as role_name,
+        su.state,sur.id
+        from sys_user su left join sys_user_role sur on su.id = sur.sys_user_id and sur.`delete_flag` = 'IN_FORCE'
+        where su.`delete_flag` = 'IN_FORCE' 
     ''']
     if 'user_name' in params.keys():
         sql.append(" and su.username like '%")
         sql.append(params['user_name'])
         sql.append("%'")
     if 'mobile' in params.keys():
-        sql.append(' and su.mobile = :mobile')
+        sql.append(" and su.mobile like '%")
+        sql.append(params['mobile'])
+        sql.append("%'")
+
     if 'email' in params.keys():
-        sql.append(' and su.email = :email')
+        sql.append(" and su.email like '%")
+        sql.append(params['email'])
+        sql.append("%'")
     if 'role_id' in params.keys():
-        sql.append(' and rd.id = :role_id')
+        sql.append(' and sur.role_definition_id = :role_id')
     if 'user_state' in params.keys():
         sql.append(' and su.state = :user_state')
 
