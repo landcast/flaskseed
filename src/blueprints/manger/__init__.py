@@ -91,15 +91,15 @@ def generate_sql(params):
     :return:
     '''
     sql = ['''
-        select su.id,su.username,su.mobile,su.email,su.`created_at`,
+        select su.id,su.name as username,su.mobile,su.email,su.`created_at`,
         (select GROUP_CONCAT(role_name) from sys_user_role sur1,role_definition rd1 where sur1.role_definition_id = rd1.id and  sur1.sys_user_id = su.id  and sur1.`delete_flag` = 'IN_FORCE' and rd1.`delete_flag` = 'IN_FORCE') as role_name,
         su.state,sur.id
         from sys_user su left join sys_user_role sur on su.id = sur.sys_user_id and sur.`delete_flag` = 'IN_FORCE'
         where su.`delete_flag` = 'IN_FORCE' 
     ''']
     if 'user_name' in params.keys():
-        sql.append(" and su.username like '%")
-        sql.append(params['user_name'])
+        sql.append(" and su.name like '%")
+        sql.append(params['username'])
         sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(" and su.mobile like '%")
@@ -204,7 +204,7 @@ def student_course_sql(params):
     select c.id,c.`course_name`,(select count(*) from study_schedule where 
     student_id = s.id and study_state = 1) as finish,
 		c.classes_number,
-		t.`nickname` as teacher_name,
+		concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,
 		cs.start,cs.end
     from `order` o, student s, teacher t, course c,`course_schedule`cs 
     where o.student_id = s.id and o.course_id = c.id and
@@ -220,11 +220,11 @@ def student_course_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'student_name' in params.keys():
-        sql.append(" and s.username like '%")
+        sql.append(" and s.name like '%")
         sql.append(params['student_name'])
         sql.append("%'")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'course_time' in params.keys():
@@ -327,7 +327,7 @@ def student_allot_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.username,s.nickname as student_name,s.mobile,s.email,s.`created_at`,c.channel_name,s.state,su.nickname as su_name
+    select s.id,s.username,s.name as student_name,s.mobile,s.email,s.`created_at`,c.channel_name,s.state,su.name as su_name
     from student s left join sys_user su on  s.consultant_id = su.id   ,enrollment e,channel c
     where 
      s.id = e.`student_id` and e.`channel_id` = c.id
@@ -335,7 +335,7 @@ def student_allot_sql(params):
     ''']
 
     if 'student_name' in params.keys():
-        sql.append(" and s.nickname like '%")
+        sql.append(" and s.name like '%")
         sql.append(params['student_name'])
         sql.append("%'")
     if 'mobile' in params.keys():
@@ -439,13 +439,13 @@ def thacher_check_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,t.username as teacher_name,t.mobile,t.email,t.`updated_at`,t.state
+    select t.id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,t.mobile,t.email,t.`updated_at`,t.state
     from teacher t   where
     t.`delete_flag` = 'IN_FORCE' 
     ''']
 
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'mobile' in params.keys():
@@ -564,7 +564,7 @@ def thacher_interview_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,c.id as course_id,t.username,t.mobile,t.email,c.`course_name`,i.`updated_by` as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
+    select t.id,c.id as course_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,c.`course_name`,i.`updated_by` as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
     from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
@@ -573,7 +573,7 @@ def thacher_interview_sql(params):
     ''']
 
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name) like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'mobile' in params.keys():
@@ -590,7 +590,7 @@ def thacher_interview_sql(params):
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
 
     if 'interview_name' in params.keys():
-        sql.append(" and su.username like '%")
+        sql.append(" and su.name like '%")
         sql.append(params['interview_name'])
         sql.append("%'")
     sql.append(' order by t.id desc')
@@ -694,7 +694,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.`created_at`,s.username,s.parent_mobile,s.gender,c.channel_name,s.gender
+    select s.id,s.`created_at`,s.name as username,s.parent_mobile,s.gender,c.channel_name,s.gender
     from student s 
     left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
     left join subject su on ss.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
@@ -704,7 +704,7 @@ def students_sql(params):
     ''']
 
     if 'student_name' in params.keys():
-        sql.append(" and s.nickname like '%")
+        sql.append(" and s.name like '%")
         sql.append(params['student_name'])
         sql.append("%'")
     if 'student_id' in params.keys():
@@ -811,7 +811,7 @@ def thacher_tryout_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select * from (select c.id,t.username as teacher_name,c.`course_name`,s.username as student_name,s.`grade`,cs.`start`,cs.`end`,
+    select * from (select c.id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,c.`course_name`,s.name as student_name,s.`grade`,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
     cs.`state` as course_schedule_state
     from course c,teacher t ,student s,`order` o,course_schedule cs
@@ -924,7 +924,7 @@ def student_tryout_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select * from (select c.id,c.`course_name`,c.open_grade,t.username as teacher_name,s.username as student_name,cs.`start`,cs.`end`,
+    select * from (select c.id,c.`course_name`,c.open_grade,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,s.name as student_name,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
     cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
@@ -1031,7 +1031,7 @@ def course_ware_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select csw.id,csw.ware_name,cc.room_title,c.course_name,t.`username` as teacher_name,csw.`created_at`,csw.`checked_result` as state
+    select csw.id,csw.ware_name,cc.room_title,c.course_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,csw.`created_at`,csw.`checked_result` as state
     from course c,teacher t ,course_schedule cs,course_classroom cc,courseware csw,subject su
     where c.`primary_teacher_id` = t.id and c.id = cs.`course_id` and cs.id = cc.course_schedule_id and cc.room_id = csw.room_id and c.subject_id = su.id
     and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and cc.`delete_flag` = 'IN_FORCE' and csw.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE' 
@@ -1053,7 +1053,7 @@ def course_ware_sql(params):
         sql.append(params['course_name'])
         sql.append("%'")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.username  like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'state' in params.keys():
@@ -1151,7 +1151,7 @@ def thacher_common_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select * from (select c.id,t.username as teacher_name,c.`course_name`,s.username as student_name,s.`grade`,cs.`start`,cs.`end`,
+    select * from (select c.id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,c.`course_name`,s.name as student_name,s.`grade`,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
     cs.`state` as course_schedule_state,cs.id as course_schedule_id
     from course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'  ,teacher t ,student s,`order` o
@@ -1275,7 +1275,7 @@ def orders_query_sql(params):
     '''
     sql = ['''
     select o.id, su.subject_name, c.classes_number, o.order_type, o.state,
-        o.updated_by, o.created_at, t.nickname as teacher_name, s.nickname  as student_name, o.amount as order_amount ,o.payment_state
+        o.updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name, s.name  as student_name, o.amount as order_amount ,o.payment_state
     from `order` o, student s, teacher t, course c, subject su
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.subject_id = su.id 
@@ -1403,7 +1403,7 @@ def refund_query_sql(params):
     '''
     sql = ['''
     select o.id, su.subject_name,  o.order_type, o.state,
-        o.updated_by, o.created_at, t.nickname as teacher_name, s.nickname  as student_name, o.amount as order_amount,o.payment_state
+        o.updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name, s.name  as student_name, o.amount as order_amount,o.payment_state
     from `order` o, student s, teacher t, course c, subject su
     where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.subject_id = su.id and o.payment_state in (4,5,6,7)
@@ -1514,14 +1514,14 @@ def thacher_apponit_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
+    select t.id,i.id as interview_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
     from teacher t , interview i  
     where t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
     ''']
 
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name) like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'mobile' in params.keys():
@@ -1633,13 +1633,13 @@ def interview_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,i.id as interview_id,t.username,t.mobile,t.email,i.`start`,i.end,su.username as interview_name,i.state as interview_state
+    select t.id,i.id as interview_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,i.`start`,i.end,su.name as interview_name,i.state as interview_state
     from teacher t , interview i, sys_user su 
     where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name) like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'mobile' in params.keys():
@@ -1659,7 +1659,7 @@ def interview_result_sql(params):
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
 
     if 'interview_name' in params.keys():
-        sql.append(" and su.username like '%")
+        sql.append(" and su.name like '%")
         sql.append(params['interview_name'])
         sql.append("%'")
     sql.append(' order by t.id desc')
@@ -1770,7 +1770,7 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,t.avatar as teacher_avatar
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.course_name,t.avatar as teacher_avatar
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
     hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 1
@@ -1868,7 +1868,7 @@ def view_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.username as student_name,h.score,score_reason,h.review_at,ss.teacher_evaluation as evaluation
+            select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.name as student_name,h.score,score_reason,h.review_at,ss.teacher_evaluation as evaluation
             from course_schedule cs,homework h,study_schedule ss,student s,course c
             where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id and course_id = c.id and h.homework_type = 2
              and cs.`state` <> 99   and s.`state` <> 99
@@ -1961,15 +1961,15 @@ def student_tryout_apply_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-      select sa.id as course_appointment_id,sa.id as study_appointment_id,sa.`created_at`,sa.`apply_by`,s.username as student_name,sa.`open_time_start`,sa.`open_time_end`,
-      (select t.username from  course_appointment ca, teacher t where ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE' and ca.`delete_flag` = 'IN_FORCE' and ca.appointment_state ='ACCEPT' and ca.`study_appointment_id` = sa.id)
+      select sa.id as course_appointment_id,sa.id as study_appointment_id,sa.`created_at`,sa.`apply_by`,s.name as student_name,sa.`open_time_start`,sa.`open_time_end`,
+      (select t.name from  course_appointment ca, teacher t where ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE' and ca.`delete_flag` = 'IN_FORCE' and ca.appointment_state ='ACCEPT' and ca.`study_appointment_id` = sa.id)
       as teacher_name,appointment_state
 	 from study_appointment sa, 
 	 student s
      where  sa.student_id = s.id and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE'; ''']
 
     if 'student_name' in params.keys():
-        sql.append(" and s.username like '%")
+        sql.append(" and s.name like '%")
         sql.append(params['student_name'])
         sql.append("%'")
     if 'appointment_state' in params.keys():
@@ -2044,7 +2044,7 @@ def student_tryout_apply_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-      select ca.id ,t.username as teacher_name,t.mobile,t.email,timezone,ca.appointment_state
+      select ca.id ,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,t.mobile,t.email,timezone,ca.appointment_state
 	 from  course_appointment ca
 	 left join teacher t on ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE'
      where ca.`delete_flag` = 'IN_FORCE'  ''']

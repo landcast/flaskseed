@@ -110,7 +110,7 @@ def my_course_sql(params):
     sql = ['''
 			select c.id as course_id,c.`course_name`,(select count(*) from study_schedule ss,course_schedule cs  where student_id = o.student_id and course_schedule_id = cs.id  and cs.`delete_flag` = 'IN_FORCE' and cs.course_id = c.id
 			and cs.end > now()) as finish,
-           c.classes_number,t.`nickname` as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
+           c.classes_number,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
             from  course c,`order` o, teacher t
             where  o.course_id = c.id and c.primary_teacher_id = t.id  
             and o.`state` <> 99  and c.state<> 99 
@@ -129,7 +129,7 @@ def my_course_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'course_time' in params.keys():
@@ -142,7 +142,7 @@ def my_course_sql(params):
             and params['course_status'] == '2':
         sql.append(' and c.end > now()')
     sql.append(' order by c.id desc')
-    return ['course_id', 'course_name', 'finish', 'classes_number', 'nickname',
+    return ['course_id', 'course_name', 'finish', 'classes_number', 'teacher_name',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
 
 
@@ -232,7 +232,7 @@ def my_order_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select o.id,c.`course_name`,c.classes_number,o.`order_type`,
-    o.`payment_state`,o.`created_at`,t.`nickname` as teacher_name,o.`amount`
+    o.`payment_state`,o.`created_at`,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,o.`amount`
     from `order` o, teacher t, course c
     where  o.course_id = c.id and
         c.primary_teacher_id = t.id
@@ -255,7 +255,7 @@ def my_order_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and t.nickname like '%")
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'payment_state' in params.keys():
@@ -363,7 +363,7 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,t.nickname as teacher_name,c.course_name,
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.course_name,
     t.avatar as teacher_avatar,sc.teacher_evaluation
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
@@ -463,7 +463,7 @@ def report_card_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-	select sr.id,c.id as course_id,c.`course_name`,sr.`created_at`,t.nickname as teacher_name,sr.report_card_url
+	select sr.id,c.id as course_id,c.`course_name`,sr.`created_at`,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.report_card_url
 	from study_result sr,course_exam ce,course c,teacher t
 	where sr.course_exam_id = ce.id and ce.course_id = c.id and c.primary_teacher_id = t.id
     and ce.state<> 99 and c.`state` <> 99  and t.state<> 99 
@@ -665,7 +665,7 @@ def growth_report_sql(params):
     sql = ['''''']
 
     sql.append(" select * from (")
-    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,t.username as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end,sr.id as study_schedule_id "
+    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end,sr.id as study_schedule_id "
                "from study_schedule sr,course_schedule cs,course c ,teacher t "
                "where cs.id = sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and cs.`state` <> 99  and c.`state` <> 99 and "
@@ -674,7 +674,7 @@ def growth_report_sql(params):
     if 'course_id' in params.keys():
         sql.append(" and c.id =:course_id")
     sql.append(" union all ")
-    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,'NO' as class_name,t.username as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end,'0' as study_schedule_id "
+    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,'NO' as class_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end,'0' as study_schedule_id "
                "from study_result sr,course_exam ce,course c ,teacher t "
                "where sr.`course_exam_id` = ce.id and ce.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and c.`state` <> 99  and ce.`state` <> 99 and sr.`delete_flag` = 'IN_FORCE' "

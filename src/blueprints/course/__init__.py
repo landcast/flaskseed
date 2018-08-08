@@ -653,8 +653,8 @@ def course_common_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-        select * from (select c.id ,c.course_name,c.course_name_zh,t.username as teacher_name,
-        (select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
+        select * from (select c.id ,c.course_name,c.course_name_zh,concat(t.`first_name`,' ',t.`middle_name`,' ',t.`last_name`)  as teacher_name,
+        (select GROUP_CONCAT(s.name) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
         cs.start,cs.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
         cs.id as course_schedule_id,c.open_grade
         
@@ -1123,7 +1123,7 @@ def common_evaluation_sql(params):
     current_app.logger.debug(params)
     sql = ['''
             select 
-            s.id,s.username as student_name,ss.teacher_score,student_score,teacher_evaluation
+            s.id,s.name as student_name,ss.teacher_score,student_score,teacher_evaluation
             from  course_schedule cs,study_schedule ss , student s 
             where  cs.id = ss.course_schedule_id and ss.student_id = s.id 
             and cs.delete_flag = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
@@ -1273,9 +1273,9 @@ def member_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-        select t.username as teacher_name,c.course_name,c.course_name_zh,
-        (select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and 			s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
-        (select username from teacher where id = c.`assist_teacher_id`) as assist_teacher_name
+        select concat(t.`first_name`,' ',t.`middle_name`,' ',t.`last_name`)  as teacher_name,c.course_name,c.course_name_zh,
+        (select GROUP_CONCAT(s.name) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and 			s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
+        (select concat(`first_name`,' ',`middle_name`,' ',`last_name`)  from teacher where id = c.`assist_teacher_id`) as assist_teacher_name
          from 
         course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE',
         teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' 

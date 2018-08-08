@@ -158,7 +158,7 @@ def teacher_query_sql(params):
     :return:
     '''
     sql = ['''
-        select t.id,t.`created_at`,t.`username`,t.`mobile`,t.`email`,t.country,t.`province`,t.timezone,t.`state` 
+        select t.id,t.`created_at`,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as username,t.`mobile`,t.`email`,t.country,t.`province`,t.timezone,t.`state` 
         from teacher t 
         left join teacher_history th on t.id = th.`teacher_id` and th.`delete_flag` = 'IN_FORCE'
         left join subject s on th.`subject_id` = s.id and s.`delete_flag` = 'IN_FORCE' 
@@ -168,7 +168,9 @@ def teacher_query_sql(params):
         where t.`delete_flag` = 'IN_FORCE'
     ''']
     if 'username' in params.keys():
-        sql.append(' and t.username = :username')
+        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name) like '%")
+        sql.append(params['username'])
+        sql.append("%'")
     if 'mobile' in params.keys():
         sql.append(' and t.mobile = :mobile')
     if 'email' in params.keys():
@@ -502,7 +504,7 @@ def my_course_sql(params):
           select * from(
             select 
             	c.id,c.course_name,c.course_name_zh,c.classes_number,c.start,c.end,
-            	(select GROUP_CONCAT(s.username) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
+            	(select GROUP_CONCAT(s.name) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
             	and cs.`delete_flag` = 'IN_FORCE' and cs.state <> 99  and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
             	(select count(*) from course_schedule where c.`id` = course_id and end < now() ) as finish
             from  course c
@@ -694,7 +696,7 @@ def view_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.username as student_name,h.score,score_reason,h.review_at
+          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.name as student_name,h.score,score_reason,h.review_at
 			from course_schedule cs,homework h,study_schedule ss,student s,course c
             where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id and course_id = c.id
              and cs.`state` <> 99   and s.`state` <> 99
@@ -933,7 +935,7 @@ def my_course_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select sr.id,s.username student_name,ce.`start`,ce.end,sr.report_card_name,sr.report_card_url
+          select sr.id,s.name student_name,ce.`start`,ce.end,sr.report_card_name,sr.report_card_url
 			from study_result sr,course_exam ce,student s,course c
             where sr.course_exam_id = ce.id and sr.student_id = s.id and ce.course_id = c.id
              and ce.`state` <> 99   and s.`state` <> 99 and c.`state` <> 99
@@ -1190,7 +1192,7 @@ def students_sql(params):
     current_app.logger.debug(params)
     sql = ['''
           select 
-                s.id,s.username as student_name
+                s.id,s.name as student_name
             from  course_schedule cs,study_schedule ss , student s ,course c
             where  cs.id = ss.course_schedule_id and ss.student_id = s.id and cs.course_id = c.id
             and cs.delete_flag = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
@@ -1266,7 +1268,7 @@ def apply_students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.username as student_name,
+          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.name as student_name,
           (select count(*) from study_appointment sa1,course_appointment ca1 where sa1.id = ca1.study_appointment_id and sa1.`student_id` = sa.id and ca1.appointment_state = 'ACCEPT') apply_state
            from study_appointment sa,course_appointment ca,student s
           where 
@@ -1482,7 +1484,7 @@ def my_schedule_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select cs.name as class_name,cs.start,cs.end,(select GROUP_CONCAT(s.username) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name
+          select cs.name as class_name,cs.start,cs.end,(select GROUP_CONCAT(s.name) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name
            from course c,course_schedule cs
           where 
           c.id = cs.course_id

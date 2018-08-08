@@ -110,7 +110,7 @@ def generate_sql(params):
     '''
     sql = ['''
     select o.id, c.course_name, c.classes_number, o.order_type, o.state,
-        o.updated_by, o.created_at, t.nickname, s.nickname, o.amount
+        o.updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name, s.name as student_name, o.amount as order_amount
     from `order` o, student s, teacher t, course c, subject su,
     subject_category sc, curriculum cr
     where o.student_id = s.id and o.course_id = c.id and
