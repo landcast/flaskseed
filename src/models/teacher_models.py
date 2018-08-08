@@ -37,7 +37,7 @@ class Interview(EntityMixin, db.Model):
     result = Column(String(2000), nullable=True, comment='面试结果')
     set_time = Column(String(2000), nullable=True, comment='设置面试时间 json')
     interviewer_id = Column(db.Integer, db.ForeignKey('sys_user.id'),
-                            nullable=False)
+                            nullable=True)
     interviewers = db.relationship('SysUser', backref='interviewers', lazy=True)
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
