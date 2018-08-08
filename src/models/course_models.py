@@ -62,6 +62,22 @@ class Subject(EntityMixin, db.Model):
                                           lazy=True)
 
 
+class CourseProjetTypeEnum(enum.IntEnum):
+    """
+    ALL:所有项目
+    MEGO:美高
+    CREDIT:学分
+    AP:AP课程
+    OTHER:其他
+    """
+
+    ALL = 1
+    MEGO =  2
+    CREDIT = 3
+    AP = 4
+    OTHER = 5
+
+
 class Course(EntityMixin, db.Model):
     course_name = Column(String(120), nullable=False, comment='课程名称-英文')
     course_name_zh = Column(String(120), nullable=True, comment='课程名称-中文')
@@ -83,6 +99,9 @@ class Course(EntityMixin, db.Model):
                                     comment='课程要求-中文')
     state = Column(Integer, nullable=False, comment='有效：98，无效：99')
     price = Column(Integer, nullable=False, comment='金额')
+    project_type = Column(Enum(CourseProjetTypeEnum), nullable=True,
+                           comment='课程类型',
+                           server_default=CourseProjetTypeEnum.ALL.name)
     primary_teacher_id = Column(Integer, ForeignKey('teacher.id'),
                                 nullable=False)
     primary_teacher = db.relationship('Teacher', backref='primary_courses',
