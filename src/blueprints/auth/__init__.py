@@ -326,7 +326,7 @@ def resetpassword():
                     'new password: ' + row1.password)
                 session.merge(row1)
 
-                classin_service.editPasswort(mobile,row1.password,oldpassword,0,'en')
+ #               classin_service.editPasswort(mobile,row1.password,oldpassword,0,'en')
 
                 return jsonify({'message': 'reset password succ!'})
 
