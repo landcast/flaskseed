@@ -195,7 +195,6 @@ class Student(UserBaseMixin, db.Model):
     state = Column(Enum(StudentState), nullable=False,
                    server_default=StudentState.FRESH.name)
     level = Column(String(50), nullable=True, comment='等级')
-    nation = Column(String(50), nullable=True, comment='国家')
     city = Column(String(50), nullable=True, comment='城市')
     grade = Column(Integer, nullable=True, comment='当前学校班级')
     read_country = Column(String(100), nullable=True, comment='在读国家')

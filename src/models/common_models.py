@@ -81,6 +81,7 @@ class UserBaseMixin(EntityMixin):
     last_login_ip = Column(String(20), nullable=True)
     last_login_time = Column(DateTime, nullable=True)
     last_login_device = Column(String(50), nullable=True)
+    nation = Column(String(50), nullable=True, comment='国家国际代码',default='86')
     name = Column(String(50), nullable=True, comment='中文名称或者真实姓名')
     first_name = Column(String(50), nullable=True, comment='first name或者中国英文名称')
     middle_name = Column(String(50), nullable=True, comment='middel name')
