@@ -107,8 +107,8 @@ def addOneCourseClass(courseId, className,beginTime,endTime,teacherAccount,teach
             data=json.dumps({
                 'courseId': courseId,
                 'className': className,
-                'beginTime': beginTime.replace('T', ' ').replace('Z', ''),
-                'endTime': endTime.replace('T', ' ').replace('Z', ''),
+                'beginTime': beginTime,
+                'endTime': endTime,
                 'teacherAccount': teacherAccount,
                 'teacherName': teacherName,
                 'seatNum': seatNum,
