@@ -1537,6 +1537,7 @@ def accept_students():
 
         setattr(interview,'start',interview_at_start.replace('T', ' ').replace('Z', ''))
         setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', ''))
+        setattr(interview,'state',2)
         session.add(interview)
         session.flush()
 
