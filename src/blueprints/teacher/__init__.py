@@ -1500,6 +1500,89 @@ def my_schedule_sql(params):
     return ['class_name', 'start','end','student_name'], ''.join(sql)
 
 
+@teacher.route('/accept_interview', methods=['POST'])
+def accept_students():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      interview_id:
+        description: '试听申请id'
+        type: 'string'
+      interview_at_start:
+        description: '面试开始时间,用户选择时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      interview_at_start:
+        description: '面试结束时间，排课之后的最后一堂课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+    res:
+      id:
+        description: 'id'
+        type: ''
+    """
+    interview_id = request.json['interview_id']
+    interview_at_start = request.json['interview_at_start']
+    interview_at_end = request.json['interview_at_end']
+
+    with session_scope(db) as session:
+
+        interview = session.query(Interview).filter_by(id=interview_id).one_or_none()
+
+        if interview is None :
+            return jsonify({
+                "error": "not found interview: {0}".format(
+                    interview_id)
+            }), 500
+
+
+        setattr(interview,'start',interview_at_start.replace('T', ' ').replace('Z', ''))
+        setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', ''))
+        session.add(interview)
+        session.flush()
+
+        course =Course( course_type= 1,
+                        class_type= 1,
+                        classes_number = 1,
+                        course_desc = '面试课',
+                        state = 98,
+                        price= 0,
+                        primary_teacher_id =interview.teacher_id,
+                        subject_id = 1,
+                        course_name = "Interview",
+                        course_name_zh = '面试课',
+                        delete_flag = 'IN_FORCE',
+                        updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                        )
+
+        session.add(course)
+        session.flush()
+
+
+
+
+        courseschedule = CourseSchedule(
+            start = interview.start,
+            end = interview.end,
+            name = '面试课',
+            state = 98,
+            override_course_type=1,
+            course_id = course.id,
+            schedule_type = 'Interview',
+            delete_flag = 'IN_FORCE',
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+        )
+        session.add(courseschedule)
+        session.flush()
+
+        class_type =ClassroomTypeEnum.ONE_VS_ONE.name
+
+        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'面试课',
+                                 getTimeDiff(interview.start.strftime('%Y-%m-%d %H:%M:%S'),interview.end.strftime('%Y-%m-%d %H:%M:%S')),
+                                 class_type,interview.start.isoformat() + '.000Z',0,'en')
+
+
+        return jsonify({'id':interview.id })
+
 
 
 def getTimeDiff(timeStra,timeStrb):
