@@ -1634,8 +1634,8 @@ def interview_result_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select t.id,i.id as interview_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,i.`start`,i.end,su.name as interview_name,i.state as interview_state
-    from teacher t , interview i, sys_user su 
-    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    from teacher t , interview i left join sys_user su on i.`interviewer_id` = su.`id`
+    where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     if 'teacher_name' in params.keys():
