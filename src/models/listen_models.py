@@ -99,7 +99,7 @@ def createFolder(folderId, folderName, table_name, table_id, session=None):
         need_commit = True
     else:
         need_commit = False
-    folderId = classin_service.createFolder(folderId, folderName)
+    folderId = classin_service.createFolder(folderId, folderName+table_id)
     saveThirdDateLog('folder_' + table_name, table_id, folderId, '', session)
     if need_commit:
         session.commit()
