@@ -568,8 +568,8 @@ def thacher_interview_sql(params):
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
     from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
-    ,interview i ,sys_user su
-    where i.interviewer_id = su.id and t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
+    ,interview i left join sys_user su on i.interviewer_id = su.id 
+    where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
     ''']
 
     if 'teacher_name' in params.keys():
