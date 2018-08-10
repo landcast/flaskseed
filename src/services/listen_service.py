@@ -59,7 +59,7 @@ def after_insert(table_name, table_id, session=None):
             num = 2
 
         class_id = classin_service.addOneCourseClass(thirdDateLog.third_id, courseSchedule.name, courseSchedule.start,
-                                                     courseSchedule.end, teacher.mobile, teacher.nickname, num,
+                                                     courseSchedule.end, teacher.mobile, teacher.nickname, str(num),
                                                      folderId, 0, 'en')
         saveThirdDateLog(table_name, table_id, class_id, '', session)
     if 'study_schedule' == table_name:
