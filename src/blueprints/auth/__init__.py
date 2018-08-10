@@ -100,8 +100,8 @@ def register():
     check_target = redis_store.get('VC:' + user_name)
 
     code = 86
-    if code in request.json['username']:
-        code = request.json['username']
+    if code in request.json['code']:
+        code = request.json['code']
 
 
     firstName = ''
