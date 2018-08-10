@@ -1501,7 +1501,7 @@ def my_schedule_sql(params):
 
 
 @teacher.route('/accept_interview', methods=['POST'])
-def accept_students():
+def accept_interview():
     """
     swagger-doc: 'schedule'
     required: []
