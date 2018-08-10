@@ -1512,7 +1512,7 @@ def accept_interview():
       interview_at_start:
         description: '面试开始时间,用户选择时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
-      interview_at_start:
+      interview_at_end:
         description: '面试结束时间，排课之后的最后一堂课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
     res:
