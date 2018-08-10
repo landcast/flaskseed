@@ -99,7 +99,7 @@ def register():
     verify_code = request.json['verify_code']
     check_target = redis_store.get('VC:' + user_name)
 
-    code = 86
+    code = '86'
     if code in request.json['code']:
         code = request.json['code']
 
