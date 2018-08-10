@@ -1568,7 +1568,7 @@ def accept_interview():
             state = 98,
             override_course_type=1,
             course_id = course.id,
-            schedule_type = 'Interview',
+            schedule_type = 'INTERVIEW',
             delete_flag = 'IN_FORCE',
             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
         )
