@@ -188,15 +188,15 @@ def register():
 
         if code is not 86:
             mobile = code+'-'+mobile
-
-        teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
-        thirdDateLog = ThirdDateLog(table_name = target_table,
+    current_app.logger.debug('code--->' + code+":"+mobile)
+    teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
+    thirdDateLog = ThirdDateLog(table_name = target_table,
                                table_id = user_id,
                                third_id = teacher_id,
                                 third_date = '',
                                delete_flag = 'IN_FORCE')
-        session.add(thirdDateLog)
-        session.flush()
+    session.add(thirdDateLog)
+    session.flush()
 
 
     return jsonify(token)
