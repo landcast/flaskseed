@@ -1586,6 +1586,46 @@ def accept_interview():
 
 
 
+@teacher.route('/get_enter_room_url', methods=['POST'])
+def get_enter_room_url():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      room_id:
+        description: '房间号'
+        type: ''
+    """
+    course_schedule_id = request.json['course_schedule_id']
+
+    with session_scope(db) as session:
+
+        courseschedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
+
+        if courseschedule is None :
+            return jsonify({
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =courseschedule.id).one_or_none()
+
+        if courseclassroom is None :
+            return jsonify({
+                "error": "found courseclassroom existing in {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['nickname'],
+                                      ClassroomRoleEnum.TEACHER.name,ClassroomDeviceEnum.PC.name)
+
+    return jsonify({'url':url })
+
+
 def getTimeDiff(timeStra,timeStrb):
     if timeStra>=timeStrb:
         return 0
