@@ -913,8 +913,8 @@ def get_enter_room_url():
         description: '课节id'
         type: 'string'
     res:
-      room_id:
-        description: '房间号'
+      url:
+        description: '登录地址'
         type: ''
     """
     study_schedule_id = request.json['study_schedule_id']

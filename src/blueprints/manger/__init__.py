@@ -1676,8 +1676,8 @@ def get_enter_room_url():
         description: '课节id'
         type: 'string'
     res:
-      room_id:
-        description: '房间号'
+      url:
+        description: '访问地址'
         type: ''
     """
     course_schedule_id = request.json['course_schedule_id']
