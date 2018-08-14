@@ -50,8 +50,13 @@ def receive_after_insert(mapper, connection, target):
         else:
             num = 2
 
+        mobil = teacher.username
+        if teacher.nation is not '86':
+            mobil = teacher.nation+'-'+teacher.username
+
+
         class_id = classin_service.addOneCourseClass(thirdDateLog.third_id, courseSchedule.name, str(courseSchedule.start),
-                                                     str(courseSchedule.end), teacher.username, teacher.nickname, num,
+                                                     str(courseSchedule.end), mobil, teacher.nickname, num,
                                                      folderId, 0, 'en')
         saveThirdDateLog(table_name, table_id, class_id, '', session)
     if 'study_schedule' == table_name:
