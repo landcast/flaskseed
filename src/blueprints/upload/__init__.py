@@ -66,7 +66,7 @@ def download_file(filename):
 def save_attachment(file):
     fn = file.filename
     ext = fn.rsplit('.', 1)[1].lower()
-    hashed_fn = hashlib.sha256(fn.encode('utf8')).hexdigest()
+    hashed_fn = hashlib.sha256(fn.encode('utf8')).hexdigest()+'.'+ext
     disk_file = os.path.join(current_app.config['UPLOAD_FOLDER'], hashed_fn)
     file.save(disk_file)
     size = os.stat(disk_file).st_size
