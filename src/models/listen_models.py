@@ -51,8 +51,8 @@ def receive_after_insert(mapper, connection, target):
             num = 2
 
         mobil = teacher.username
-        if teacher.nation is not '86':
-            mobil = teacher.nation+'-'+teacher.username
+       # if teacher.nation is not '86':
+        #    mobil = teacher.nation+'-'+teacher.username
 
 
         class_id = classin_service.addOneCourseClass(thirdDateLog.third_id, courseSchedule.name, str(courseSchedule.start),
