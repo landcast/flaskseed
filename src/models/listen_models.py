@@ -29,7 +29,7 @@ def receive_after_insert(mapper, connection, target):
         course_id = classin_service.addCourse(course.course_name, 0, folderId, 0, 'en')
         saveThirdDateLog(table_name, table_id, course_id, '',connection)
 
-    if 'course_schedule' == table_name:
+    if 'course_schedule1' == table_name:
         courseSchedule = session.query(CourseSchedule).filter_by(id=table_id).one_or_none()
         course = session.query(Course).filter_by(id=courseSchedule.course_id).one_or_none()
         thirdDateLog = session.query(ThirdDateLog).filter_by(table_id=course.id, table_name='course').one_or_none()
@@ -51,15 +51,15 @@ def receive_after_insert(mapper, connection, target):
             num = 2
 
         mobil = teacher.username
-       # if teacher.nation is not '86':
-        #    mobil = teacher.nation+'-'+teacher.username
+        if teacher.nation is not '86':
+            mobil = teacher.nation+'-'+teacher.username
 
 
         class_id = classin_service.addOneCourseClass(thirdDateLog.third_id, courseSchedule.name, str(courseSchedule.start),
                                                      str(courseSchedule.end), mobil, teacher.nickname, num,
                                                      folderId, 0, 'en')
         saveThirdDateLog(table_name, table_id, class_id, '', session)
-    if 'study_schedule' == table_name:
+    if 'study_schedule1' == table_name:
         studySchedule = session.query(StudySchedule).filter_by(id=table_id).one_or_none()
         courseSchedule = session.query(CourseSchedule).filter_by(id=studySchedule.course_schedule_id).one_or_none()
         student = session.query(Student).filter_by(id=studySchedule.student_id).one_or_none()
@@ -67,7 +67,7 @@ def receive_after_insert(mapper, connection, target):
                                                              table_name='course').one_or_none()
         classin_service.addCourseStudent(thirdDateLog.third_id, 1, student.mobile, student.nickname, 0, 'en')
 
-    if 'courseware' == table_name:
+    if 'courseware1' == table_name:
         courseware = session.query(Courseware).filter_by(id=table_id).one_or_none()
         thirdDate_forder = session.query(ThirdDateLog).filter_by(table_id=courseware.course_schedule_id,
                                                                  table_name='folder_course_schedule').one_or_none()
@@ -82,7 +82,7 @@ def receive_after_update(mapper, connection, target):
     current_app.logger.debug('vafter_update------------>'+target.__tablename__+'--------------'+str(target.id))
 
     session = db.session()
-    listen_service.after_update(target.__tablename__, target.id,session)
+    #listen_service.after_update(target.__tablename__, target.id,session)
 
 
 def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
