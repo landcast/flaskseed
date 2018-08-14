@@ -639,6 +639,9 @@ def course_common():
             course_schedule_id:
               description: '总排课数大于0就是已经排课，0未排课'
               type: 'string'
+            courseware_num:
+              description: '大于0就是已经上传，否则未上传'
+              type: 'int'
     """
     j = request.json
     datetime_param_sql_format(j, ['class_at']),
@@ -657,7 +660,9 @@ def course_common_sql(params):
         (select GROUP_CONCAT(s.name) from study_schedule ss,student s,course_schedule cs  
         where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
         c.start,c.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
-        c.open_grade,(select count(*) from `course_schedule` where course_id = c.id) as course_schedule_id
+        c.open_grade,(select count(*) from `course_schedule` where course_id = c.id) as course_schedule_id,
+         
+      (select count(*) from courseware cs where c.`id` = cs.`course_id` and cs.`delete_flag` = 'IN_FORCE') as courseware_num
          from 
         course c,
         teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`class_type` < 3 
@@ -694,7 +699,7 @@ def course_common_sql(params):
     sql.append(' order by t.id desc')
 
     return ['id', 'course_name', 'course_name_zh', 'teacher_name', 'student_name',
-            'start', 'end','classes_number','finish','course_schedule_id','open_grade'], ''.join(sql)
+            'start', 'end','classes_number','finish','course_schedule_id','open_grade','courseware_num'], ''.join(sql)
 
 
 @course.route('/course_schedule', methods=['POST'])
