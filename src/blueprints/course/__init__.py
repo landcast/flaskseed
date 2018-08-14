@@ -637,7 +637,7 @@ def course_common():
               description: '已经上完的程数'
               type: 'string'
             course_schedule_id:
-              description: '课节id'
+              description: '总排课数大于0就是已经排课，0未排课'
               type: 'string'
     """
     j = request.json
@@ -656,7 +656,8 @@ def course_common_sql(params):
         select * from (select c.id ,c.course_name,c.course_name_zh,concat(t.`first_name`,' ',t.`middle_name`,' ',t.`last_name`)  as teacher_name,
         (select GROUP_CONCAT(s.name) from study_schedule ss,student s,course_schedule cs  
         where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
-        c.start,c.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,c.open_grade
+        c.start,c.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
+        c.open_grade,(select count(*) from `course_schedule` where course_id = c.id) as course_schedule_id
          from 
         course c,
         teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`class_type` < 3 
