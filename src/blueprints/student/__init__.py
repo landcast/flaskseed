@@ -135,15 +135,11 @@ def my_course_sql(params):
     if 'course_time' in params.keys():
         sql.append(
             ' and c.start <:course_time and c.end >:course_time')
-    if 'course_status' in params.keys() \
-            and params['course_status'] == '1':
+    if 'course_status' in params.keys() and params['course_status'] == '1':
         sql.append(' and c.end <now()')
-    if 'course_status' in params.keys() \
-            and params['course_status'] == '2':
+    if 'course_status' in params.keys() and params['course_status'] == '2':
         sql.append(' and c.end > now()')
     sql.append(' order by c.id desc')
-
-    current_app.logger.debug('my_course----->'+sql)
 
     return ['course_id', 'course_name', 'finish', 'classes_number', 'teacher_name',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
