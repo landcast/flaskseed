@@ -855,15 +855,15 @@ def my_course_off_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select cs.id,c.id as courseware_id,cs.name,cs.start,cs.end,c.checked_result,c.ware_url,c.ware_uid from 
-            course_schedule cs,courseware c,course cou
+            select cs.id,c.id as courseware_id,cs.name,cs.start,cs.end,c.checked_result,c.ware_url,c.ware_uid from 
+            course_schedule cs left join courseware c on c.course_schedule_id = cs.id and c.`delete_flag` = 'IN_FORCE' ,course cou
             where cs.`state` <> 99  and cs.course_id = cou.id 
-             and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
+             and cs.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
             ''']
     sql.append("and cou.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_id' in params.keys():
         sql.append(
-            ' and c.id = '+params['course_id'])
+            ' and cou.id = '+params['course_id'])
     sql.append(' order by cs.id desc')
     return ['id','courseware_id' ,'name','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
 
