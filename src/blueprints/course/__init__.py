@@ -593,6 +593,9 @@ def course_common():
       state:
         description: '课程状态，1：带排课，2：上课中，3：已完成'
         type: 'string'
+      courseware:
+        description: '课件状态，0：未上传，1：已上传'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -696,6 +699,11 @@ def course_common_sql(params):
     if 'state' in params.keys() and '3' ==params['state'] :
         sql.append(' and t.finish > t.classes_number')
 
+    if 'courseware' in params.keys() and '0' ==params['courseware'] :
+        sql.append(' and t.courseware_num = 0')
+
+    if 'courseware' in params.keys() and '1' ==params['courseware'] :
+        sql.append(' and t.courseware_num > 0')
     sql.append(' order by t.id desc')
 
     return ['id', 'course_name', 'course_name_zh', 'teacher_name', 'student_name',
