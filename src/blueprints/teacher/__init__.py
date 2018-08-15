@@ -859,7 +859,6 @@ def my_course_off_sql(params):
             course_schedule cs,courseware c,course cou
             where cs.`state` <> 99  and cs.course_id = cou.id 
              and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
-             and cs.end > now()
             ''']
     sql.append("and cou.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_id' in params.keys():
