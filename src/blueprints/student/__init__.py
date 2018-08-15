@@ -142,6 +142,9 @@ def my_course_sql(params):
             and params['course_status'] == '2':
         sql.append(' and c.end > now()')
     sql.append(' order by c.id desc')
+
+    current_app.logger.debug('my_course----->'+sql)
+
     return ['course_id', 'course_name', 'finish', 'classes_number', 'teacher_name',
             'start', 'end','teacher_avatar','course_desc'], ''.join(sql)
 
