@@ -663,7 +663,7 @@ def course_common_sql(params):
         (select GROUP_CONCAT(s.name) from study_schedule ss,student s,course_schedule cs  
         where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
         c.start,c.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
-        c.open_grade,(select count(*) from `course_schedule` where course_id = c.id) as course_schedule_id,
+        c.open_grade,(select id from `course_schedule` where course_id = c.id group by c.id) as course_schedule_id,
          
       (select count(*) from courseware cs where c.`id` = cs.`course_id` and cs.`delete_flag` = 'IN_FORCE') as courseware_num
          from 
