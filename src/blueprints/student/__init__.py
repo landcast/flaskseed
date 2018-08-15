@@ -109,7 +109,7 @@ def my_course_sql(params):
     current_app.logger.debug(params)
     sql = ['''
 			select c.id as course_id,c.`course_name`,(select count(*) from study_schedule ss,course_schedule cs  where student_id = o.student_id and course_schedule_id = cs.id  and cs.`delete_flag` = 'IN_FORCE' and cs.course_id = c.id
-			and cs.end > now()) as finish,
+			and cs.end < now()) as finish,
            c.classes_number,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
             from  course c,`order` o, teacher t
             where  o.course_id = c.id and c.primary_teacher_id = t.id  
