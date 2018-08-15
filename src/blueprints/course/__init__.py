@@ -777,6 +777,8 @@ def course_schedule_sql(params):
 	    from course_schedule cs
         where  cs.`delete_flag` = 'IN_FORCE' 
     ''']
+    sql.append(" and cs.course_id=:course_id")
+
     sql.append(' order by cs.id desc')
     return ['id', 'name', 'start', 'end', 'courseware_num','schedule_type'], ''.join(sql)
 
