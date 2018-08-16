@@ -390,7 +390,7 @@ def sysUser():
         session.add(sysUser)
         session.flush
 
-        for rolesId in rolse:
+        for rolesId in enumerate(rolse):
             current_app.logger.debug('rolesId--->'+str(rolesId))
             sysUserRole = SysUserRole(sys_user_id=sysUser.id,
                                role_definition_id=rolesId,
