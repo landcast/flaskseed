@@ -377,7 +377,7 @@ def sysUser():
     with session_scope(db) as session:
         sysUser = session.query(SysUser).filter_by(username=mobile).one_or_none()
 
-        if sysUser is None :
+        if sysUser is not None :
             return jsonify({
                 "error": "found SysUser: {0}".format(
                     mobile)
