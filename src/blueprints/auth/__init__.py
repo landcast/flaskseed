@@ -400,7 +400,7 @@ def sysUser():
 
         if user.mobile is not None:
             mobile = code+'-'+mobile
-            if code == '86':
+            if user.nation == '86':
                 mobile = mobile
             current_app.logger.debug('code--->' + code+":"+mobile)
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
