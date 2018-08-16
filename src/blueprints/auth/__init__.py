@@ -388,7 +388,7 @@ def sysUser():
                                 request.json['password']), state=1,
                             updated_by=getattr(g, current_app.config['CUR_USER'])['username'], email=email, mobile=mobile,nickname=mobile,nation = code,name=name)
         session.add(sysUser)
-        session.commit()
+        session.flush()
 
         user_id = getattr(sysUser, 'id')
         current_app.logger.debug('user--->'+str(user_id))
@@ -398,7 +398,7 @@ def sysUser():
                                role_definition_id=rolesId,
                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'])
             session.add(sysUserRole)
-            session.commit()
+            session.flush()
 
 
         if sysUser.mobile is not None:
