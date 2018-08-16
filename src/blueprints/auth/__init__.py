@@ -383,9 +383,6 @@ def register():
                     mobile)
             }), 500
 
-        # check if username is mobile or email, the mobile or email
-        # should be unique in all 3 tables
-
         user = SysUser(username=mobile,
                             password=generate_password_hash(
                                 request.json['password']), state=1,
