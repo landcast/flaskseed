@@ -399,9 +399,9 @@ def sysUser():
 
 
         if user.mobile is not None:
-
-            if code is not 86:
-                mobile = code+'-'+mobile
+            mobile = code+'-'+mobile
+            if code == '86':
+                mobile = mobile
             current_app.logger.debug('code--->' + code+":"+mobile)
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
             thirdDateLog = ThirdDateLog(table_name = 'yser_user',
