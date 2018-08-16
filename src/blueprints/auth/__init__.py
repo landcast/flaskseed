@@ -386,7 +386,7 @@ def sysUser():
         sysUser = SysUser(username=mobile,
                             password=generate_password_hash(
                                 request.json['password']), state=1,
-                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'], email=email, mobile=mobile,nickname=mobile,nation = code)
+                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'], email=email, mobile=mobile,nickname=mobile,nation = code,name=name)
         session.add(sysUser)
         session.flush
 
