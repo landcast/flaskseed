@@ -391,7 +391,7 @@ def sysUser():
         session.flush
 
         user_id = getattr(sysUser, 'id')
-
+        current_app.logger.debug('user--->'+str(user_id))
         for rolesId in rolse.split(','):
             current_app.logger.debug('rolesId--->'+str(rolesId))
             sysUserRole = SysUserRole(sys_user_id=user_id,
@@ -405,7 +405,7 @@ def sysUser():
             mobile = code+'-'+mobile
             if sysUser.nation is '86':
                 mobile = sysUser.mobile
-            current_app.logger.debug('user--->'+str(user_id))
+
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
             thirdDateLog = ThirdDateLog(table_name = 'sys_user',
                                         table_id = user_id,
@@ -416,7 +416,7 @@ def sysUser():
             session.flush()
 
 
-    return jsonify({'id':sysUser.id })
+    return jsonify({'id':user_id })
 
 
 
