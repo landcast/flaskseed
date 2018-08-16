@@ -391,6 +391,7 @@ def sysUser():
         session.flush
 
         for rolesId in rolse:
+            current_app.logger.debug('rolesId--->'+str(rolesId))
             sysUserRole = SysUserRole(sys_user_id=sysUser.id,
                                role_definition_id=rolesId,
                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'])
@@ -402,7 +403,7 @@ def sysUser():
             mobile = code+'-'+mobile
             if sysUser.nation is '86':
                 mobile = sysUser.mobile
-            current_app.logger.debug('code--->'+sysUser.nation+':' + code+":"+mobile)
+            current_app.logger.debug('user--->'+str(sysUser.id))
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
             thirdDateLog = ThirdDateLog(table_name = 'yser_user',
                                         table_id = sysUser.id,
