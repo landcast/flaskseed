@@ -355,7 +355,7 @@ def sysUser():
         description: '邮箱'
         type: 'string'
       rolse:
-        description: '角色数组id'
+        description: '角色id字符串 例如：1，2，3，4'
         type: 'string'
     res:
       id:
@@ -390,9 +390,11 @@ def sysUser():
         session.add(sysUser)
         session.flush
 
+        user_id = getattr(sysUser, 'id')
+
         for rolesId in rolse.split(','):
             current_app.logger.debug('rolesId--->'+str(rolesId))
-            sysUserRole = SysUserRole(sys_user_id=sysUser.id,
+            sysUserRole = SysUserRole(sys_user_id=user_id,
                                role_definition_id=rolesId,
                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'])
             session.add(sysUserRole)
@@ -403,10 +405,10 @@ def sysUser():
             mobile = code+'-'+mobile
             if sysUser.nation is '86':
                 mobile = sysUser.mobile
-            current_app.logger.debug('user--->'+str(sysUser.id))
+            current_app.logger.debug('user--->'+str(user_id))
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
-            thirdDateLog = ThirdDateLog(table_name = 'yser_user',
-                                        table_id = sysUser.id,
+            thirdDateLog = ThirdDateLog(table_name = 'sys_user',
+                                        table_id = user_id,
                                         third_id = teacher_id,
                                         third_date = '',
                                         delete_flag = 'IN_FORCE')
