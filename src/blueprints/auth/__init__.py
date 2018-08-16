@@ -334,7 +334,7 @@ def resetpassword():
 
 
 @auth.route('/sysUser', methods=['POST'])
-def register():
+def sysUser():
     """
     swagger-doc: 'do register for new user'
     required: ['username', 'password', 'usertype', 'verify_code']
