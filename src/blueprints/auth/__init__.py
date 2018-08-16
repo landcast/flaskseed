@@ -8,7 +8,7 @@ import jwt
 import random
 import requests
 
-from src.models import db, session_scope, user_source, SmsLog,ThirdDateLog
+from src.models import db, session_scope, user_source, SmsLog,ThirdDateLog,SysUser,SysUserRole
 from src.services import send_email, redis_store
 import hashlib
 from src.services import classin_service
@@ -188,15 +188,15 @@ def register():
 
         if code is not 86:
             mobile = code+'-'+mobile
-    current_app.logger.debug('code--->' + code+":"+mobile)
-    teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
-    thirdDateLog = ThirdDateLog(table_name = target_table,
-                               table_id = user_id,
-                               third_id = teacher_id,
-                                third_date = '',
-                               delete_flag = 'IN_FORCE')
-    session.add(thirdDateLog)
-    session.flush()
+        current_app.logger.debug('code--->' + code+":"+mobile)
+        teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
+        thirdDateLog = ThirdDateLog(table_name = target_table,
+                                   table_id = user_id,
+                                   third_id = teacher_id,
+                                    third_date = '',
+                                   delete_flag = 'IN_FORCE')
+        session.add(thirdDateLog)
+        session.flush()
 
 
     return jsonify(token)
@@ -331,6 +331,93 @@ def resetpassword():
                 return jsonify({'message': 'reset password succ!'})
 
     return jsonify({'message': user_name + ' not found!'}), 401
+
+
+@auth.route('/sysUser', methods=['POST'])
+def register():
+    """
+    swagger-doc: 'do register for new user'
+    required: ['username', 'password', 'usertype', 'verify_code']
+    req:
+      mobile:
+        description: '手机号'
+        type: 'string'
+      name:
+        description: '用户名'
+        type: 'string'
+      password:
+        description: 'login user password'
+        type: 'string'
+      code:
+        description: '国家代码'
+        type: 'int'
+      email:
+        description: '邮箱'
+        type: 'string'
+      rolse:
+        description: '角色数组id'
+        type: 'string'
+    res:
+      id:
+        description: '用户id'
+        type: 'string'
+    """
+    current_app.logger.debug(request.json)
+    mobile = request.json['mobile']
+    name = request.json['name']
+    email = request.json['email']
+    rolse = request.json['rolse']
+    user_type = 'SysUser'
+
+    code = '86'
+    if code in request.json:
+        code = request.json['code']
+
+    target_table = user_source[user_type]
+    with session_scope(db) as session:
+        sysUser = session.query(SysUser).filter_by(username=mobile).one_or_none()
+
+        if sysUser is None :
+            return jsonify({
+                "error": "found SysUser: {0}".format(
+                    mobile)
+            }), 500
+
+        # check if username is mobile or email, the mobile or email
+        # should be unique in all 3 tables
+
+        user = SysUser(username=mobile,
+                            password=generate_password_hash(
+                                request.json['password']), state=1,
+                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'], email=email, mobile=mobile,nickname=mobile,nation = code)
+        session.add(user)
+        session.flush
+
+        for rolesId in rolse:
+            sysUserRole = SysUserRole(sys_user_id=user.id,
+                               role_definition_id=rolesId,
+                           updated_by=getattr(g, current_app.config['CUR_USER'])['username'])
+            session.add(sysUserRole)
+            session.flush
+
+
+        if user.mobile is not None:
+
+            if code is not 86:
+                mobile = code+'-'+mobile
+            current_app.logger.debug('code--->' + code+":"+mobile)
+            teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
+            thirdDateLog = ThirdDateLog(table_name = 'yser_user',
+                                        table_id = user.id,
+                                        third_id = teacher_id,
+                                        third_date = '',
+                                        delete_flag = 'IN_FORCE')
+            session.add(thirdDateLog)
+            session.flush()
+
+
+    return jsonify({'id':user.id })
+
 
 
 def generate_jwt_token(header_name, username):
