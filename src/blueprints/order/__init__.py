@@ -2,7 +2,7 @@
 from flask import g, jsonify, Blueprint, request, current_app
 from src.services import do_query, datetime_param_sql_format
 from sqlalchemy.sql import *
-from src.models import db, session_scope, Course,Order,PayLog,Student,Teacher,Subject
+from src.models import db, session_scope, Course,Order,PayLog,Student,Teacher,Subject,CourseSchedule
 
 order = Blueprint('order', __name__)
 
@@ -277,6 +277,16 @@ def establish():
             amount = int(classes_number)*int(basic_amount)
 
             course_id = getattr(course, 'id')
+
+        sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course.id , state=98,delete_flag = 'IN_FORCE').all()
+
+        if sourseSchedules is None or len(sourseSchedules) < 1:
+            return jsonify({
+                "error": "found order {0} have sourse schedules".format(
+                    course_id)
+            }), 500
+
+
 
         order = Order(
             order_type = order_type,
