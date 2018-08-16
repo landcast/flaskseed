@@ -402,7 +402,7 @@ def sysUser():
             mobile = code+'-'+mobile
             if user.nation == '86':
                 mobile = mobile
-            current_app.logger.debug('code--->' + code+":"+mobile)
+            current_app.logger.debug('code--->'+user.nation+':' + code+":"+mobile)
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
             thirdDateLog = ThirdDateLog(table_name = 'yser_user',
                                         table_id = user.id,
