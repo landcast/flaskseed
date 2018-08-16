@@ -383,29 +383,29 @@ def sysUser():
                     mobile)
             }), 500
 
-        user = SysUser(username=mobile,
+        sysUser = SysUser(username=mobile,
                             password=generate_password_hash(
                                 request.json['password']), state=1,
                             updated_by=getattr(g, current_app.config['CUR_USER'])['username'], email=email, mobile=mobile,nickname=mobile,nation = code)
-        session.add(user)
+        session.add(sysUser)
         session.flush
 
         for rolesId in rolse:
-            sysUserRole = SysUserRole(sys_user_id=user.id,
+            sysUserRole = SysUserRole(sys_user_id=sysUser.id,
                                role_definition_id=rolesId,
                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'])
             session.add(sysUserRole)
             session.flush
 
 
-        if user.mobile is not None:
+        if sysUser.mobile is not None:
             mobile = code+'-'+mobile
-            if user.nation is '86':
-                mobile = user.mobile
-            current_app.logger.debug('code--->'+user.nation+':' + code+":"+mobile)
+            if sysUser.nation is '86':
+                mobile = sysUser.mobile
+            current_app.logger.debug('code--->'+sysUser.nation+':' + code+":"+mobile)
             teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
             thirdDateLog = ThirdDateLog(table_name = 'yser_user',
-                                        table_id = user.id,
+                                        table_id = sysUser.id,
                                         third_id = teacher_id,
                                         third_date = '',
                                         delete_flag = 'IN_FORCE')
@@ -413,7 +413,7 @@ def sysUser():
             session.flush()
 
 
-    return jsonify({'id':user.id })
+    return jsonify({'id':sysUser.id })
 
 
 
