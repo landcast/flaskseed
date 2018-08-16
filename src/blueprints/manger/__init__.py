@@ -1966,7 +1966,7 @@ def student_tryout_apply_sql(params):
       as teacher_name,appointment_state
 	 from study_appointment sa, 
 	 student s
-     where  sa.student_id = s.id and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE'; ''']
+     where  sa.student_id = s.id and s.`delete_flag` = 'IN_FORCE' and sa.`delete_flag` = 'IN_FORCE''']
 
     if 'student_name' in params.keys():
         sql.append(" and s.name like '%")
