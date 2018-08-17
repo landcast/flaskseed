@@ -1589,6 +1589,67 @@ def accept_interview():
 
 
 
+@teacher.route('/get_preview_doc', methods=['POST'])
+def get_preview_doc():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      course_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            ware_uid:
+              description: '课件url，多贝'
+              type: 'string'
+
+
+    """
+    j = request.json
+    return jsonify(do_query(j, get_preview_doc_sql))
+
+
+def get_preview_doc_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+           select cw.`ware_uid`
+           from course_schedule cs , courseware cw
+           where cs.id = cw.course_schedule_id  and cs.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE'
+            ''']
+
+    sql.append(' and cs.id =:course_schedule_id ')
+
+    sql.append(' order by cs.id desc')
+
+    return ['ware_uid'], ''.join(sql)
+
+
 
 
 
