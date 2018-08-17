@@ -115,7 +115,7 @@ def generate_sql(params):
     if 'user_state' in params.keys():
         sql.append(' and su.state = :user_state')
 
-    sql.append(' order by su.id desc')
+    sql.append(' group by su.id order by su.id desc')
 
     current_app.logger.debug(sql)
     return ['id', 'username', 'mobile', 'email', 'created_at',
