@@ -1721,8 +1721,21 @@ def get_preview_doc():
             ware_uid:
               description: '课件url，多贝'
               type: 'string'
-
-
+            name:
+              description: '课节名称'
+              type: 'string'
+            start:
+              description: '上课时间'
+              type: 'string'
+            end:
+              description: '上课结束时间'
+              type: 'string'
+            ware_name:
+              description: '课件名称'
+              type: 'string'
+            ware_url:
+              description: '课件地址'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, get_preview_doc_sql))
@@ -1736,8 +1749,8 @@ def get_preview_doc_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-           select cw.`ware_uid`
-           from course_schedule cs , courseware cw
+           select cw.`ware_uid`,cs.`name` ,cs.start,cs.end,cw.`ware_name`,cw.ware_url
+           from course_schedule cs , courseware cw,course c
            where cs.id = cw.course_schedule_id  and cs.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE'
             ''']
 
@@ -1745,7 +1758,7 @@ def get_preview_doc_sql(params):
 
     sql.append(' order by cs.id desc')
 
-    return ['ware_uid'], ''.join(sql)
+    return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
 
 
 
