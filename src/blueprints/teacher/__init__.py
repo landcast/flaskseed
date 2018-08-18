@@ -710,6 +710,99 @@ def view_homework_sql(params):
     return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at'], ''.join(sql)
 
 
+
+
+@teacher.route('/check_homework', methods=['POST'])
+def check_homework():
+    """
+    swagger-doc: 'do check_homework query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '作业id'
+              type: 'integer'
+            question_name:
+              description: '作业名称'
+              type: 'string'
+            question_text:
+              description: '作业'
+              type: 'string'
+            created_at:
+              description: '创建时间'
+              type: 'string'
+            question_attachment_url:
+              description: '问题附件'
+              type: 'string'
+            answer_text:
+              description: '答案'
+              type: 'string'
+            answer_attachment_url:
+              description: '答案附件'
+              type: 'string'
+            student_name:
+              description: '学生'
+              type: 'string'
+            score:
+              description: '得分'
+              type: 'string'
+            score_reason:
+              description: '得分原因'
+              type: 'string'
+            review_at:
+              description: '点评时间'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, check_homework_sql))
+
+
+def check_homework_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.name as student_name,h.score,score_reason,h.review_at
+			from course_schedule cs,homework h,study_schedule ss,student s,course c
+            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id and course_id = c.id
+             and cs.`state` <> 99   and s.`state` <> 99 and h.`homework_type` = 2 and h.`evaluation` is null
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
+            ''']
+    sql.append(
+        " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    sql.append(' order by cs.id desc')
+    return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at'], ''.join(sql)
+
+
+
+
+
 @teacher.route('/my_course_on', methods=['POST'])
 def my_course_on():
     """
