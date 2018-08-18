@@ -1491,7 +1491,7 @@ def my_schedule_sql(params):
     current_app.logger.debug(params)
     sql = ['''
           select cs.name as class_name,cs.start,cs.end,(select GROUP_CONCAT(s.name) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name
-          ,cs.id as course_schedule_id,c,id as course_id,c.course_name as course_name
+          ,cs.id as course_schedule_id,c.id as course_id,c.course_name as course_name
            from course c,course_schedule cs
           where 
           c.id = cs.course_id
