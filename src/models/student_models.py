@@ -100,7 +100,7 @@ class StudyResult(EntityMixin, db.Model):
     student_study_results = db.relationship('Student', backref='study_results',
                                             lazy=True)
     course_exam_id = Column(Integer, ForeignKey('course_exam.id'),
-                            nullable=False)
+                            nullable=True)
     course_exam_results = db.relationship('CourseExam',
                                           backref='course_exam_results',
                                           lazy=True)

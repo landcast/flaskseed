@@ -289,7 +289,6 @@ def schedule():
         description: 'id'
         type: ''
     """
-    course_id = request.json['course_id']
     schedules = request.json['schedules']
 
     with session_scope(db) as session:
