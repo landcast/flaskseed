@@ -1416,11 +1416,6 @@ def accept_students():
                     course_appointment_id)
             }), 500
 
-        if time.strptime(studyAppointment.open_time_start, "%Y-%m-%d") < datetime.datetime.now().strftime('%Y-%m-%d') :
-            return jsonify({
-                "error": "time erroe"
-            }), 500
-
         current_app.logger.debug('---------------->2')
         if studyAppointment.appointment_state == 'WRITE_CLASS':
             return jsonify({
