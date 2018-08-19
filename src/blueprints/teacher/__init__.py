@@ -1406,6 +1406,7 @@ def accept_students():
                 "error": "not found CourseAppointment: {0}".format(
                     course_appointment_id)
             }), 500
+
         current_app.logger.debug('---------------->1')
         studyAppointment = session.query(StudyAppointment).filter_by(id=courseAppointment.study_appointment_id).one_or_none()
 
@@ -1413,6 +1414,11 @@ def accept_students():
             return jsonify({
                 "error": "not found StudyAppointment: {0}".format(
                     course_appointment_id)
+            }), 500
+
+        if studyAppointment.open_time_start < time.time() :
+            return jsonify({
+                "error": "time erroe"
             }), 500
 
         current_app.logger.debug('---------------->2')
