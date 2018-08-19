@@ -1398,7 +1398,7 @@ def accept_students():
                 "error": "not found CourseAppointment: {0}".format(
                     course_appointment_id)
             }), 500
-
+        current_app.logger.debug('---------------->1')
         studyAppointment = session.query(StudyAppointment).filter_by(id=courseAppointment.study_appointment_id).one_or_none()
 
         if studyAppointment is None :
@@ -1407,7 +1407,7 @@ def accept_students():
                     course_appointment_id)
             }), 500
 
-
+        current_app.logger.debug('---------------->2')
         if studyAppointment.appointment_state == 'WRITE_CLASS':
             return jsonify({
                 "error": "student:{0} have accept ".format(
@@ -1417,13 +1417,13 @@ def accept_students():
         setattr(courseAppointment,'appointment_state','ACCEPT')
         session.add(courseAppointment)
         session.flush()
-
+        current_app.logger.debug('---------------->3')
         setattr(studyAppointment,'appointment_state','WRITE_CLASS')
         session.add(studyAppointment)
         session.flush()
 
 
-
+        current_app.logger.debug('---------------->4')
         course =Course( course_type= 1,
                         class_type= 1,
                         classes_number = 1,
@@ -1440,7 +1440,7 @@ def accept_students():
 
         session.add(course)
         session.flush()
-
+        current_app.logger.debug('---------------->5')
         order = Order(
                 order_type = 2,
                 order_desc = '试听订单',
@@ -1458,7 +1458,7 @@ def accept_students():
 
         session.add(order)
         session.flush()
-
+        current_app.logger.debug('---------------->6')
         paylog = PayLog( direction = 1,
                         state = 98,
                         amount = 0,
@@ -1473,7 +1473,7 @@ def accept_students():
         session.add(paylog)
         session.flush()
 
-
+        current_app.logger.debug('---------------->7')
         courseschedule = CourseSchedule(
             start = studyAppointment.open_time_start,
             end = studyAppointment.open_time_end,
@@ -1487,7 +1487,7 @@ def accept_students():
         )
         session.add(courseschedule)
         session.flush()
-
+        current_app.logger.debug('---------------->6')
         class_type =ClassroomTypeEnum.ONE_VS_ONE.name
 
         live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'试听课',
@@ -1510,7 +1510,7 @@ def accept_students():
         session.add(sudyschedule)
         session.flush()
 
-
+        current_app.logger.debug('---------------->9')
         return jsonify({'id':courseAppointment.id })
 
 
