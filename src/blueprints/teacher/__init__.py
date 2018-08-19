@@ -872,7 +872,7 @@ def my_course_on_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select cs.id,cs.name,c.class_type,cs.start,cs.end from 
+          select cs.id,cs.name,cs.schedule_type as class_type,cs.start,cs.end from 
             course_schedule cs,course c
             where cs.`state` <> 99 and cs.course_id = c.id 
              and cs.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'
