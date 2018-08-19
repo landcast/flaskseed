@@ -761,6 +761,15 @@ def my_subject():
             type:
               description: '类型'
               type: 'integer'
+            subject_name_zh:
+              description: '三级中文名字'
+              type: 'integer'
+            subject_category_zh:
+              description: '二级中文名字'
+              type: 'string'
+            full_name_zh:
+              description: '一级中文名字'
+              type: 'integer'
 
     """
     j = request.json
@@ -775,7 +784,7 @@ def my_subject_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select th.id,th.`subject_id`,sc.id as subject_category_id,cu.id as curriculum_id,th.subject_name,th.subject_type as type
+          select th.id,th.`subject_id`,su.subject_name_zh,sc.id as subject_category_id,sc.subject_category_zh,cu.id as curriculum_id,cu.full_name_zh,th.subject_name,th.subject_type as type
           from student_subject th  left join subject su on th.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
           left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
           left join curriculum cu on sc.`curriculum_id` = cu.id and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
@@ -791,7 +800,7 @@ def my_subject_sql(params):
 
     sql.append(' order by th.id desc')
 
-    return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name','type'], ''.join(sql)
+    return ['id', 'subject_id','subject_name_zh', 'subject_category_id','subject_category_zh','curriculum_id','full_name_zh','subject_name','type'], ''.join(sql)
 
 
 @student.route('/apply_tryout', methods=['POST'])
