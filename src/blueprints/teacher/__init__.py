@@ -1416,7 +1416,7 @@ def accept_students():
                     course_appointment_id)
             }), 500
 
-        if time.strptime(studyAppointment.open_time_start, "%Y-%m-%d %H:%M:%S") < time.strptime(time.time(), "%Y-%m-%d %H:%M:%S") :
+        if time.strptime(studyAppointment.open_time_start, "%Y-%m-%d") < datetime.datetime.now().strftime('%Y-%m-%d') :
             return jsonify({
                 "error": "time erroe"
             }), 500
