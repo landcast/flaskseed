@@ -1026,11 +1026,11 @@ def my_course_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select sr.id,s.name student_name,ce.`start`,ce.end,sr.report_card_name,sr.report_card_url
-			from study_result sr,course_exam ce,student s,course c
-            where sr.course_exam_id = ce.id and sr.student_id = s.id and ce.course_id = c.id
-             and ce.`state` <> 99   and s.`state` <> 99 and c.`state` <> 99
-             and sr.`delete_flag` = 'IN_FORCE'  and ce.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
+           select sr.id,s.name student_name,ce.`start`,ce.end,sr.report_card_name,sr.report_card_url
+			from study_result sr left join course_exam ce on sr.course_exam_id = ce.id and ce.`delete_flag` = 'IN_FORCE' and ce.`state` <> 99 ,student s,course c
+            where  sr.student_id = s.id and sr.course_id = c.id
+             and s.`state` <> 99 and c.`state` <> 99
+             and sr.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
             ''']
     sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
