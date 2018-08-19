@@ -774,6 +774,12 @@ def check_homework():
             review_at:
               description: '点评时间'
               type: 'string'
+            course_id:
+              description: ''
+              type: 'string'
+            course_schedule_id:
+              description: ''
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, check_homework_sql))
@@ -787,7 +793,8 @@ def check_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.name as student_name,h.score,score_reason,h.review_at
+          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.name as student_name,h.score,score_reason,h.review_at,
+          c.id as course_id,ss.id as course_schedule_id
 			from course_schedule cs,homework h,study_schedule ss,student s,course c
             where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id and course_id = c.id
              and cs.`state` <> 99   and s.`state` <> 99 and h.`homework_type` = 2 and h.`evaluation` is null
@@ -797,7 +804,8 @@ def check_homework_sql(params):
         " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     sql.append(' order by cs.id desc')
-    return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at'], ''.join(sql)
+    return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason',
+            'review_at','course_id','course_schedule_id'], ''.join(sql)
 
 
 
