@@ -1750,7 +1750,7 @@ def get_preview_doc_sql(params):
     current_app.logger.debug(params)
     sql = ['''
            select cw.`ware_uid`,cs.`name` ,cs.start,cs.end,cw.`ware_name`,cw.ware_url
-           from course_schedule cs , courseware cw,course c
+           from course_schedule cs , courseware cw
            where cs.id = cw.course_schedule_id  and cs.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE'
             ''']
 
