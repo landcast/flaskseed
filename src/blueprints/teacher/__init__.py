@@ -1691,7 +1691,7 @@ def accept_interview():
         class_type =ClassroomTypeEnum.ONE_VS_ONE.name
 
         live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'面试课',
-                                 getTimeDiff(interview.start.strftime('%Y-%m-%d %H:%M:%S'),interview.end.strftime('%Y-%m-%d %H:%M:%S')),
+                                 getTimeDiff(interview_at_start.strftime('%Y-%m-%d %H:%M:%S'),interview_at_end.strftime('%Y-%m-%d %H:%M:%S')),
                                  class_type,interview_at_start,0,'en')
 
 
