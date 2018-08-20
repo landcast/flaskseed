@@ -190,7 +190,7 @@ def register():
             mobile = code+'-'+mobile
         current_app.logger.debug('code--->' + code+":"+mobile)
         teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
-        current_app.logger.debug('target_table:' + target_table+'---table_id:'+user_id+'-----teacher_id:'+teacher_id)
+        current_app.logger.debug('target_table:' + target_table+'---table_id:'+str(user_id)+'-----teacher_id:'+teacher_id)
         thirdDateLog = ThirdDateLog(table_name = target_table,
                                    table_id = user_id,
                                    third_id = teacher_id,
