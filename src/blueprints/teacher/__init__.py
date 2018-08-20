@@ -1832,7 +1832,6 @@ def interview_result_sql(params):
     select i.id as interview_id,i.`start`,i.end,su.name as interview_name,i.state as interview_state
     from teacher t , interview i left join sys_user su on i.`interviewer_id` = su.`id`
     where  t.`delete_flag` = 'IN_FORCE'  and i.state in(9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
-     where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     sql.append("and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
