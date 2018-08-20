@@ -242,7 +242,7 @@ def teacher_query_sql(params):
         sql.append(' and sc.id =:cur_category_2 and th.type = 2')
     if 'cur_category_3' in params.keys():
         sql.append(' and s.id =:category_3 and th.type = 2')
-    sql.append(' order by t.id desc')
+    sql.append(' group by t.id  order by t.id desc')
     current_app.logger.debug(sql)
     return ['id', 'created_at', 'username', 'mobile', 'email',
             'country', 'province', 'timezone', 'state'], ''.join(sql)
