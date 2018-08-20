@@ -188,7 +188,7 @@ def register():
 
         if code is not '86':
             mobile = code+'-'+mobile
-        current_app.logger.debug('code--->' + code+":"+mobile+"----->"+user_id)
+        current_app.logger.debug('code--->' + code+":"+mobile+"----->"+str(user_id))
         teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
         current_app.logger.debug('target_table:' + target_table+'---table_id:'+str(user_id)+'-----teacher_id:'+str(teacher_id))
         thirdDateLog = ThirdDateLog(table_name = target_table,
