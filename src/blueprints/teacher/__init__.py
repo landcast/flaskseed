@@ -1349,6 +1349,9 @@ def apply_students():
             student_name:
               description: '学生名称'
               type: 'string'
+            teacher_id:
+              description: ''
+              type: 'string'
             apply_state:
               description: '申请状态，0：可以同意，>1:置灰'
               type: 'string'
@@ -1367,7 +1370,7 @@ def apply_students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.name as student_name,
+          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.name as student_name,ca.teacher_id,
           (select count(*) from study_appointment sa1,course_appointment ca1 where sa1.id = ca1.study_appointment_id and sa1.`student_id` = s.id and ca1.appointment_state = 'ACCEPT') apply_state
            from study_appointment sa,course_appointment ca,student s
           where 
@@ -1378,7 +1381,7 @@ def apply_students_sql(params):
     sql.append("and ca.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     sql.append(' order by sa.id desc')
-    return ['id', 'start','end','student_name','apply_state'], ''.join(sql)
+    return ['id', 'start','end','student_name','teacher_id','apply_state'], ''.join(sql)
 
 
 @teacher.route('/accept_students', methods=['POST'])
