@@ -564,7 +564,7 @@ def thacher_interview_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,c.id as course_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,c.`course_name`,i.`updated_by` as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
+    select t.id,c.id as course_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,c.`course_name`,su.name as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
     from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3

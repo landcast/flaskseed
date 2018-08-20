@@ -1772,6 +1772,73 @@ def get_preview_doc_sql(params):
 
     return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
 
+@teacher.route('/interview_result', methods=['POST'])
+def interview_result():
+    """
+    swagger-doc: 'do interview_result query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: '面试id'
+              type: 'integer'
+            interview_state:
+              description: '面试状态'
+              type: 'string'
+            start:
+              description: '面试开始时间'
+              type: 'string'
+            end:
+              description: '面试结束时间'
+              type: 'string'
+            interview_name:
+              description: '面试人名称'
+              type: 'string'
+
+    """
+    j = request.json
+    return jsonify(do_query(j, interview_result_sql))
+
+
+def interview_result_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+    select i.id as interview_id,i.`start`,i.end,su.name as interview_name,i.state as interview_state
+    from teacher t , interview i left join sys_user su on i.`interviewer_id` = su.`id`
+    where  t.`delete_flag` = 'IN_FORCE'  and i.state in(9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+     where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    ''']
+
+    sql.append("and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append(' order by t.id desc')
+    return ['interview_id','start','end','interview_name','interview_state'], ''.join(sql)
+
 
 
 
