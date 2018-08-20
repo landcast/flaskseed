@@ -853,6 +853,9 @@ def student_tryout_query():
       teacher_name:
         description: '教师名称'
         type: 'string'
+      teacher_id:
+        description: '教师id'
+        type: 'string'
       class_at:
         description: '上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
@@ -926,7 +929,7 @@ def student_tryout_sql(params):
     sql = ['''
     select * from (select c.id,c.`course_name`,c.open_grade,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,s.name as student_name,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
-    cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id
+    cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id,t.id as teacher_id
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = s.id and c.id = cs.course_id and cs.id = ss.course_schedule_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
@@ -937,6 +940,9 @@ def student_tryout_sql(params):
         sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
+    if 'teacher_id' in params.keys():
+        sql.append(" and t.teacher_id=:teacher_id")
+
     if 'class_at' in params.keys() :
         sql.append(
             ' and t.`start` <:class_at and t.`end` >:class_at')

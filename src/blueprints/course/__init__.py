@@ -581,6 +581,9 @@ def course_common():
       teacher_name:
         description: '教师名称'
         type: 'string'
+      teacher_id:
+        description: '教师id'
+        type: 'string'
       course_name:
         description: '课包名称'
         type: 'string'
@@ -665,7 +668,7 @@ def course_common_sql(params):
         c.start,c.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
         c.open_grade,(select id from `course_schedule` where course_id = c.id group by c.id) as course_schedule_id,
          
-      (select count(*) from courseware cs where c.`id` = cs.`course_id` and cs.`delete_flag` = 'IN_FORCE') as courseware_num
+      (select count(*) from courseware cs where c.`id` = cs.`course_id` and cs.`delete_flag` = 'IN_FORCE') as courseware_num,t.id as teacher_id
          from 
         course c,
         teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`class_type` < 3 
@@ -676,6 +679,9 @@ def course_common_sql(params):
         sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
+    if 'teacher_id' in params.keys():
+        sql.append(" and t.teacher_id=:teacher_id")
+
     if 'student_name' in params.keys():
         sql.append(" and t.student_name like '%")
         sql.append(params['student_name'])
