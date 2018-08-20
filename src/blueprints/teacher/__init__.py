@@ -1800,11 +1800,17 @@ def interview_result():
         items:
           type: object
           properties:
-            id:
+            interview_id:
               description: '面试id'
               type: 'integer'
-            interview_state:
-              description: '面试状态'
+            course_id:
+              description: '课程id'
+              type: 'string'
+            course_name:
+              description: '课程名字'
+              type: 'string'
+            interview_name:
+              description: '面试人'
               type: 'string'
             start:
               description: '面试开始时间'
@@ -1812,10 +1818,18 @@ def interview_result():
             end:
               description: '面试结束时间'
               type: 'string'
-            interview_name:
-              description: '面试人名称'
+            state:
+              description: '教师状态'
               type: 'string'
-
+            interview_state:
+              description: '面试状态'
+              type: 'string'
+            course_schedule_id:
+              description: '课程id'
+              type: 'string'
+            courseware_num:
+              description: '课件数量'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, interview_result_sql))
@@ -1829,14 +1843,18 @@ def interview_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select i.id as interview_id,i.`start`,i.end,su.name as interview_name,i.state as interview_state
-    from teacher t , interview i left join sys_user su on i.`interviewer_id` = su.`id`
-    where  t.`delete_flag` = 'IN_FORCE'  and i.state in(9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    select i.id as interview_id,c.id as course_id,c.`course_name`,su.name as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,cs.id as course_schedule_id,
+    (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
+    from teacher t
+    left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
+    left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE' 
+    ,interview i left join sys_user su on i.interviewer_id = su.id
+    where t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     sql.append("and t.id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     sql.append(' order by t.id desc')
-    return ['interview_id','start','end','interview_name','interview_state'], ''.join(sql)
+    return ['interview_id','course_id','course_name','interview_name','start','end','state','interview_state','course_schedule_id','courseware_num'], ''.join(sql)
 
 
 
