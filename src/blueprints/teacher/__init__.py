@@ -1692,7 +1692,7 @@ def accept_interview():
 
         live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'面试课',
                                  getTimeDiff(interview.start.strftime('%Y-%m-%d %H:%M:%S'),interview.end.strftime('%Y-%m-%d %H:%M:%S')),
-                                 class_type,interview.start.isoformat() + '.000Z',0,'en')
+                                 class_type,interview_at_start,0,'en')
 
 
         return jsonify({'id':interview.id })
