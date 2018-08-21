@@ -280,7 +280,7 @@ def establish():
 
         sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
 
-        if sourseSchedules is None or len(sourseSchedules) < 1:
+        if sourseSchedules is not None :
             return jsonify({
                 "error": "found order {0} have sourse schedules".format(
                     course_id)
