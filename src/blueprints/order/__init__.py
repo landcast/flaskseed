@@ -278,7 +278,7 @@ def establish():
 
             course_id = getattr(course, 'id')
 
-        sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course.id , state=98,delete_flag = 'IN_FORCE').all()
+        sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
 
         if sourseSchedules is None or len(sourseSchedules) < 1:
             return jsonify({
