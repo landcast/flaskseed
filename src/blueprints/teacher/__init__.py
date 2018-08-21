@@ -1439,12 +1439,12 @@ def accept_students():
         course =Course( course_type= 1,
                         class_type= 1,
                         classes_number = 1,
-                        course_desc = '试听课',
+                        course_desc = 'Audition Course',
                         state = 98,
                         price= 0,
                         primary_teacher_id = courseAppointment.teacher_id,
                         subject_id = 1,
-                        course_name = "Auditions",
+                        course_name = "Audition Course",
                         course_name_zh = '试听课',
                         delete_flag = 'IN_FORCE',
                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
@@ -1478,7 +1478,7 @@ def accept_students():
                         result = 0,
                         order_id= order.id,
                         delete_flag = 'IN_FORCE',
-                        state_reason = '试听订单',
+                        state_reason = 'Audition Course',
                         payment_method = 1,
                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                         )
@@ -1489,7 +1489,7 @@ def accept_students():
         courseschedule = CourseSchedule(
             start = studyAppointment.open_time_start,
             end = studyAppointment.open_time_end,
-            name = '试听课',
+            name = 'Audition Course',
             state = 98,
             override_course_type=1,
             course_id = course.id,
@@ -1502,7 +1502,7 @@ def accept_students():
         current_app.logger.debug('---------------->6')
         class_type =ClassroomTypeEnum.ONE_VS_ONE.name
 
-        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'试听课',
+        live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'Audition Course',
                                  getTimeDiff(studyAppointment.open_time_start.strftime('%Y-%m-%d %H:%M:%S'),studyAppointment.open_time_end.strftime('%Y-%m-%d %H:%M:%S')),
                                  class_type,studyAppointment.open_time_start.isoformat() + '.000Z',0,'en')
 
