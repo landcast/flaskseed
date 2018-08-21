@@ -942,6 +942,9 @@ def my_course_off():
             ware_uid:
               description: '多贝课件预览地址'
               type: 'string'
+            courseware_num:
+              description: '课件数量'
+              type: 'string'
 
     """
     j = request.json
@@ -956,7 +959,9 @@ def my_course_off_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select cs.id,c.id as courseware_id,cs.name,cs.start,cs.end,c.checked_result,c.ware_url,c.ware_uid from 
+            select cs.id,c.id as courseware_id,cs.name,cs.start,cs.end,c.checked_result,c.ware_url,c.ware_uid,
+			 (select count(*) from courseware cs1 where cs1.course_schedule_id=cs.id and cs1.`delete_flag` = 'IN_FORCE') as courseware_num
+			from 
             course_schedule cs left join courseware c on c.course_schedule_id = cs.id and c.`delete_flag` = 'IN_FORCE' ,course cou
             where cs.`state` <> 99  and cs.course_id = cou.id 
              and cs.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
@@ -966,7 +971,7 @@ def my_course_off_sql(params):
         sql.append(
             ' and cou.id = '+params['course_id'])
     sql.append(' order by cs.id desc')
-    return ['id','courseware_id' ,'name','start', 'end','checked_result','ware_url','ware_uid'], ''.join(sql)
+    return ['id','courseware_id' ,'name','start', 'end','checked_result','ware_url','ware_uid','courseware_num'], ''.join(sql)
 
 
 @teacher.route('/my_course_result', methods=['POST'])
