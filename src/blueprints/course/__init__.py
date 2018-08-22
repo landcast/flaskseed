@@ -1208,6 +1208,9 @@ def common_homework_student():
             created_at:
               description: '创建时间'
               type: 'string'
+            student_name:
+              description: ''
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, common_homework_student_sql))
@@ -1221,7 +1224,7 @@ def common_homework_student_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,hm.question_name as title,hm.answer_text,hm.created_at,hm.answer_attachment_url
+    select hm.id,hm.question_name as title,hm.answer_text,hm.created_at,hm.answer_attachment_url,s.name as student_name
     from homework hm,study_schedule sc,student s
     where 
     hm.study_schedule_id = sc.id and sc.student_id = s.id and hm.homework_type = 2 
@@ -1236,7 +1239,7 @@ def common_homework_student_sql(params):
 
     current_app.logger.debug(sql)
 
-    return ['id', 'title','answer_text', 'created_at','answer_attachment_url'], ''.join(sql)
+    return ['id', 'title','answer_text', 'created_at','answer_attachment_url','student_name'], ''.join(sql)
 
 
 
