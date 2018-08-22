@@ -1378,7 +1378,7 @@ def apply_students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.name as student_name,ca.teacher_id,, ca.appointment_state,
+          select ca.id,sa.open_time_start as start,sa.open_time_end as end ,s.name as student_name,ca.teacher_id, ca.appointment_state,
           (select count(*) from study_appointment sa1,course_appointment ca1 where sa1.id = ca1.study_appointment_id and sa1.`student_id` = s.id and ca1.appointment_state = 'ACCEPT') apply_state
            from study_appointment sa,course_appointment ca,student s
           where 
