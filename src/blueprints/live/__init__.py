@@ -261,5 +261,5 @@ def preview_doc():
     """
     j = request.json
     username = retrieve_username()
-    r = live_service.upload_doc(username, j['ware_uid'])
+    r = live_service.preview_doc(username, j['ware_uid'])
     return jsonify({'ware_url': r})
