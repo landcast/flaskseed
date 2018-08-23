@@ -970,7 +970,7 @@ def my_course_off_sql(params):
     if 'course_id' in params.keys():
         sql.append(
             ' and cou.id = '+params['course_id'])
-    sql.append(' order by cs.id desc')
+    sql.append(' group by cs.id order by cs.id desc')
     return ['id','courseware_id' ,'name','start', 'end','checked_result','ware_url','ware_uid','courseware_num'], ''.join(sql)
 
 
