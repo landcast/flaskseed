@@ -1150,7 +1150,7 @@ def common_evaluation_sql(params):
             and cs.delete_flag = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
     ''']
 
-    sql.append(' and ss.id =:course_schedule_id')
+    sql.append(' and cs.id =:course_schedule_id')
 
     sql.append(' order by cs.id desc')
 
