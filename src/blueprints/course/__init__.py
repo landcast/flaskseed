@@ -1130,6 +1130,12 @@ def common_evaluation():
             teacher_evaluation:
               description: '老师的评价'
               type: 'string'
+            teacher_name:
+              description: '老师名字'
+              type: 'string'
+            name:
+              description: '课节名字'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, common_evaluation_sql))
@@ -1144,9 +1150,9 @@ def common_evaluation_sql(params):
     current_app.logger.debug(params)
     sql = ['''
             select 
-            s.id,s.name as student_name,ss.teacher_score,student_score,teacher_evaluation
-            from  course_schedule cs,study_schedule ss , student s 
-            where  cs.id = ss.course_schedule_id and ss.student_id = s.id 
+            s.id,s.name as student_name,ss.teacher_score,student_score,teacher_evaluation,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,cs.name 
+            from  course_schedule cs,study_schedule ss , student s,teacher t,course c
+            where  cs.id = ss.course_schedule_id and ss.student_id = s.id and cs.course_id = c.id and c.primary_teacher_id = t.id
             and cs.delete_flag = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
     ''']
 
@@ -1154,7 +1160,7 @@ def common_evaluation_sql(params):
 
     sql.append(' order by cs.id desc')
 
-    return ['id', 'student_name','teacher_score','student_score','teacher_evaluation'], ''.join(sql)
+    return ['id', 'student_name','teacher_score','student_score','teacher_evaluation','teacher_name','name'], ''.join(sql)
 
 
 @course.route('/common_homework_student', methods=['POST'])
