@@ -1098,12 +1098,12 @@ def get_courseware_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-select cw.`ware_uid`,cs.`name` ,cs.start,cs.end,cw.`ware_name`,cw.ware_url
-           from study_schedule ss,course_schedule cs , courseware cw
-           where ss.course_schedule_id = cs.id and  cs.id = cw.course_schedule_id  and cs.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE' and ss .`delete_flag` = 'IN_FORCE'
-            ''']
+           select cw.`ware_uid`,ss.`name` ,ss.actual_start as start,ss.actual_end as end,cw.`ware_name`,cw.ware_url
+           from study_schedule ss, courseware cw
+           where ss.course_schedule_id = cw.course_schedule_id and cw .`delete_flag` = 'IN_FORCE' and ss .`delete_flag` = 'IN_FORCE'
+         ''']
 
-    sql.append(' and cs.id =:study_schedule_id ')
+    sql.append(' and ss.id =:study_schedule_id ')
 
     sql.append(' order by ss.id desc')
 
