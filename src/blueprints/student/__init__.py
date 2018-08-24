@@ -1035,3 +1035,77 @@ def write_homework():
 
     return jsonify({'id':homework.id })
 
+
+@student.route('/get_courseware', methods=['POST'])
+def get_courseware():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+      study_schedule_id:
+        description: '课节id'
+        type: 'string'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            ware_uid:
+              description: '课件url，多贝'
+              type: 'string'
+            name:
+              description: '课节名称'
+              type: 'string'
+            start:
+              description: '上课时间'
+              type: 'string'
+            end:
+              description: '上课结束时间'
+              type: 'string'
+            ware_name:
+              description: '课件名称'
+              type: 'string'
+            ware_url:
+              description: '课件地址'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, get_courseware_sql))
+
+
+def get_courseware_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+select cw.`ware_uid`,cs.`name` ,cs.start,cs.end,cw.`ware_name`,cw.ware_url
+           from study_schedule ss,course_schedule cs , courseware cw
+           where ss.course_schedule_id = cs.id and  cs.id = cw.course_schedule_id  and cs.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE' and ss .`delete_flag` = 'IN_FORCE'
+            ''']
+
+    sql.append(' and cs.id =:study_schedule_id ')
+
+    sql.append(' order by ss.id desc')
+
+    return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
+
