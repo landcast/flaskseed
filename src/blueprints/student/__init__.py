@@ -546,6 +546,9 @@ def student_schedule():
             courseware_num:
               description: '课件数量,0:未上传，>0已经上传'
               type: 'integer'
+            course_id:
+              description: ''
+              type: 'integer'
     """
     j = request.json
     return jsonify(do_query(j, student_schedule_sql))
@@ -559,7 +562,7 @@ def student_schedule_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-        select sr.id,sr.name,actual_start as start,actual_end as end,
+        select sr.id,sr.name,actual_start as start,actual_end as end,cs1.`course_id`,
         (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = cs1.course_id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
         from study_schedule sr,course_schedule cs1
         where cs1.id = sr.course_schedule_id
@@ -583,7 +586,7 @@ def student_schedule_sql(params):
     if 'course_schedule_state' in params.keys() and '2'==params['course_schedule_state']:
         sql.append(' and cs1.end >= now()')
     sql.append(' order by sr.id desc')
-    return ['id', 'name', 'start', 'end', 'courseware_num'], ''.join(sql)
+    return ['id', 'name', 'start', 'end','course_id', 'courseware_num'], ''.join(sql)
 
 
 @student.route('/growth_report', methods=['POST'])
