@@ -365,7 +365,7 @@ def my_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,cs.name as course_name,
+    select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.course_name_zh as course_name,
     t.avatar as teacher_avatar,sc.teacher_evaluation,cs.name
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
