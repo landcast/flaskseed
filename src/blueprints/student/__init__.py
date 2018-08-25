@@ -378,7 +378,7 @@ def my_homework_sql(params):
     t.avatar as teacher_avatar,sc.teacher_evaluation,cs.name,sc.student_evaluation,hm.evaluation,sc.name
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
-    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 1
+    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 2
     and c.state<> 99 
     and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
    
