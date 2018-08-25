@@ -1021,7 +1021,7 @@ def write_homework():
                     study_schedule_id)
             }), 500
 
-        homework = Homework(homework_type = 2,
+        homework1 = Homework(homework_type = 2,
                             answer_text = desc,
                             answer_attachment_url = attachment,
                             study_schedule_id = studyschedule.id,
@@ -1030,7 +1030,7 @@ def write_homework():
                             delete_flag = 'IN_FORCE',
                             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                             )
-        session.add(homework)
+        session.add(homework1)
         session.flush()
 
     return jsonify({'id':homework.id })
