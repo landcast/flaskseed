@@ -394,7 +394,7 @@ def my_homework_sql(params):
 
     if 'homework_state' in params.keys() \
              and params['homework_state'] == '2':
-        sql.append('  and and hm.homework_type = 1 and hm.id  not in ( select he1.homework_id from homework he1,study_schedule sc1 '
+        sql.append('  and hm.homework_type = 1 and hm.id  not in ( select he1.homework_id from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` ='
                    + getattr(g, current_app.config['CUR_USER'])['id']+')')
     sql.append(' order by hm.id desc')
