@@ -378,7 +378,7 @@ def my_homework_sql(params):
     t.avatar as teacher_avatar,sc.teacher_evaluation,cs.name,sc.student_evaluation,hm.evaluation,sc.name
     from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
     where 
-    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id and hm.homework_type = 2
+    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id 
     and c.state<> 99 
     and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
    
@@ -390,11 +390,13 @@ def my_homework_sql(params):
 
     if 'homework_state' in params.keys() \
              and params['homework_state']== '1':
-        sql.append(' and hm.homework_id is not null ')
+        sql.append(' and hm.homework_id is not null and hm.homework_type = 2')
 
     if 'homework_state' in params.keys() \
              and params['homework_state'] == '2':
-        sql.append(' and hm.homework_id is null ')
+        sql.append('  and hm.homework_type = 1 and hm.study_schedule_id  not in (select study_schedule_id from homework he1,study_schedule sc1 '
+                   'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` = '
+                   + getattr(g, current_app.config['CUR_USER'])['id']+')')
     sql.append(' order by hm.id desc')
     current_app.logger.debug(sql)
 
