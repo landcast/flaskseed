@@ -11,7 +11,8 @@ import requests
 from src.models import db, session_scope, user_source, SmsLog,ThirdDateLog,SysUser,SysUserRole
 from src.services import send_email, redis_store
 import hashlib
-from src.services import classin_service
+from src.services import classin_service,do_query
+
 
 BEARER_TOKEN = 'Bearer '
 
@@ -418,6 +419,85 @@ def sysUser():
 
 
     return jsonify({'id':user_id })
+
+
+
+@auth.route('/menu', methods=['POST'])
+def menu():
+    """
+    swagger-doc: 'do my course query'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              description: 'menu_id'
+              type: 'integer'
+            parent_id:
+              description: '父类id'
+              type: 'integer'
+            parent_name:
+              description: '菜单父类英文名字'
+              type: 'integer'
+            parent_name_zh:
+              description: '菜单父类中文名称'
+              type: 'integer'
+            menu_name:
+              description: '菜单英文名字'
+              type: 'string'
+            menu_name_zh:
+              description: '菜单中文名字'
+              type: 'integer'
+    """
+    j = request.json
+    return jsonify(do_query(j, menu_sql))
+
+
+def menu_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+            select m2.id,m1.id as parent_id,m1.`menu_name` as parent_name ,m1.`menu_name_zh` as parent_name_zh,m2.`menu_name`,m2.`menu_name_zh` 
+            from menu m1 left join  menu m2 on m1.id = m2.`parent_id` and m2.menu_type = 1 
+            where m1.menu_type = 0 and m2.id in (
+                select rm.menu_id
+                from sys_user_role sur,role_definition rd,role_menu rm
+                where sur.`role_definition_id` = rd.id and rd.id = rm.role_definition_id 
+                and sur.delete_flag = 'IN_FORCE' and rd.`delete_flag` = 'IN_FORCE' and rm.delete_flag = 'IN_FORCE'
+            ''']
+
+    sql.append("and sur.sys_user_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+    sql.append(" )" )
+
+    sql.append(' order by m1.`sort_no`')
+
+    return ['id', 'parent_id','parent_name', 'parent_name_zh','menu_name','menu_name_zh'], ''.join(sql)
+
+
 
 
 
