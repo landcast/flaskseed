@@ -141,6 +141,15 @@ class RoleAuth(EntityMixin, db.Model):
     auth_level = Column(Integer, nullable=False, comment='enum view, edit etc')
 
 
+class RoleMenu(EntityMixin, db.Model):
+    role_definition_id = Column(Integer, ForeignKey('role_definition.id'),
+                                nullable=False)
+    menu_id = Column(Integer, ForeignKey('menu.id'),
+                                nullable=False)
+
+
+
+
 class SysControl(EntityMixin, db.Model):
     current_pid = Column(Integer, nullable=False)
 
