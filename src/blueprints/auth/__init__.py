@@ -481,7 +481,7 @@ def menu_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-            select m1.id,m2.id as parent_id,m1.`menu_name` as parent_name ,m1.`menu_name_zh` as parent_name_zh,m2.`menu_name`,m2.`menu_name_zh` 
+            select m1.id,m2.id as parent_id,m2.`menu_name` as parent_name ,m2.`menu_name_zh` as parent_name_zh,m1.`menu_name`,m1.`menu_name_zh`  
             from menu m1 left join  menu m2 on m2.id = m1.`parent_id` and m2.menu_type = 0
             where m1.menu_type = 1 and m1.id in (
                 select rm.menu_id
