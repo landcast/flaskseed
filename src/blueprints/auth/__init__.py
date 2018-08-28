@@ -482,8 +482,8 @@ def menu_sql(params):
     current_app.logger.debug(params)
     sql = ['''
             select m2.id,m1.id as parent_id,m1.`menu_name` as parent_name ,m1.`menu_name_zh` as parent_name_zh,m2.`menu_name`,m2.`menu_name_zh` 
-            from menu m1 left join  menu m2 on m1.id = m2.`parent_id` and m2.menu_type = 1 
-            where m1.menu_type = 0 and m2.id in (
+            from menu m1 left join  menu m2 on m2.id = m1.`parent_id` and m2.menu_type = 0
+            where m1.menu_type = 1 and m1.id in (
                 select rm.menu_id
                 from sys_user_role sur,role_definition rd,role_menu rm
                 where sur.`role_definition_id` = rd.id and rd.id = rm.role_definition_id 
