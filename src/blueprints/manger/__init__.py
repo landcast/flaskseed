@@ -1280,11 +1280,11 @@ def orders_query_sql(params):
     :return:
     '''
     sql = ['''
-    select o.id, su.subject_name, c.classes_number, o.order_type, o.state,
-        o.updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name, s.name  as student_name, o.amount as order_amount ,o.payment_state
-    from `order` o, student s, teacher t, course c, subject su
-    where o.student_id = s.id and o.course_id = c.id and
-        c.primary_teacher_id = t.id and c.subject_id = su.id 
+        select o.id, su.subject_name, c.classes_number, o.order_type, o.state,
+        u.name as updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name, s.name  as student_name, o.amount as order_amount ,o.payment_state
+        from `order` o left join sys_user u on o.created_by = u.id, student s, teacher t, course c, subject su
+        where o.student_id = s.id and o.course_id = c.id and
+        c.primary_teacher_id = t.id and c.subject_id = su.id
     ''']
     if 'order_id' in params.keys():
         sql.append(' and o.id = :order_id')

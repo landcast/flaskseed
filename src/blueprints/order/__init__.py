@@ -300,7 +300,8 @@ def establish():
             channel_id = 1,
             state = 98,
             delete_flag = 'IN_FORCE',
-            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+            updated_by=getattr(g, current_app.config['CUR_USER'])['username'],
+            created_by=getattr(g, current_app.config['CUR_USER'])['id']
         )
 
         result = session.add(order)
