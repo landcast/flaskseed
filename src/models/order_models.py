@@ -16,6 +16,7 @@ class Order(EntityMixin, db.Model):
     promotion = Column(String(255), nullable=False)
     student_id = Column(Integer, ForeignKey('student.id'),
                         nullable=False)
+    created_by = Column(Integer, nullable=True)
     student_orders = db.relationship('Student', backref='student_orders',
                                      lazy=True)
     course_id = Column(Integer, ForeignKey('course.id'),
