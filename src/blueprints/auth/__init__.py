@@ -493,7 +493,7 @@ def menu_sql(params):
     sql.append("and sur.sys_user_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     sql.append(" )" )
 
-    sql.append(' order by m1.`sort_no`')
+
 
     return ['id', 'parent_id','parent_name', 'parent_name_zh','menu_name','menu_name_zh'], ''.join(sql)
 
