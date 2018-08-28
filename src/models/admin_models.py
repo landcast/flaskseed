@@ -107,6 +107,7 @@ class Menu(EntityMixin, db.Model):
     is_show = Column(Integer, nullable=False)
     permission = Column(String(255), nullable=True)
     remark = Column(String(255), nullable=True)
+    url = Column(String(255), nullable=True)
 
 
 class FeedBack(EntityMixin, db.Model):
