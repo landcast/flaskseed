@@ -311,7 +311,7 @@ def content_file():
     """
     teacher_id = request.json['teacher_id']
     salary = request.json['salary']
-    date = request.json['date']
+    date = request.json['date'].replace('T', ' ').replace('Z', '').split('.')[0]
 
     with session_scope(db) as session:
 
@@ -337,7 +337,7 @@ def content_file():
 
         param_dict = {
             'teacher_name': teacher.first_name+' '+teacher.middle_name+' '+teacher.last_name,
-            'effective_date': date.replace('T', ' ').replace('Z', '').split('.')[0],
+            'effective_date': date,
             'teacher_salary':salary
         }
         file = str(uuid.uuid1())+'.pdf'
