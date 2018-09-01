@@ -393,9 +393,7 @@ def sysUser():
         session.flush()
 
         user_id = getattr(sysUser, 'id')
-        current_app.logger.debug('user--->'+str(user_id))
         for rolesId in rolse.split(','):
-            current_app.logger.debug('rolesId--->'+str(rolesId))
             sysUserRole = SysUserRole(sys_user_id=user_id,
                                role_definition_id=rolesId,
                            updated_by=getattr(g, current_app.config['CUR_USER'])['username'])

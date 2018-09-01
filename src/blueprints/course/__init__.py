@@ -7,7 +7,7 @@ import datetime
 from sqlalchemy.sql import *
 
 from src.models import db, session_scope,Course,CourseSchedule,Order,StudySchedule,CourseClassroom,CourseExam,\
-    StudyResult,StudyResultTypeEnum
+    StudyResult,StudyResultTypeEnum,Curriculum,SubjectCategory,Subject
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
 
@@ -1319,6 +1319,120 @@ def member_sql(params):
     sql.append(' order by c.id desc')
 
     return ['teacher_name','course_name','course_name_zh','student_name','assist_teacher_name'], ''.join(sql)
+
+
+@course.route('/del_course_package', methods=['POST'])
+def del_course_package():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_id:
+        description: '课程id'
+        type: 'string'
+      type:
+        description: '1:一级，2：二级，3：三级，4：课包'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_id = request.json['course_id']
+    type = request.json['type']
+
+    with session_scope(db) as session:
+
+
+        if type == '1':
+            curriculum = session.query(Curriculum).filter_by(id=course_id).one_or_none()
+
+            if curriculum is None :
+                return jsonify({
+                    "error": "not found curriculum: {0}".format(
+                        course_id)
+                }), 500
+
+
+            subjectCategory = session.query(SubjectCategory).filter_by(curriculum_id=curriculum.id).all()
+
+            if subjectCategory is not None or len(subjectCategory)>0:
+                return jsonify({
+                    "error": "found subjectCategory: {0} not delete".format(
+                        course_id)
+                }), 500
+
+            setattr(curriculum,'delete_flag','DELETED')
+            session.add(curriculum)
+            session.flush()
+
+        if type == '2':
+            subjectCategory = session.query(SubjectCategory).filter_by(id=course_id).one_or_none()
+
+            if subjectCategory is None :
+                return jsonify({
+                    "error": "not found subjectCategory: {0}".format(
+                        course_id)
+                }), 500
+
+
+            subjects = session.query(Subject).filter_by(subject_category_id=subjectCategory.id).all()
+
+            if subjects is not None or len(subjects)>0:
+                return jsonify({
+                    "error": "found subjects: {0} not delete".format(
+                        course_id)
+                }), 500
+
+            setattr(subjectCategory,'delete_flag','DELETED')
+            session.add(subjectCategory)
+            session.flush()
+
+        if type == '3':
+            subject = session.query(Subject).filter_by(id=course_id).one_or_none()
+
+            if subject is None :
+                return jsonify({
+                    "error": "not found subject: {0}".format(
+                        course_id)
+                }), 500
+
+
+            course = session.query(Course).filter_by(subject_id=subject.id).all()
+
+            if course is not None or len(course)>0:
+                return jsonify({
+                    "error": "found subjects: {0} not delete".format(
+                        course_id)
+                }), 500
+
+            setattr(subject,'delete_flag','DELETED')
+            session.add(subject)
+            session.flush()
+
+        if type == '4':
+            course = session.query(Course).filter_by(id=course_id).one_or_none()
+
+            if course is None :
+                return jsonify({
+                    "error": "not found course: {0}".format(
+                        course_id)
+                }), 500
+
+
+            orders = session.query(Order).filter_by(course_id=course.id).all()
+
+            if orders is not None or len(orders)>0:
+                return jsonify({
+                    "error": "found course: {0} not delete".format(
+                        course_id)
+                }), 500
+
+            setattr(course,'delete_flag','DELETED')
+            session.add(course)
+            session.flush()
+
+    return jsonify({'id':course_id })
 
 
 
