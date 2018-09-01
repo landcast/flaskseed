@@ -638,6 +638,12 @@ def students_query():
       created_at_end:
         description: '订单创建时间结束，格式： YYYY-mm-ddTHH:MM:ss.SSSZ'
         type: 'string'
+      enroll_type:
+        description: '报名状态：不传全部，0：未报名，1：报名'
+        type: 'string'
+      account:
+        description: '学生账号'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -681,6 +687,12 @@ def students_query():
             parent_mobile:
               description: '家长联系电话'
               type: 'string'
+            account:
+              description: '学生账号'
+              type: 'string'
+            enroll_type:
+              description: '试听状态 0：未报名，>0报名'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, students_sql))
@@ -694,13 +706,15 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.`created_at`,s.name as username,s.parent_mobile,s.gender,c.channel_name,s.gender
+    select s.id,,s.`created_at`,s.name as username,s.parent_mobile,s.gender,c.channel_name,s.gender,s.username as account
+    (select count(*) from study_appointment where student_id = s.id) as enroll_type
     from student s 
     left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
     left join subject su on ss.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
     left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
     left join  channel c on s.channel_id = c.id and c.`delete_flag` = 'IN_FORCE' 
-    where s.`delete_flag` = 'IN_FORCE' 
+    left join  study_appointment sa on s.id = sa.student_id 
+    where s.`delete_flag` = 'IN_FORCE'  
     ''']
 
     if 'student_name' in params.keys():
@@ -724,10 +738,22 @@ def students_sql(params):
     if 'created_at_start' in params.keys() \
         and 'created_at_end' in params.keys():
         sql.append(' and s.created_at between :created_at_start and :created_at_end')
+
+    if 'enroll_type' in params.keys() \
+            and params['enroll_type'] == '0':
+        sql.append(' and sa.id is null')
+
+    if 'enroll_type' in params.keys() \
+            and params['enroll_type'] == '1':
+        sql.append(' and sa.id is not null')
+    if 'account' in params.keys():
+        sql.append(' and s.`username` =:account')
+
+
     sql.append(' order by s.id desc')
 
-    return ['id', 'created_at','username', 'parent_mobile',
-            'gender', 'channel_name','gender'], ''.join(sql)
+    return ['id','created_at','username', 'parent_mobile',
+            'gender', 'channel_name','gender', 'account','enroll_type'], ''.join(sql)
 
 
 @manger.route('/thacher_tryout', methods=['POST'])
