@@ -137,17 +137,11 @@ def generate_sql(params):
                 ' and c.created_at between :created_at_start and '
                 ':created_at_end')
     if 'category_1' in params.keys():
-        sql.append(" and cr.full_name like '%")
-        sql.append(params['category_1'])
-        sql.append("%'")
+        sql.append(' and cr.id = :category_1')
     if 'category_2' in params.keys():
-        sql.append(" and sc.subject_category like '%")
-        sql.append(params['category_2'])
-        sql.append("%'")
+        sql.append(' and sc.id = :category_2')
     if 'category_3' in params.keys():
-        sql.append(" and su.subject_name  like '%")
-        sql.append(params['category_3'])
-        sql.append("%'")
+        sql.append(' and su.id = :category_3')
 
     sql.append(' order by c.id desc')
 
