@@ -336,7 +336,7 @@ def content_file():
 
 
         param_dict = {
-            'teacher_name': teacher.username,
+            'teacher_name': teacher.first_name+' '+teacher.middle_name+' '+teacher.last_name,
             'effective_date': date,
             'teacher_salary':salary
         }
