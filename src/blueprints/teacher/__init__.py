@@ -333,10 +333,10 @@ def content_file():
 
             return jsonify(result)
 
-
+        teacher_name = (teacher.first_name,teacher.middle_name,teacher.last_name)
 
         param_dict = {
-            'teacher_name': teacher.first_name+' '+teacher.middle_name+' '+teacher.last_name,
+            'teacher_name': teacher_name,
             'effective_date': date,
             'teacher_salary':salary
         }
