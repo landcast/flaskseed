@@ -337,7 +337,7 @@ def content_file():
 
         param_dict = {
             'teacher_name': teacher.first_name+' '+teacher.middle_name+' '+teacher.last_name,
-            'effective_date': date.replace('T', ' ').replace('Z', ''),
+            'effective_date': date.replace('T', ' ').replace('Z', '').split('.')[0],
             'teacher_salary':salary
         }
         file = str(uuid.uuid1())+'.pdf'
