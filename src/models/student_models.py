@@ -220,6 +220,8 @@ class Student(UserBaseMixin, db.Model):
     parent_email = Column(String(60), nullable=True, comment='家长邮件')
     parent_role = Column(String(20), nullable=True, comment='家长称谓')
     remark = Column(String(500), nullable=True, comment='标注信息')
+    learning_goals = Column(String(1000), nullable=True, comment='学习目标英文')
+    learning_goals_zh = Column(String(1000), nullable=True, comment='学习目标中文')
     consultant_id = Column(Integer, ForeignKey('sys_user.id'),
                            nullable=True,
                            comment='sales person provide consultant'
