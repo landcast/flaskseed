@@ -706,7 +706,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,,s.`created_at`,s.name as username,s.parent_mobile,s.gender,c.channel_name,s.gender,s.username as account
+    select s.id,s.`created_at`,s.name as username,s.parent_mobile,s.gender,c.channel_name,s.gender,s.username as account,
     (select count(*) from study_appointment where student_id = s.id) as enroll_type
     from student s 
     left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
