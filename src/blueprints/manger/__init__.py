@@ -2076,7 +2076,7 @@ def student_tryout_apply_result_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-      select ca.id ,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,t.mobile,t.email,timezone,ca.appointment_state
+      select ca.teacher_id as id ,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,t.mobile,t.email,timezone,ca.appointment_state
 	 from  course_appointment ca
 	 left join teacher t on ca.teacher_id = t.id and t.`delete_flag` = 'IN_FORCE'
      where ca.`delete_flag` = 'IN_FORCE'  ''']
