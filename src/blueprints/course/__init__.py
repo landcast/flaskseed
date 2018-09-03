@@ -1350,7 +1350,7 @@ def del_course_package():
 
             subjectCategory = session.query(SubjectCategory).filter_by(curriculum_id=curriculum.id).all()
 
-            if subjectCategory is not None or len(subjectCategory)>0:
+            if  len(subjectCategory)>0:
                 return jsonify({
                     "error": "found subjectCategory: {0} not delete".format(
                         course_id)
@@ -1372,7 +1372,7 @@ def del_course_package():
 
             subjects = session.query(Subject).filter_by(subject_category_id=subjectCategory.id).all()
 
-            if subjects is not None or len(subjects)>0:
+            if len(subjects)>0:
                 return jsonify({
                     "error": "found subjects: {0} not delete".format(
                         course_id)
@@ -1394,7 +1394,7 @@ def del_course_package():
 
             course = session.query(Course).filter_by(subject_id=subject.id).all()
 
-            if course is not None or len(course)>0:
+            if len(course)>0:
                 return jsonify({
                     "error": "found subjects: {0} not delete".format(
                         course_id)
@@ -1416,7 +1416,7 @@ def del_course_package():
 
             orders = session.query(Order).filter_by(course_id=course.id).all()
 
-            if orders is not None or len(orders)>0:
+            if len(orders)>0:
                 return jsonify({
                     "error": "found course: {0} not delete".format(
                         course_id)
