@@ -145,7 +145,7 @@ def generate_sql(params):
 
     sql.append(' order by c.id desc')
 
-    return ['id', 'course_name', 'course_name_zh', 'course_type', 'state',
+    return [ 'course_name', 'course_name_zh','id', 'course_type', 'state',
             'updated_by', 'created_at'], ''.join(sql)
 
 
