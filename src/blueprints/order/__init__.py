@@ -278,6 +278,19 @@ def establish():
 
             course_id = getattr(course, 'id')
 
+
+
+        course = session.query(Course).filter_by(id=course_id).one_or_none()
+
+        orders = session.query(Order).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
+
+
+        if len(orders) > course.class_type:
+            return jsonify({
+                "error": "class_type error"
+            }), 500
+
+
         sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
 
         if sourseSchedules is not None and len(sourseSchedules) > 0:
