@@ -28,7 +28,7 @@ DEBUG_TB_INTERCEPT_REDIRECTS=False
 
 # followed upload config items
 UPLOAD_FOLDER = '/var/upload'
-ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'gif','ppt','doc']
+ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'gif','ppt','doc','PDF', 'PNG', 'JPG', 'JPEG', 'GIF']
 # upload file size limitation
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
