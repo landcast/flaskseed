@@ -879,6 +879,9 @@ def student_tryout_query():
       teacher_name:
         description: '教师名称'
         type: 'string'
+      student_name:
+        description: '学生名称'
+        type: 'string'
       teacher_id:
         description: '教师id'
         type: 'string'
@@ -965,6 +968,10 @@ def student_tryout_sql(params):
     if 'teacher_name' in params.keys():
         sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
+        sql.append("%'")
+    if 'student_name_name' in params.keys():
+        sql.append(" and t.student_name like '%")
+        sql.append(params['student_name'])
         sql.append("%'")
     if 'teacher_id' in params.keys():
         sql.append(" and t.teacher_id=:teacher_id")
