@@ -282,12 +282,13 @@ def establish():
 
         course = session.query(Course).filter_by(id=course_id).one_or_none()
 
-        orders = session.query(Order).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
+        if course.class_type ==2:
+            orders = session.query(Order).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
 
-        if len(orders) >= course.class_type:
-            return jsonify({
-                "error": "class_type error"
-            }), 500
+            if len(orders) >= course.class_type:
+                return jsonify({
+                    "error": "class_type error"
+                }), 500
 
         sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course_id, state=98,delete_flag = 'IN_FORCE').all()
 
