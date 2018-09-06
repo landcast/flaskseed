@@ -1195,7 +1195,7 @@ def my_subject_sql(params):
     else:
         sql.append("and th.teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
-    sql.append(' order by h.id desc')
+    sql.append(' order by th.id desc')
 
     return ['id', 'subject_id', 'subject_category_id','curriculum_id','subject_name', 'grade','type'], ''.join(sql)
 
