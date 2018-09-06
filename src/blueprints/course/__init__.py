@@ -1301,7 +1301,7 @@ def member_sql(params):
     current_app.logger.debug(params)
     sql = ['''
         select concat(t.`first_name`,' ',t.`middle_name`,' ',t.`last_name`)  as teacher_name,c.course_name,c.course_name_zh,
-        (select GROUP_CONCAT(s.name) from study_schedule ss,student s  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id and s.`delete_flag` = 'IN_FORCE' and 			s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
+        (select GROUP_CONCAT(s.name) from `order` o,student s  where o.student_id = s.id  and o.`delete_flag` = 'IN_FORCE' and o.course_id = c.id and s.state <> 99 and s.`delete_flag` = 'IN_FORCE') as student_name,
         (select concat(`first_name`,' ',`middle_name`,' ',`last_name`)  from teacher where id = c.`assist_teacher_id`) as assist_teacher_name
          from 
         course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE',
