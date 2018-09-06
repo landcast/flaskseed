@@ -963,7 +963,7 @@ def my_course_off_sql(params):
 			 (select count(*) from courseware cs1 where cs1.course_schedule_id=cs.id and cs1.`delete_flag` = 'IN_FORCE') as courseware_num
 			from 
             course_schedule cs left join courseware c on c.course_schedule_id = cs.id and c.`delete_flag` = 'IN_FORCE' ,course cou
-            where cs.`state` <> 99  and cs.course_id = cou.id 
+            where cs.`state` <> 99  and cs.course_id = cou.id and cs.start > now()
              and cs.`delete_flag` = 'IN_FORCE' and cou.`delete_flag` = 'IN_FORCE'
             ''']
     sql.append("and cou.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
