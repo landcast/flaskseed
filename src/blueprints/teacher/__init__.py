@@ -883,7 +883,7 @@ def my_course_on_sql(params):
     if 'course_id' in params.keys():
         sql.append(
             ' and c.id = '+params['course_id'])
-    sql.append(' order by cs.start ')
+    sql.append(' order by cs.id desc')
     return ['id', 'name', 'class_type','start', 'end'], ''.join(sql)
 
 
