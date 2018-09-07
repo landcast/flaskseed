@@ -750,7 +750,7 @@ def students_sql(params):
         sql.append(' and s.`username` =:account')
 
 
-    sql.append(' order by s.id desc')
+    sql.append(' group by s.id order by s.id desc')
 
     return ['id','created_at','username', 'parent_mobile',
             'gender', 'channel_name','gender', 'account','enroll_type'], ''.join(sql)
