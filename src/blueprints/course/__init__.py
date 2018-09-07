@@ -1475,6 +1475,13 @@ def add_student_schedule():
                     course_id)
             }), 500
 
+        studySchedules = session.query(StudySchedule).filter_by(course_schedule_id = csourseSchedules.id).all()
+
+        if studySchedules is not None or len(studySchedules) > 1:
+            return jsonify({
+                "error": "have Course Schedule in {0}".format(
+                    course_id)
+            }), 500
 
 
         for csourseSchedule in csourseSchedules:
