@@ -1499,7 +1499,7 @@ def add_student_schedule():
 
 
 
-    return jsonify({'id':csourseSchedules.id })
+    return jsonify({'id':course.id })
 
 
 
