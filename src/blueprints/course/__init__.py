@@ -1469,8 +1469,15 @@ def schedule():
 
         csourseSchedules = session.query(CourseSchedule).filter_by(course_id = course.id,state=98).all()
 
+        if csourseSchedules is None or len(csourseSchedules) < 1:
+            return jsonify({
+                "error": "not found CourseSchedule in {0}".format(
+                    course_id)
+            }), 500
 
-        for csourseSchedule in csourseSchedules:
+
+
+    for csourseSchedule in csourseSchedules:
 
                 sudyschedule = StudySchedule(
                     actual_start = csourseSchedule.start,
