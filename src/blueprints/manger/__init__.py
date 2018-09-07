@@ -1250,6 +1250,9 @@ def orders_query():
       payment_state:
         description: '支付状态'
         type: 'string'
+      course_id:
+        description: '课程id'
+        type: 'string'
     res:
       num_results:
         description: 'objects returned by query in current page'
@@ -1293,6 +1296,9 @@ def orders_query():
             student_name:
               description: '学生名称'
               type: 'string'
+            student_id:
+              description: '学生id'
+              type: 'string'
             order_amount:
               description: '订单金额'
               type: 'integer'
@@ -1314,7 +1320,7 @@ def orders_query_sql(params):
     '''
     sql = ['''
         select o.id, su.subject_name, c.classes_number, o.order_type, o.state,
-        u.name as updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name, s.name  as student_name, o.amount as order_amount ,o.payment_state
+        u.name as updated_by, o.created_at, concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name, s.name  as student_name, o.amount as order_amount ,o.payment_state,s.id as student_id
         from `order` o left join sys_user u on o.created_by = u.id, student s, teacher t, course c, subject su
         where o.student_id = s.id and o.course_id = c.id and
         c.primary_teacher_id = t.id and c.subject_id = su.id
@@ -1336,6 +1342,8 @@ def orders_query_sql(params):
         sql.append(' and o.state = :order_state')
     if 'updated_by' in params.keys():
         sql.append(' and o.updated_by = :updated_by')
+    if 'course_id' in params.keys():
+        sql.append(' and c.id = :course_id')
     if 'created_at_start' in params.keys() \
             and 'created_at_end' in params.keys():
         sql.append(
@@ -1344,7 +1352,7 @@ def orders_query_sql(params):
     current_app.logger.debug(sql)
     return ['id', 'subject_name', 'classes_number', 'order_type', 'order_state',
             'updated_by', 'created_at', 'teacher_name', 'student_name',
-            'order_amount','payment_state'], ''.join(sql)
+            'order_amount','payment_state','student_id'], ''.join(sql)
 
 
 @manger.route('/refunds', methods=['POST'])
