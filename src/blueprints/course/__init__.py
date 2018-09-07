@@ -1430,7 +1430,7 @@ def del_course_package():
 
 
 @course.route('/add_student_schedule', methods=['POST'])
-def schedule():
+def add_student_schedule():
     """
     swagger-doc: 'schedule'
     required: []
