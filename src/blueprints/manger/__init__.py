@@ -740,11 +740,11 @@ def students_sql(params):
         sql.append(' and s.created_at between :created_at_start and :created_at_end')
 
     if 'enroll_type' in params.keys() \
-            and params['enroll_type'] == '0':
+            and params['enroll_type'] == 0:
         sql.append(' and sa.id is null')
 
     if 'enroll_type' in params.keys() \
-            and params['enroll_type'] == '1':
+            and params['enroll_type'] == 1:
         sql.append(' and sa.id is not null')
     if 'account' in params.keys():
         sql.append(' and s.`username` =:account')
