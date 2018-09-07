@@ -1429,6 +1429,77 @@ def del_course_package():
     return jsonify({'id':course_id })
 
 
+@course.route('/add_student_schedule', methods=['POST'])
+def add_student_schedule():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_id:
+        description: '课程id'
+        type: 'string'
+      student_id:
+        description: '学生id'
+        type: 'string'
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_id = request.json['course_id']
+    student_id = request.json['student_id']
+
+    with session_scope(db) as session:
+
+        course = session.query(Course).filter_by(id=course_id).one_or_none()
+
+        if course is None :
+            return jsonify({
+                "error": "not found course: {0}".format(
+                    course_id)
+            }), 500
+
+        order = session.query(Order).filter_by(course_id = course.id,student_id = student_id, state=98 , payment_state=2).one_or_none()
+
+        if order is None :
+            return jsonify({
+                "error": "found order existing in {0}".format(
+                    course_id)
+            }), 500
+
+        csourseSchedules = session.query(CourseSchedule).filter_by(course_id = course.id,state=98).all()
+
+        if csourseSchedules is None or len(csourseSchedules) < 1:
+            return jsonify({
+                "error": "not found CourseSchedule in {0}".format(
+                    course_id)
+            }), 500
+
+
+
+        for csourseSchedule in csourseSchedules:
+
+                sudyschedule = StudySchedule(
+                    actual_start = csourseSchedule.start,
+                    actual_end = csourseSchedule.end,
+                    name = csourseSchedule.name,
+                    study_state = 1,
+                    order_id = order.id,
+                    course_schedule_id = csourseSchedule.id,
+                    student_id = order.student_id,
+                    delete_flag = 'IN_FORCE',
+                    updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                )
+
+                session.add(sudyschedule)
+                session.flush()
+                setattr(order,'payment_state',8)
+                session.add(order)
+                session.flush()
+
+
+
+    return jsonify({'id':csourseSchedules.id })
 
 
 
