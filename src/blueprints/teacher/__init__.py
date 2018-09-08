@@ -1660,6 +1660,7 @@ def accept_interview():
         setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', ''))
         setattr(interview,'state',2)
         setattr(interview,'interviewer_id',getattr(g, current_app.config['CUR_USER'])['id'])
+        setattr(interview,'updated_at',getattr(g, current_app.config['CUR_USER'])['username'])
         session.add(interview)
         session.flush()
 
