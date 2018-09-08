@@ -1659,11 +1659,12 @@ def accept_interview():
         setattr(interview,'start',interview_at_start.replace('T', ' ').replace('Z', ''))
         setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', ''))
         setattr(interview,'state',2)
+        setattr(interview,'interviewer_id',getattr(g, current_app.config['CUR_USER'])['id'])
         session.add(interview)
         session.flush()
 
         course =Course( course_type= 1,
-                        class_type= 1,
+                        class_type= 3,
                         classes_number = 1,
                         course_desc = '面试课',
                         state = 98,
