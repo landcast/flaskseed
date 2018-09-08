@@ -1463,7 +1463,7 @@ def add_student_schedule():
 
         if order is None :
             return jsonify({
-                "error": "found order existing in {0}".format(
+                "error": "not found order existing in {0}".format(
                     course_id)
             }), 500
 
