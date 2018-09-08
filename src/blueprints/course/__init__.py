@@ -1477,9 +1477,9 @@ def add_student_schedule():
 
         studySchedules = session.query(StudySchedule).filter_by(order_id = order.id,student_id = student_id).all()
 
-        if studySchedules is not None or len(studySchedules) > 0:
+        if studySchedules is not None and len(studySchedules) > 0:
             return jsonify({
-                "error": "have Course Schedule in {0}".format(
+                "error": "have Study Schedule in {0}".format(
                     course_id)
             }), 500
 
