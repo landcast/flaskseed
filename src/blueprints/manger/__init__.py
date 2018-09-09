@@ -551,6 +551,9 @@ def thacher_interview():
             courseware_num:
               description: '课件个数0为上传，>0已经上传'
               type: 'integer'
+            course_schedule_id:
+              description: 'course_schedule_id'
+              type: 'integer'
     """
     j = request.json
     return jsonify(do_query(j, thacher_interview_sql))
@@ -564,12 +567,14 @@ def thacher_interview_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,c.id as course_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,c.`course_name`,su.name as interview_name,i.`start`,i.`end`,t.state,i.state as integerview_state,
-    (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num
+    select t.id,c.id as course_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,c.`course_name`,su.name as interview_name,i.`start`,i.`end`,t.state,i.state as 		integerview_state,
+    (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
+    cs.id as course_schedule_id
     from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
+    left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'
     ,interview i left join sys_user su on i.interviewer_id = su.id 
-    where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5)
+    where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5) 
     ''']
 
     if 'teacher_name' in params.keys():
@@ -596,7 +601,7 @@ def thacher_interview_sql(params):
     sql.append(' order by t.id desc')
 
     return ['id', 'course_id', 'username', 'mobile', 'email',
-            'course_name', 'interview_name', 'start', 'end', 'state','integerview_state','courseware_num'], ''.join(sql)
+            'course_name', 'interview_name', 'start', 'end', 'state','integerview_state','courseware_num','course_schedule_id'], ''.join(sql)
 
 
 @manger.route('/students', methods=['POST'])
