@@ -1666,6 +1666,8 @@ def accept_interview():
                         classes_number = 1,
                         course_desc = '面试课',
                         package_type = 'INTERVIEW',
+                        start = interview_at_start.replace('T', ' ').replace('Z', ''),
+                        end = interview_at_end.replace('T', ' ').replace('Z', ''),
                         state = 98,
                         price= 0,
                         primary_teacher_id =interview.teacher_id,
