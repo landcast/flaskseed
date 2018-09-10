@@ -665,7 +665,7 @@ def course_common_sql(params):
       (select count(*) from courseware cs where c.`id` = cs.`course_id` and cs.`delete_flag` = 'IN_FORCE') as courseware_num,t.id as teacher_id
          from 
         course c,
-        teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`class_type` < 3 
+        teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`package_type` !='AUDITIONS' 
         ) t where 1=1
     ''']
 
