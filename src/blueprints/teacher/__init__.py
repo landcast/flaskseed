@@ -1447,6 +1447,7 @@ def accept_students():
         course =Course( course_type= 1,
                         class_type= 1,
                         classes_number = 1,
+                        package_type = 'AUDITIONS',
                         course_desc = 'Audition Course',
                         state = 98,
                         price= 0,
@@ -1646,9 +1647,7 @@ def accept_interview():
     interview_at_end = request.json['interview_at_end']
 
     with session_scope(db) as session:
-        current_app.logger.debug('accept_interview---------------->1')
         interview = session.query(Interview).filter_by(id=interview_id).one_or_none()
-        current_app.logger.debug('accept_interview---------------->2')
         if interview is None :
             return jsonify({
                 "error": "not found interview: {0}".format(
@@ -1660,14 +1659,13 @@ def accept_interview():
         setattr(interview,'state',2)
         setattr(interview,'interviewer_id',getattr(g, current_app.config['CUR_USER'])['id'])
         setattr(interview,'updated_by',getattr(g, current_app.config['CUR_USER'])['username'])
-        current_app.logger.debug('accept_interview---------------->3')
         session.add(interview)
         session.flush()
-        current_app.logger.debug('accept_interview---------------->4')
         course =Course( course_type= 1,
                         class_type= 3,
                         classes_number = 1,
                         course_desc = '面试课',
+                        package_type = 'INTERVIEW',
                         state = 98,
                         price= 0,
                         primary_teacher_id =interview.teacher_id,

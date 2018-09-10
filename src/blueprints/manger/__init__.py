@@ -571,7 +571,7 @@ def thacher_interview_sql(params):
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
     cs.id as course_schedule_id
     from teacher t
-    left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.class_type = 3
+    left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.package_type = 'INTERVIEW'
     left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'
     ,interview i left join sys_user su on i.interviewer_id = su.id 
     where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5) 
@@ -848,7 +848,7 @@ def thacher_tryout_sql(params):
     from course c,teacher t ,student s,`order` o,course_schedule cs
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = t.id and c.id = cs.course_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' 
-    and c.`class_type` = 3 )  t where 1=1
+    and c.`package_type` = 'INTERVIEW' )  t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
@@ -967,7 +967,7 @@ def student_tryout_sql(params):
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = s.id and c.id = cs.course_id and cs.id = ss.course_schedule_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
-    and c.`class_type` = 3 )  t where 1=1
+    and c.`package_type` = 'AUDITIONS' )  t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
@@ -1201,7 +1201,7 @@ def thacher_common_sql(params):
     from course c left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'  ,teacher t ,student s,`order` o
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = t.id 
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' 
-    and c.`class_type` < 3 )  t where 1=1
+    and c.`package_type` != 'AUDITIONS' )  t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
