@@ -1654,8 +1654,8 @@ def accept_interview():
                     interview_id)
             }), 500
 
-        setattr(interview,'start',interview_at_start.replace('T', ' ').replace('Z', ''))
-        setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', ''))
+        setattr(interview,'start',interview_at_start.replace('T', ' ').replace('Z', '').split('.')[0])
+        setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', '').split('.')[0])
         setattr(interview,'state',2)
         setattr(interview,'interviewer_id',getattr(g, current_app.config['CUR_USER'])['id'])
         setattr(interview,'updated_by',getattr(g, current_app.config['CUR_USER'])['username'])
