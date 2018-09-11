@@ -897,7 +897,7 @@ def student_tryout_query():
         description: '课件状态0：没有，1：有'
         type: 'string'
       course_schedule_state:
-        description: '课程状态，1：未上，2：已经上课，2：取消，4：问题课'
+        description: '课程状态，1：未上，2：已经上课，3：取消，4：问题课'
         type: 'string'
     res:
       num_results:
@@ -988,8 +988,18 @@ def student_tryout_sql(params):
         sql.append(
             ' and t.courseware_num =:courseware_state')
     if 'course_schedule_state' in params.keys():
-        sql.append(
-            ' and t.course_schedule_state =:course_schedule_state')
+        if params['course_schedule_state'] == '1':
+            sql.append(' and t.end > now()')
+        if params['course_schedule_state'] == '2':
+            sql.append(' and t.end < now()')
+        if params['course_schedule_state'] == '3':
+            sql.append(' and t.course_schedule_state =\'CANCEL\'')
+        if params['course_schedule_state'] == '4':
+            sql.append(' and t.course_schedule_state =\'TROUBLE_CLASS\'')
+
+
+
+        sql.append(' and t.course_schedule_state =:course_schedule_state')
     sql.append(' order by t.id desc')
     return ['id', 'course_name', 'open_grade', 'teacher_name', 'student_name',
             'start', 'end','courseware_num','course_schedule_state','study_schedule_id','course_schedule_id'], ''.join(sql)
