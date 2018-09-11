@@ -186,7 +186,7 @@ def register():
     if user.mobile is not None:
 
         if code != '86':
-            mobile = code+'-'+mobile
+            mobile = '00'+code+'-'+mobile
         current_app.logger.debug('code--->' + code+":"+mobile+"----->"+str(user_id))
         teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
         current_app.logger.debug('target_table:' + user_type+'---table_id:'+str(user_id)+'-----teacher_id:'+str(teacher_id))
