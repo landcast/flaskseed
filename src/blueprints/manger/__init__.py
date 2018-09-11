@@ -997,9 +997,6 @@ def student_tryout_sql(params):
         if params['course_schedule_state'] == '4':
             sql.append(' and t.course_schedule_state =\'TROUBLE_CLASS\'')
 
-
-
-        sql.append(' and t.course_schedule_state =:course_schedule_state')
     sql.append(' order by t.id desc')
     return ['id', 'course_name', 'open_grade', 'teacher_name', 'student_name',
             'start', 'end','courseware_num','course_schedule_state','study_schedule_id','course_schedule_id'], ''.join(sql)
