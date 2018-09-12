@@ -402,7 +402,7 @@ def refund():
 
         session.flush()
 
-        studySchedules = session.query(StudySchedule).filter_by(order_id = order.id, state=98,delete_flag = 'IN_FORCE').all()
+        studySchedules = session.query(StudySchedule).filter_by(order_id = order.id,delete_flag = 'IN_FORCE').all()
 
         for studySchedule in studySchedules:
             if studySchedule.actual_start > time.time():
