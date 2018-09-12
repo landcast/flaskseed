@@ -699,7 +699,7 @@ def view_homework_sql(params):
 			from course_schedule cs,homework h,course c
             where cs.id = h.course_schedule_id and cs.course_id = c.id
              and cs.`state` <> 99    and h.homework_type = 1 and h.homework_id is null
-             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and  and c.`delete_flag` = 'IN_FORCE' 
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE'   and c.`delete_flag` = 'IN_FORCE' 
               ''']
     sql.append(
         " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
