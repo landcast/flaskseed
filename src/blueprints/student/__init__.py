@@ -739,7 +739,10 @@ def my_subject():
         description: '科目类别'
         type: 'string'
       student_id:
-        description: '学生id，不传默认自己'
+        description: '学生id'
+        type: 'string'
+      student_subject_id:
+        description: '学生学习或意向科目id'
         type: 'string'
     res:
       num_results:
@@ -798,19 +801,19 @@ def my_subject_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select th.id,th.`subject_id`,su.subject_name_zh,sc.id as subject_category_id,sc.subject_category_zh,cu.id as curriculum_id,cu.full_name_zh,th.subject_name,th.subject_type as type
-          from student_subject th  left join subject su on th.`subject_id` = su.id and su.state <> 99 and su.`delete_flag` = 'IN_FORCE'
-          left join subject_category sc on su.`subject_category_id` = sc.id and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE'
-          left join curriculum cu on sc.`curriculum_id` = cu.id and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
-          where th.`delete_flag` = 'IN_FORCE'
+            select th.id,su.id as subject_id,su.subject_name_zh,sc.id as subject_category_id,sc.subject_category_zh,cu.id as curriculum_id,cu.full_name_zh,th.subject_name,th.subject_type as type
+          from curriculum cu,subject_category sc, subject su left join student_subject th on su.id = th.subject_id and th.`delete_flag` = 'IN_FORCE'
+           where cu.id = sc.curriculum_id and sc.id = su.subject_category_id 
+           and su.state <> 99 and su.`delete_flag` = 'IN_FORCE' and sc.state <> 99 and sc.`delete_flag` = 'IN_FORCE' and cu.state <> 99 and cu.`delete_flag` = 'IN_FORCE'
             ''']
 
     if 'type' in params.keys():
         sql.append(' and th.subject_type =:type ')
-    if 'teacher_id' in params.keys():
+    if 'student_id' in params.keys():
         sql.append(' and th.student_id =:student_id ')
-    else:
-        sql.append("and th.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    if 'student_subject_id' in params.keys():
+        sql.append(' and th.id =:student_subject_id ')
 
     sql.append(' order by th.id desc')
 
@@ -950,8 +953,6 @@ def get_enter_room_url():
                 "error": "not found Study_Schedule: {0}".format(
                     study_schedule_id)
             }), 500
-
-        current_app.logger.debug('studyschedule.schedule_type-------------'+studyschedule.schedule_type.name)
 
         if studyschedule.schedule_type.name == 'LOCKED' :
             return jsonify({
