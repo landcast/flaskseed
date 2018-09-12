@@ -695,12 +695,12 @@ def view_homework_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,s.name as student_name,h.score,score_reason,h.review_at
-			from course_schedule cs,homework h,study_schedule ss,student s,course c
-            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and ss.student_id = s.id and course_id = c.id
-             and cs.`state` <> 99   and s.`state` <> 99
-             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
-            ''']
+          select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,h.score,score_reason,h.review_at
+			from course_schedule cs,homework h,study_schedule ss,course c
+            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and cs.course_id = c.id
+             and cs.`state` <> 99    and h.homework_type = 1
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
+              ''']
     sql.append(
         " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
     if 'course_schedule_id' in params.keys():
