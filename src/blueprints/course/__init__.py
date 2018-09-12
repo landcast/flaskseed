@@ -354,8 +354,8 @@ def schedule():
                 session.add(order)
                 session.flush()
 
-        setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', ''))
-        setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', ''))
+        setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', '').split('.')[0])
+        setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', '').split('.')[0])
         session.add(course)
         session.flush()
 
