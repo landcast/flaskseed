@@ -379,13 +379,11 @@ def my_homework_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select hm.id,question_name,homework_type,question_text,question_attachment_url,answer_text,answer_attachment_url,score,score_remark,score_reason,hm.created_at,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.course_name_zh as course_name,
-    t.avatar as teacher_avatar,sc.teacher_evaluation,cs.name,sc.student_evaluation,hm.evaluation,sc.name,sc.id as study_schedule_id
-    from homework hm,study_schedule sc,course c,teacher t,course_schedule cs
-    where 
-    hm.study_schedule_id = sc.id and cs.course_id = c.id and c.`primary_teacher_id` = t.id and sc.course_schedule_id = cs.id 
-    and c.state<> 99 
-    and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE' 
-   
+    t.avatar as teacher_avatar,sc.teacher_evaluation,cs.name,sc.student_evaluation,hm.evaluation,sc.name,sc.id as study_schedule_id 
+	from study_schedule sc ,course_schedule cs,homework hm ,course c,teacher t
+	where sc.course_schedule_id = cs.id and cs.id = hm.course_schedule_id and cs.course_id = c.id  and c.`primary_teacher_id` = t.id
+	and c.state<> 99 
+    and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and sc.`delete_flag` = 'IN_FORCE' and hm.`delete_flag` = 'IN_FORCE'  and cs.`delete_flag` = 'IN_FORCE'  
     ''']
     sql.append(
         " and sc.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
