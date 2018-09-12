@@ -1029,7 +1029,9 @@ def write_homework():
                             homework_id = homework_id,
                             question_name = title,
                             delete_flag = 'IN_FORCE',
+                            course_schedule_id = homework.course_schedule_id,
                             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+
                             )
         session.add(homework1)
         session.flush()
