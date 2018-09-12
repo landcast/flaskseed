@@ -2,7 +2,7 @@
 from flask import g, jsonify, Blueprint, request, current_app
 from src.services import do_query, datetime_param_sql_format
 from sqlalchemy.sql import *
-from src.models import db, session_scope, Course,Order,PayLog,Student,Teacher,Subject,CourseSchedule
+from src.models import db, session_scope, Course,Order,PayLog,Student,Teacher,Subject,CourseSchedule,StudySchedule
 
 order = Blueprint('order', __name__)
 
@@ -400,5 +400,16 @@ def refund():
         session.add(paylog)
 
         session.flush()
+
+        studySchedules = session.query(StudySchedule).filter_by(order_id = order.id, state=98,delete_flag = 'IN_FORCE').all()
+        
+        for studySchedule in studySchedules:
+            setattr(studySchedule,'schedule_type','LOCKED')
+            session.add(paylog)
+            session.flush()
+
+
+
+
 
     return jsonify({'id':order_id })

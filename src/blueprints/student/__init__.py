@@ -951,6 +951,12 @@ def get_enter_room_url():
                     study_schedule_id)
             }), 500
 
+        if studyschedule.schedule_type == 'LOCKED' :
+            return jsonify({
+                "error": "study schedule has locked"
+            }), 500
+
+
         courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id =studyschedule.course_schedule_id).one_or_none()
 
         if courseclassroom is None :
