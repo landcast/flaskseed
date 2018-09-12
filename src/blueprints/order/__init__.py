@@ -405,7 +405,7 @@ def refund():
         studySchedules = session.query(StudySchedule).filter_by(order_id = order.id,delete_flag = 'IN_FORCE').all()
 
         for studySchedule in studySchedules:
-            if studySchedule.actual_start > time.time():
+            if studySchedule.actual_start > float(round(time.time() * 1000)):
                 setattr(studySchedule,'schedule_type','LOCKED')
                 session.add(paylog)
                 session.flush()
