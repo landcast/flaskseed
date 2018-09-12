@@ -974,7 +974,7 @@ def student_tryout_sql(params):
         sql.append(" and t.teacher_name like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
-    if 'student_name_name' in params.keys():
+    if 'student_name' in params.keys():
         sql.append(" and t.student_name like '%")
         sql.append(params['student_name'])
         sql.append("%'")
