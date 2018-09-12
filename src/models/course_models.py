@@ -152,6 +152,7 @@ class CourseScheduleStatueEnum(enum.IntEnum):
     MAKE_UP_CLASS:补偿课
     AUDITIONS:试听课
     INTERVIEW:面试
+    LOCKED:锁定
     """
 
     COMMON_CLASS = 1
@@ -160,6 +161,7 @@ class CourseScheduleStatueEnum(enum.IntEnum):
     MAKE_UP_CLASS = 4
     AUDITIONS = 5
     INTERVIEW = 6
+    LOCKED=7
 
 
 class CourseSchedule(EntityMixin, db.Model):
