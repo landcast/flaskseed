@@ -658,7 +658,7 @@ def course_common_sql(params):
     sql = ['''
         select * from (select c.id ,c.course_name,c.course_name_zh,concat(t.`first_name`,' ',t.`middle_name`,' ',t.`last_name`)  as teacher_name,
         (select GROUP_CONCAT(s.name) from student s,`order` o where s.id = o.student_id and o.`delete_flag` = 'IN_FORCE' and o.state <> 99 and o.`delete_flag` = 'IN_FORCE' 
-        and o.course_id = c.id ) as student_name,
+        and o.course_id = c.id and o.payment_state in (2,8)) as student_name,
         c.start,c.end end,c.classes_number,(select count(*) from course_schedule where course_id = c.id and `delete_flag` = 'IN_FORCE' and end < now()) as finish,
         c.open_grade,(select id from `course_schedule` where course_id = c.id group by c.id) as course_schedule_id,
          
