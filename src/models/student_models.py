@@ -69,7 +69,7 @@ class Homework(EntityMixin, db.Model):
     study_schedule_id = Column(Integer, ForeignKey('study_schedule.id'),
                                nullable=True)
     course_schedule_id = Column(Integer, ForeignKey('course_schedule.id'),
-                               nullable=False)
+                               nullable=True)
     homeworks = db.relationship('StudySchedule', backref='homeworks',
                                 lazy=True)
 
