@@ -399,21 +399,21 @@ def teacher_homework():
                     course_schedule_id)
             }), 500
 
-        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=courseschedule.id)
+#        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=courseschedule.id)
 
-        for studyschedule in studyschedules:
+ #       for studyschedule in studyschedules:
 
-            homework = Homework(
+        homework = Homework(
                 homework_type = 1,
                 question_name= title,
                 question_text= desc,
                 question_attachment_url=attachment_url,
-                study_schedule_id = studyschedule.id
-            )
+                course_schedule_id = courseschedule.id
+        )
 
-            session.add(homework)
+        session.add(homework)
 
-            session.flush()
+        session.flush()
 
     return jsonify({'id':homework.id })
 
@@ -696,10 +696,10 @@ def view_homework_sql(params):
     current_app.logger.debug(params)
     sql = ['''
           select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,h.score,score_reason,h.review_at
-			from course_schedule cs,homework h,study_schedule ss,course c
-            where cs.id = ss.course_schedule_id and ss.id = h.study_schedule_id and cs.course_id = c.id
-             and cs.`state` <> 99    and h.homework_type = 1
-             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' 
+			from course_schedule cs,homework h,course c
+            where cs.id = h.course_schedule_id and cs.course_id = c.id
+             and cs.`state` <> 99    and h.homework_type = 1 and h.homework_id is null
+             and cs.`delete_flag` = 'IN_FORCE' and h.`delete_flag` = 'IN_FORCE' and  and c.`delete_flag` = 'IN_FORCE' 
               ''']
     sql.append(
         " and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
