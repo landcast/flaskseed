@@ -950,7 +950,9 @@ def get_enter_room_url():
                 "error": "not found Study_Schedule: {0}".format(
                     study_schedule_id)
             }), 500
+
         current_app.logger.debug('studyschedule.schedule_type-------------'+studyschedule.schedule_type.name)
+
         if studyschedule.schedule_type.name == 'LOCKED' :
             return jsonify({
                 "error": "study schedule has locked"
