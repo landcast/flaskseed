@@ -1965,7 +1965,6 @@ def student_tryout_apply():
       num_results:
         description: 'objects returned by query in current page'
         type: 'integer'
-      page:
         description: 'current page no in total pages'
         type: 'integer'
       total_pages:

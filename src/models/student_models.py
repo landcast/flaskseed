@@ -201,6 +201,7 @@ class Student(UserBaseMixin, db.Model):
     grade = Column(Integer, nullable=True, comment='当前学校班级')
     read_country = Column(String(100), nullable=True, comment='在读国家')
     read_province = Column(String(100), nullable=True, comment='在读省/州')
+    read_city = Column(String(100), nullable=True, comment='在读城市')
     read_school = Column(String(100), nullable=True, comment='在读学校英文')
     read_school_zh = Column(String(100), nullable=True, comment='在读学校中文')
     interest = Column(String(1000), nullable=True, comment='兴趣爱好英文')

@@ -46,6 +46,13 @@ def upload_file():
                 result.append({'upload_file': file.filename,
                                'download_file': url_for('upload.download_file',
                                                         filename=hashed_fn)})
+            else:
+                return jsonify({
+                    "error": "File format error：pdf, png, jpg, jpeg, gif,ppt,doc"
+                }), 500
+
+
+
         return jsonify(result)
     return '''
     <!doctype html>
