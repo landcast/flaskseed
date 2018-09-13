@@ -48,7 +48,7 @@ def upload_file():
                                                         filename=hashed_fn)})
             else:
                 return jsonify({
-                    "error": "File format error：pdf, png, jpg, jpeg, gif,ppt,doc"
+                    "error": "File format error：pdf, png, jpg, jpeg, gif,ppt"
                 }), 500
 
 
