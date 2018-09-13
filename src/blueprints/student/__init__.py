@@ -815,7 +815,7 @@ def my_subject_sql(params):
     if 'student_subject_id' in params.keys():
         sql.append(' and th.id =:student_subject_id ')
 
-    sql.append(' order by th.id desc')
+    sql.append(' group by su.id order by th.id desc')
 
     return ['id', 'subject_id','subject_name_zh', 'subject_category_id','subject_category_zh','curriculum_id','full_name_zh','subject_name','type'], ''.join(sql)
 
