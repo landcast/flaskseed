@@ -113,7 +113,7 @@ def my_course_sql(params):
            c.classes_number,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
             from  course c,`order` o, teacher t
             where  o.course_id = c.id and c.primary_teacher_id = t.id  
-            and o.`state` <> 99  and c.state<> 99 and o.payment_state in (2,8)
+            and o.`state` <> 99  and c.state<> 99 and o.payment_state in (2,7,8)
             and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'       
     ''']
     sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
