@@ -296,11 +296,19 @@ def schedule():
                     course_id)
             }), 500
 
-        orders = session.query(Order).filter_by(course_id = course.id , state=98 , payment_state=2).all()
+        orders = session.query(Order).filter_by(course_id = course.id , state=98 , payment_state=2,delete_flag = 'IN_FORCE').all()
 
         if orders is None or len(orders) < 1:
             return jsonify({
                 "error": "found order existing in {0}".format(
+                    course_id)
+            }), 500
+
+        sourseSchedules = session.query(CourseSchedule).filter_by(course_id = course.id ,delete_flag = 'IN_FORCE').all()
+
+        if sourseSchedules is  None or len(sourseSchedules) > 0:
+            return jsonify({
+                "error": "CourseSchedule  in {0}".format(
                     course_id)
             }), 500
 
