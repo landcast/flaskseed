@@ -296,6 +296,11 @@ def schedule():
                     course_id)
             }), 500
 
+        setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', '').split('.')[0])
+        setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', '').split('.')[0])
+        session.add(course)
+        session.flush()
+
         orders = session.query(Order).filter_by(course_id = course.id , state=98 , payment_state=2).all()
 
         if orders is None or len(orders) < 1:
@@ -354,10 +359,7 @@ def schedule():
                 session.add(order)
                 session.flush()
 
-        setattr(course,'start',request.json['class_at_start'].replace('T', ' ').replace('Z', '').split('.')[0])
-        setattr(course,'end',request.json['class_at_end'].replace('T', ' ').replace('Z', '').split('.')[0])
-        session.add(course)
-        session.flush()
+
 
     return jsonify({'id':courseschedule.id })
 
