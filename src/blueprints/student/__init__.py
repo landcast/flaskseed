@@ -350,7 +350,7 @@ def my_homework():
               description: '课程名称'
               type: 'string'
             teacher_evaluation:
-              description: '教师评价'
+              description: '学生给老师的评价'
               type: 'string'
             name:
               description: '课节名称'
@@ -359,7 +359,7 @@ def my_homework():
               description: '老师给学生的评价'
               type: 'string'
             evaluation:
-              description: '评价'
+              description: '作业评价'
               type: 'string'
             name:
               description: '课节名称'
