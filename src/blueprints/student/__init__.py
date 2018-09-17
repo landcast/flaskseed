@@ -284,6 +284,9 @@ def my_homework():
       study_schedule_id:
         description: 'study schedule id 课节id'
         type: 'string'
+      homework_id:
+        description: '作业id'
+        type: 'string'
       homework_state:
         description: 'homework state 0:全部列表，1：我完成的，2：待完成的'
         type: 'string'
@@ -399,6 +402,10 @@ def my_homework_sql(params):
         sql.append('  and hm.homework_type = 1 and hm.id  not in ( select he1.homework_id from homework he1,study_schedule sc1 '
                    'where homework_type = 2 and he1.`study_schedule_id` = sc1.id and sc1.`student_id` ='
                    + getattr(g, current_app.config['CUR_USER'])['id']+')')
+
+    if 'homework_id' in params.keys():
+        sql.append(' and hm.id =:homework_id')
+
     sql.append(' order by hm.id desc')
     current_app.logger.debug(sql)
 
