@@ -124,15 +124,21 @@ def register():
         # check existing username in all 3 tables
         found = False
         message = ''
-        for table_checked in user_source.values():
-            result = session.execute(select([table_checked]).where(
-                table_checked.username == user_name))
+        if target_table in user_source.values():
+            result = session.execute(select([target_table]).where(
+                target_table.username == user_name))
             current_app.logger.debug("table_checked.__name__ " +
-                                     str(table_checked.__name__))
+                                     str(target_table.__name__))
             row1 = result.first()
-            message = table_checked.__name__ if (
+            message = target_table.__name__ if (
                     row1 is not None) else ''
             found = found or (row1 is not None)
+        else:
+            return jsonify({
+                "error": " not found {0} ".format(
+                    target_table)
+            }), 500
+
         if found:
             result.close()
             return jsonify({

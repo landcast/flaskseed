@@ -506,8 +506,8 @@ def my_course_sql(params):
             	(select GROUP_CONCAT(s.name) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
             	and cs.`delete_flag` = 'IN_FORCE' and cs.state <> 99  and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
             	(select count(*) from course_schedule where c.`id` = course_id and end < now() ) as finish
-            from  course c
-            where  c.state<> 99 and c.`delete_flag` = 'IN_FORCE' 
+            from  course c,`order` o
+            where  c.state<> 99 and c.`delete_flag` = 'IN_FORCE' and  o.state<> 99 and o.`delete_flag` = 'IN_FORCE' and o.payment_state in (2,8) and o.course_id= c.id
             ''']
     sql.append("and c.primary_teacher_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
@@ -536,7 +536,7 @@ def my_course_sql(params):
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
         sql.append(' and t.end > now()')
-    sql.append(' order by t.id desc')
+    sql.append('group by t.id  order by t.id desc')
     return ['id', 'course_name', 'course_name_zh','classes_number', 'start', 'end',
             'student_name', 'finish'], ''.join(sql)
 
