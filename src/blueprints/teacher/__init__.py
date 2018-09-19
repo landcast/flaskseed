@@ -1234,9 +1234,9 @@ def get_enter_room_url():
                     course_schedule_id)
             }), 500
 
-        nickName = "{0}{1}{2}".format(getattr(g, current_app.config['CUR_USER'])['first_name'],
-                                        getattr(g, current_app.config['CUR_USER'])['middle_name'],
-                                        getattr(g, current_app.config['CUR_USER'])['last_name'])
+        nickName = "{0}{1}{2}".format((getattr(g, current_app.config['CUR_USER'])['first_name']).strip(),
+                                      (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
+                                      (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
         current_app.logger.debug('nickName-------'+nickName)
         url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,nickName,ClassroomRoleEnum.TEACHER.name,ClassroomDeviceEnum.PC.name)
 
