@@ -1234,7 +1234,7 @@ def get_enter_room_url():
                     course_schedule_id)
             }), 500
 
-        nickName = "{0} {1} {2}".format(getattr(g, current_app.config['CUR_USER'])['first_name'],
+        nickName = "{0}{1}{2}".format(getattr(g, current_app.config['CUR_USER'])['first_name'],
                                         getattr(g, current_app.config['CUR_USER'])['middle_name'],
                                         getattr(g, current_app.config['CUR_USER'])['last_name'])
         current_app.logger.debug('nickName-------'+nickName)
