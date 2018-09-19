@@ -536,7 +536,7 @@ def my_course_sql(params):
     if 'course_status' in params.keys() \
             and params['course_status'] == '2':
         sql.append(' and t.end > now()')
-    sql.append('group by t.id  order by t.id desc')
+    sql.append(' group by t.id  order by t.id desc')
     return ['id', 'course_name', 'course_name_zh','classes_number', 'start', 'end',
             'student_name', 'finish'], ''.join(sql)
 
