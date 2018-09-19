@@ -1759,7 +1759,7 @@ def get_enter_room_url():
                     course_schedule_id)
             }), 500
 
-        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['nickname'],
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['name'],
                                       ClassroomRoleEnum.ASSISTANT.name,ClassroomDeviceEnum.PC.name)
 
     return jsonify({'url':url })
