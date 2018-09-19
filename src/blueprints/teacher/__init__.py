@@ -1238,7 +1238,7 @@ def get_enter_room_url():
                                         getattr(g, current_app.config['CUR_USER'])['middle_name'],
                                         getattr(g, current_app.config['CUR_USER'])['last_name'])
         current_app.logger.debug('nickName-------'+nickName)
-        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['username'],ClassroomRoleEnum.TEACHER.name,ClassroomDeviceEnum.PC.name)
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,nickName,ClassroomRoleEnum.TEACHER.name,ClassroomDeviceEnum.PC.name)
 
     return jsonify({'url':url })
 
