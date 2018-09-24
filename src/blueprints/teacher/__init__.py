@@ -1688,7 +1688,7 @@ def accept_interview():
         courseschedule = CourseSchedule(
             start = interview.start,
             end = interview.end,
-            name = '面试课',
+            name = 'INTERVIEW',
             state = 98,
             override_course_type=1,
             course_id = course.id,
