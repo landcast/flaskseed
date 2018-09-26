@@ -190,9 +190,9 @@ def acl_control(request, response):
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         try:
+            print('json_encoder', obj, type(obj))
             if isinstance(obj, datetime):
                 str_datetime = obj.isoformat()
-                print('json_encoder', obj, type(obj))
                 if len(str_datetime) == 19:
                     # 2019-09-01T19:01:01
                     return obj.isoformat() + '.000Z'
