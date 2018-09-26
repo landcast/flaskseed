@@ -188,6 +188,7 @@ def acl_control(request, response):
 
 
 class CustomJSONEncoder(JSONEncoder):
+    print('json_encoder------4---', JSONEncoder)
     def default(self, obj):
         print('json_encoder------3---', obj, type(obj))
         try:
