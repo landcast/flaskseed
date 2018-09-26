@@ -189,8 +189,9 @@ def acl_control(request, response):
 
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
+        print('json_encoder------3---', obj, type(obj))
         try:
-            print('json_encoder----1', obj, type(obj))
+            print('json_encoder----1--', obj, type(obj))
             if isinstance(obj, datetime):
                 str_datetime = obj.isoformat()
                 if len(str_datetime) == 19:
@@ -206,7 +207,7 @@ class CustomJSONEncoder(JSONEncoder):
         except TypeError:
             pass
         else:
-            print('json_encoder------2', obj, type(obj))
+            print('json_encoder------2--', obj, type(obj))
             return list(iterable)
         return JSONEncoder.default(self, obj)
 
