@@ -188,29 +188,34 @@ def acl_control(request, response):
 
 
 class CustomJSONEncoder(JSONEncoder):
-    print('json_encoder------4---', JSONEncoder)
     def default(self, obj):
-        print('json_encoder------3---', obj, type(obj))
-        try:
-            print('json_encoder----1--', obj, type(obj))
-            if isinstance(obj, datetime):
-                str_datetime = obj.isoformat()
-                if len(str_datetime) == 19:
-                    # 2019-09-01T19:01:01
-                    return obj.isoformat() + '.000Z'
-                elif len(str_datetime) == 23:
-                    return obj.isoformat() + 'Z'
-                elif len(str_datetime) == 26:
-                    return obj.isoformat()[:-3] + 'Z'
-                else:
-                    raise Exception("invalid datetime format " + str_datetime)
-            iterable = iter(obj)
-        except TypeError:
-            pass
-        else:
-            print('json_encoder------2--', obj, type(obj))
-            return list(iterable)
+        if obj:
+            print('json_encoder------3---', obj, type(obj))
+            try:
+                print('json_encoder----1--', obj, type(obj))
+                if isinstance(obj, datetime):
+                    str_datetime = obj.isoformat()
+                    if len(str_datetime) == 19:
+                        # 2019-09-01T19:01:01
+                        return obj.isoformat() + '.000Z'
+                    elif len(str_datetime) == 23:
+                        return obj.isoformat() + 'Z'
+                    elif len(str_datetime) == 26:
+                        return obj.isoformat()[:-3] + 'Z'
+                    else:
+                        raise Exception("invalid datetime format " + str_datetime)
+                iterable = iter(obj)
+            except TypeError:
+                pass
+            else:
+                print('json_encoder------2--', obj, type(obj))
+                return list(iterable)
         return JSONEncoder.default(self, obj)
+
+    def encode(self, o):
+        if o:
+            print('json_encoder-encode', type(o), o)
+        return JSONEncoder.encode(self, o)
 
 
 def create_app(config):
