@@ -353,7 +353,7 @@ class CourseClassParticipant(EntityMixin, db.Model):
                             server_default=ClassroomRoleEnum.ASSISTANT.name)
     role_id = Column(String(255), nullable=True)
     role_uid = Column(String(255), nullable=True)
-    access_url = Column(String(255), nullable=True)
+    access_url = Column(String(4000), nullable=True)
     device_type = Column(Enum(ClassroomDeviceEnum), nullable=False,
                          server_default=ClassroomDeviceEnum.PC.name)
     role_id = Column(String(255), nullable=True)
