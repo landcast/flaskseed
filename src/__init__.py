@@ -223,12 +223,11 @@ class CustomJSONEncoder(JSONEncoder):
                         val = x[y]
                         if isinstance(val, str) and self.dt.match(val):
                             if len(val) == 19:
-                                new_val = val + '.000Z'
+                                temp[y] = val + '.000Z'
                             elif len(val) == 23:
-                                new_val = val + 'Z'
+                                temp[y] = val + 'Z'
                             elif len(val) == 26:
-                                new_val = val[:-3] + 'Z'
-                            temp[y] = new_val
+                                temp[y] = val[:-3] + 'Z'
                     x.update(temp)
         return JSONEncoder.encode(self, o)
 
