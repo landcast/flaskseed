@@ -9,6 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import json
 import jwt
 import psutil
+import re
 from src.swaggerapis import SwagAPIManager
 from fnmatch import fnmatchcase
 import inspect
@@ -83,7 +84,7 @@ def jwt_check(request):
                              algorithm=current_app.config['JWT_ALG'],
                              verify=True)
         current_app.logger.debug(payload)
-        current_app.logger.debug("token--->"+jwt_token)
+        current_app.logger.debug("token--->" + jwt_token)
         return payload
     else:
         return None
@@ -188,11 +189,12 @@ def acl_control(request, response):
 
 
 class CustomJSONEncoder(JSONEncoder):
+    dt = re.compile(
+        '(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(.*)')
+
     def default(self, obj):
         if obj:
-            print('json_encoder------3---', obj, type(obj))
             try:
-                print('json_encoder----1--', obj, type(obj))
                 if isinstance(obj, datetime):
                     str_datetime = obj.isoformat()
                     if len(str_datetime) == 19:
@@ -203,18 +205,31 @@ class CustomJSONEncoder(JSONEncoder):
                     elif len(str_datetime) == 26:
                         return obj.isoformat()[:-3] + 'Z'
                     else:
-                        raise Exception("invalid datetime format " + str_datetime)
+                        raise Exception(
+                            "invalid datetime format " + str_datetime)
                 iterable = iter(obj)
             except TypeError:
                 pass
             else:
-                print('json_encoder------2--', obj, type(obj))
                 return list(iterable)
         return JSONEncoder.default(self, obj)
 
     def encode(self, o):
-        if o:
-            print('json_encoder-encode', type(o), o)
+        if o and isinstance(o, dict) and 'objects' in o:
+            for x in o['objects']:
+                if isinstance(x, dict):
+                    temp = {}
+                    for y in x:
+                        val = x[y]
+                        if isinstance(val, str) and self.dt.match(val):
+                            if len(val) == 19:
+                                new_val = val + '.000Z'
+                            elif len(val) == 23:
+                                new_val = val + 'Z'
+                            elif len(val) == 26:
+                                new_val = val[:-3] + 'Z'
+                            temp[y] = new_val
+                    x.update(temp)
         return JSONEncoder.encode(self, o)
 
 
