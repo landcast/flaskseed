@@ -222,7 +222,7 @@ class CustomJSONEncoder(JSONEncoder):
                     for y in x:
                         val = x[y]
 
-                        print('---------->',val,'----------',len(val))
+                        current_app.logger.debug('---------->'+val+'----------'+str(len(val)))
 
                         if isinstance(val, str) and self.dt.match(val):
                             if len(val) == 19:
