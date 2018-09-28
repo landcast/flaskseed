@@ -298,7 +298,7 @@ class CourseClassroom(EntityMixin, db.Model):
     provider = Column(Integer, nullable=False, comment='1:duobei, 2:xxx')
     room_title = Column(String(255), nullable=False)
     video_ready = Column(Integer, nullable=False, comment='0:disable, 1:enable')
-    room_url = Column(String(4000), nullable=True)
+    room_url = Column(String(8000), nullable=True)
     room_id = Column(String(120), nullable=True, index=True,
                      comment='provider returned id after room created')
     room_type = Column(Enum(ClassroomTypeEnum), nullable=False,
