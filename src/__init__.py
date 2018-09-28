@@ -221,6 +221,9 @@ class CustomJSONEncoder(JSONEncoder):
                     temp = {}
                     for y in x:
                         val = x[y]
+
+                        print('---------->',val,'----------',len(val))
+
                         if isinstance(val, str) and self.dt.match(val):
                             if len(val) == 19:
                                 temp[y] = val + '.000Z'
