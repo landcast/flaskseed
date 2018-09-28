@@ -1458,6 +1458,8 @@ def accept_students():
                         course_name = "Audition Course",
                         course_name_zh = '试听课',
                         delete_flag = 'IN_FORCE',
+                        start = studyAppointment.open_time_start,
+                        end = studyAppointment.open_time_end,
                         updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                         )
 
