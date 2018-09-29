@@ -325,8 +325,8 @@ def resetpassword():
             if row1:
                 # update password
                 current_app.logger.debug('password: ' + row1.password)
-                oldpassword = row1.password
-                mobile = row1.moble
+#                oldpassword = row1.password
+ #               mobile = row1.moble
                 row1.password = generate_password_hash(password)
                 current_app.logger.debug(
                     'new password: ' + row1.password)
