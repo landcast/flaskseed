@@ -327,7 +327,7 @@ class ClassroomRoleEnum(enum.IntEnum):
     because generated mysql enum using
     1 as start value by default
     1：听众，2:老师，3：学生，4：兼课，5：助教
-    //0：听众，1:老师，2：学生，3：兼课，4：助教
+    //0：听众，2:老师，3：学生，4：兼课，5：助教
     """
     AUDIENCE = 1
     TEACHER = 2
