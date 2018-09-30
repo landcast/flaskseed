@@ -329,11 +329,11 @@ class ClassroomRoleEnum(enum.IntEnum):
     1：听众，2:老师，3：学生，4：兼课，5：助教
     //0：听众，1:老师，2：学生，3：兼课，4：助教
     """
-    AUDIENCE = 0
-    TEACHER = 1
-    STUDENT = 2
-    SIT_IN = 3
-    ASSISTANT = 4
+    AUDIENCE = 1
+    TEACHER = 2
+    STUDENT = 3
+    SIT_IN = 4
+    ASSISTANT = 5
 
 
 class ClassroomDeviceEnum(enum.IntEnum):
