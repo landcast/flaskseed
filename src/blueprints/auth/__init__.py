@@ -11,7 +11,7 @@ import requests
 from src.models import db, session_scope, user_source, SmsLog,ThirdDateLog,SysUser,SysUserRole
 from src.services import send_email, redis_store
 import hashlib
-from src.services import classin_service,do_query
+from src.services import classin_service,do_query,email_service
 
 
 BEARER_TOKEN = 'Bearer '
@@ -42,6 +42,8 @@ def login():
     user_name = request.json['username']
     password = request.json['password']
     user_type = request.json['usertype']
+    email_service.sendEmail('lxf4456@163.com','ssssssssss','interview','name',1,'en')
+
     with session_scope(db) as session:
         user = session.query(user_source[user_type]).filter_by(
             username=user_name).first()
