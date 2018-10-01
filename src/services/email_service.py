@@ -4,6 +4,8 @@ from flask import current_app
 from flask_mail import Mail, Message
 from threading import Thread
 from collections import namedtuple
+import requests
+import json
 
 
 mail = Mail()
@@ -39,3 +41,20 @@ def send_email(to, subject=None, body=None, attachments=None, cc=None, bcc=None,
     thr = Thread(target=send_async_email,
                  args=[current_app._get_current_object(), msg])
     thr.start()
+
+
+def sendEmail(to, text, subject,templateName, user_type=0,lang='en'):
+    """
+    """
+    r = requests.post(
+        current_app.config['EP_LOCATION'] + 'common/sendEmail',
+        data=json.dumps({
+            'cc': '',
+            'to': to,
+            'text': text,
+            'subject':subject,
+            'templateName':templateName,
+            'lang': lang,
+            'userType': user_type,
+        }), headers={'Content-type': 'application/json'})
+    current_app.logger.debug(r.text)
