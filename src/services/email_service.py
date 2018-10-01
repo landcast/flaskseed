@@ -47,7 +47,7 @@ def sendEmail(to, text, subject,templateName, user_type=0,lang='en'):
     """
     """
     r = requests.post(
-        current_app.config['EP_LOCATION'] + 'common/sendEmail',
+        current_app.config['EP_LOCATION'] + '/common/sendEmail',
         data=json.dumps({
             'cc': '',
             'to': to,
