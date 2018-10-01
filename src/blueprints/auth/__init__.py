@@ -42,7 +42,7 @@ def login():
     user_name = request.json['username']
     password = request.json['password']
     user_type = request.json['usertype']
-    email_service.sendEmail('lxf4456@163.com','ssssssssss','interview1','name',1,'en')
+    email_service.sendEmail('lxf4456@163.com','ssssssssss','interview','interview1',1,'en')
 
     with session_scope(db) as session:
         user = session.query(user_source[user_type]).filter_by(
