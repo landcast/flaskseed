@@ -2,6 +2,7 @@
 from flask import g, jsonify, Blueprint, request, abort, current_app,url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime,time
+import pytz
 
 from sqlalchemy.sql import *
 
@@ -1711,7 +1712,11 @@ def accept_interview():
                                           (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
                                           (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
 
-            email_service.sendEmail(email,nickName,'interview','interview2',1,'en')
+
+            tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])
+            a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+            email_service.sendEmail(email,getattr(g, current_app.config['CUR_USER'])['first_name'],'interview','interview2',1,'en')
 
         return jsonify({'id':interview.id })
 

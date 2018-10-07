@@ -2,9 +2,9 @@ from sqlalchemy import event
 from src.models.common_models import EntityMixin, db
 from flask import current_app
 from src.services import listen_service
-from src.services import classin_service
+from src.services import classin_service,email_service
 from src.models import db, session_scope, Student, Teacher, Course, CourseSchedule, ThirdDateLog, \
-    StudySchedule, Courseware
+    StudySchedule, Courseware,CourseAppointment,Order
 from datetime import datetime
 
 
@@ -74,6 +74,17 @@ def receive_after_insert(mapper, connection, target):
         forderid = classin_service.createFolder(thirdDate_forder.third_id, courseware.ware_name)
         classin_service.uploadFile(forderid, courseware.ware_url, 0, 'en')
 
+    if 'course_appointment' == table_name:
+        courseAppointment = session.query(CourseAppointment).filter_by(id=table_id).one_or_none()
+        teacher = session.query(Teacher).filter_by(id=courseAppointment.teacher_id).one_or_none()
+        if courseAppointment.appointment_state == 'APPLY':
+            email_service.sendEmail(teacher.email,teacher.first_name,'tryout','tryout',1,'en')
+    if 'order' == table_name:
+        order = session.query(Order).filter_by(id=table_id).one_or_none()
+        if order.payment_state == 2:
+            course = session.query(Course).filter_by(id=order.course_id).one_or_none()
+            teacher = session.query(Teacher).filter_by(id=course.primary_teacher_id).one_or_none()
+            email_service.sendEmail(teacher.email,teacher.first_name,'order','buy_class',1,'en')
 
 # standard decorator style
 @event.listens_for(EntityMixin, 'after_update', propagate=True)
@@ -82,7 +93,7 @@ def receive_after_update(mapper, connection, target):
     current_app.logger.debug('vafter_update------------>'+target.__tablename__+'--------------'+str(target.id))
 
     session = db.session()
-    #listen_service.after_update(target.__tablename__, target.id,session)
+    listen_service.after_update(target.__tablename__, target.id,session)
 
 
 def saveThirdDateLog(tableName, tableId, thirdId, thirdDate,connection):
