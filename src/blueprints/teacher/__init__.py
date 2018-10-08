@@ -1713,10 +1713,10 @@ def accept_interview():
                                           (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
 
 
-  #          tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])
-        #         a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
-#
- #           email_service.sendEmail(email,getattr(g, current_app.config['CUR_USER'])['first_name']+','+a,'interview','interview2',1,'en')
+            tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])
+            a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+            email_service.sendEmail(email,getattr(g, current_app.config['CUR_USER'])['first_name']+','+a,'interview','interview2',1,'en')
 
         return jsonify({'id':interview.id })
 
