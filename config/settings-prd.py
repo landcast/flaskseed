@@ -13,9 +13,9 @@ PID_FILE = 'flaskseed'
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
-USERNAME = 'root'
-PASSWORD = 'lt7116'
-DBHOST = '127.0.0.1'
+USERNAME = 'ustutor'
+PASSWORD = 'Us_Tutor'
+DBHOST = 'rm-2ze6kzf5ig80613f7vo.mysql.rds.aliyuncs.com'
 DBPORT = '3306'
 DATABASE = 'ustutor'
 SQLALCHEMY_DATABASE_URI = f"{DIALECT}+{DRIVER}://{USERNAME}:{PASSWORD}@" \
@@ -44,7 +44,7 @@ JWT_ALG = 'HS256'
 JWT_HEADER = 'Authorization'
 JWT_SUBJECT_KEY = 'sub'
 
-REDIS_URL = "redis://:@localhost:6379/0"
+REDIS_URL = "redis://:Us_Tutor@r-2ze6f26b30516ca4.redis.rds.aliyuncs.com:6379/0"
 
 CUR_ID = 'cur_identity'
 CUR_USER = 'cur_user'
