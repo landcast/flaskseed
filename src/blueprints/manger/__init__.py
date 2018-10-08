@@ -686,7 +686,7 @@ def students_query():
             state:
               description: '状态'
               type: 'string'
-            gender:
+            grade:
               description: '年级'
               type: 'string'
             parent_mobile:
@@ -711,7 +711,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.`created_at`,s.name as username,s.parent_mobile,s.gender,c.channel_name,s.gender,s.username as account,
+    select s.id,s.`created_at`,s.name as username,s.parent_mobile,s.grade,c.channel_name,s.gender,s.username as account,
     (select count(*) from study_appointment where student_id = s.id) as enroll_type
     from student s 
     left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
@@ -758,7 +758,7 @@ def students_sql(params):
     sql.append(' group by s.id order by s.id desc')
 
     return ['id','created_at','username', 'parent_mobile',
-            'gender', 'channel_name','gender', 'account','enroll_type'], ''.join(sql)
+            'grade', 'channel_name','gender', 'account','enroll_type'], ''.join(sql)
 
 
 @manger.route('/thacher_tryout', methods=['POST'])
@@ -890,6 +890,9 @@ def student_tryout_query():
       teacher_id:
         description: '教师id'
         type: 'string'
+      student_id:
+        description: '学生id'
+        type: 'string'
       class_at:
         description: '上课时间 start in sql format YYYY-mm-dd HH:MM:ss.SSS'
         type: 'string'
@@ -963,7 +966,7 @@ def student_tryout_sql(params):
     sql = ['''
     select * from (select c.id,c.`course_name`,c.open_grade,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as teacher_name,s.name as student_name,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
-    cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id,t.id as teacher_id
+    cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id,t.id as teacher_id,s.id as student_id
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
     where c.`primary_teacher_id` = t.id and o.course_id = c.id and o.student_id = s.id and c.id = cs.course_id and cs.id = ss.course_schedule_id
     and s.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and o.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' 
@@ -980,6 +983,8 @@ def student_tryout_sql(params):
         sql.append("%'")
     if 'teacher_id' in params.keys():
         sql.append(" and t.teacher_id=:teacher_id")
+    if 'student_id' in params.keys():
+        sql.append(" and t.student_id=:student_id")
 
     if 'class_at' in params.keys() :
         sql.append(

@@ -70,6 +70,9 @@ def my_course():
             course_id:
               description: '课程id'
               type: 'string'
+            student_id:
+              description: '学生id'
+              type: 'string'
             course_name:
               description: '课程名称'
               type: 'string'
@@ -116,7 +119,11 @@ def my_course_sql(params):
             and o.`state` <> 99  and c.state<> 99 and o.payment_state in (2,7,8)
             and o.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' and c.`delete_flag` = 'IN_FORCE'       
     ''']
-    sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    if 'student_id' in params.keys():
+        sql.append(' and o.student_id =:student_id')
+    else:
+        sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'course_id' in params.keys():
         sql.append(' and c.id =:course_id')

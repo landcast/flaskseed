@@ -588,6 +588,9 @@ def course_common():
       teacher_id:
         description: '教师id'
         type: 'string'
+      student_id:
+        description: '学生id'
+        type: 'string'
       course_name:
         description: '课包名称'
         type: 'string'
