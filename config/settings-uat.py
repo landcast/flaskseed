@@ -53,7 +53,7 @@ HOST = '0.0.0.0'
 ESHOST = None
 PORT = 5000
 
-EP_LOCATION = "http://39.106.143.18:7080"
+EP_LOCATION = "http://localhost:7080"
 EP_SMS_PATH = "/login/sendVerifyCode"
 EP_LIVE_PATH = '/live'
 EP_CLASSIN_PATH = '/classIn'
