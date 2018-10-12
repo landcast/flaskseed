@@ -44,7 +44,9 @@ JWT_ALG = 'HS256'
 JWT_HEADER = 'Authorization'
 JWT_SUBJECT_KEY = 'sub'
 
-REDIS_URL = "redis://:Us_Tutor@r-2ze6f26b30516ca4.redis.rds.aliyuncs.com:6379/0"
+#REDIS_URL = "redis://:Us_Tutor@r-2ze6f26b30516ca4.redis.rds.aliyuncs.com:6379/0"
+
+REDIS_URL = "redis://:@localhost:6379/0"
 
 CUR_ID = 'cur_identity'
 CUR_USER = 'cur_user'
@@ -53,7 +55,7 @@ HOST = '0.0.0.0'
 ESHOST = None
 PORT = 5000
 
-EP_LOCATION = "http://39.106.143.18:7080"
+EP_LOCATION = "http://localhost:7080"
 EP_SMS_PATH = "/login/sendVerifyCode"
 EP_LIVE_PATH = '/live'
 EP_CLASSIN_PATH = '/classIn'
