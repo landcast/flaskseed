@@ -504,7 +504,7 @@ def my_course_sql(params):
           select * from(
             select 
             	c.id,c.course_name,c.course_name_zh,c.classes_number,c.start,c.end,
-            	(select GROUP_CONCAT(s.name) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
+            	(select GROUP_CONCAT(DISTINCT(s.name)) from study_schedule ss,student s,course_schedule cs  where ss.student_id = s.id and ss.course_schedule_id = cs.id and c.`id` = cs.course_id 
             	and cs.`delete_flag` = 'IN_FORCE' and cs.state <> 99  and s.`delete_flag` = 'IN_FORCE' and s.state <> 99 and ss.`delete_flag` = 'IN_FORCE' ) as student_name,
             	(select count(*) from course_schedule where c.`id` = course_id and end < now() ) as finish
             from  course c,`order` o
