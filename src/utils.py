@@ -24,6 +24,9 @@ def get_chrome_args():
         '--headless',
         '--disable-extensions',  # Reduces startup overhead.
         '--disable-gpu',  # Required by chrome's headless mode for now.
+        '--disable-software-rasterizer',
+        '--hide-scrollbars',
+        '--mute-audio',
     ]
 
 
