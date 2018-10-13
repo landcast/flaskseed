@@ -574,7 +574,7 @@ def thacher_interview_sql(params):
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.package_type = 'INTERVIEW'
     left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'
     ,interview i left join sys_user su on i.interviewer_id = su.id 
-    where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5) 
+    where  t.`delete_flag` = 'IN_FORCE' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5) 
     ''']
 
     if 'teacher_name' in params.keys():
@@ -1699,7 +1699,7 @@ def interview_result_sql(params):
     sql = ['''
     select t.id,i.id as interview_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,i.`start`,i.end,su.name as interview_name,i.state as interview_state
     from teacher t , interview i left join sys_user su on i.`interviewer_id` = su.`id`
-    where  t.`delete_flag` = 'IN_FORCE' and t.state = 'WAIT_FOR_INTERVIEW' and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    where  t.`delete_flag` = 'IN_FORCE' and i.state in(2,5,9,10) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     ''']
 
     if 'teacher_name' in params.keys():

@@ -930,7 +930,7 @@ def get_preview_doc_sql(params):
     sql = ['''
            select cw.`ware_uid`
            from study_schedule ss , courseware cw
-           where ss.course_schedule_id = cw.course_schedule_id  and ss.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE'
+           where ss.course_schedule_id = cw.course_schedule_id  and ss.`delete_flag` = 'IN_FORCE'  and cw .`delete_flag` = 'IN_FORCE' and cw.is_view='YES'
             ''']
 
 
