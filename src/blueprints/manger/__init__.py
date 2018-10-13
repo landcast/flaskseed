@@ -92,7 +92,7 @@ def generate_sql(params):
     '''
     sql = ['''
         select su.id,su.name as username,su.mobile,su.email,su.`created_at`,
-        (select GROUP_CONCAT(GROUP_CONCAT(role_name)) from sys_user_role sur1,role_definition rd1 where sur1.role_definition_id = rd1.id and  sur1.sys_user_id = su.id  and sur1.`delete_flag` = 'IN_FORCE' and rd1.`delete_flag` = 'IN_FORCE') as role_name,
+        (select GROUP_CONCAT(DISTINCT(role_name)) from sys_user_role sur1,role_definition rd1 where sur1.role_definition_id = rd1.id and  sur1.sys_user_id = su.id  and sur1.`delete_flag` = 'IN_FORCE' and rd1.`delete_flag` = 'IN_FORCE') as role_name,
         su.state,sur.id
         from sys_user su left join sys_user_role sur on su.id = sur.sys_user_id and sur.`delete_flag` = 'IN_FORCE'
         where su.`delete_flag` = 'IN_FORCE' 
