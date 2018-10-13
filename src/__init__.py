@@ -217,22 +217,44 @@ class CustomJSONEncoder(JSONEncoder):
     def encode(self, o):
         if o and isinstance(o, dict) and 'objects' in o:
             for x in o['objects']:
-                if isinstance(x, dict):
-                    temp = {}
-                    for y in x:
-                        val = x[y]
-
- #                       current_app.logger.debug('---------->'+val+'----------'+str(len(val)))
-
-                        if isinstance(val, str) and self.dt.match(val):
-                            if len(val) == 19:
-                                temp[y] = val + '.000Z'
-                            elif len(val) == 23:
-                                temp[y] = val + 'Z'
-                            elif len(val) == 26:
-                                temp[y] = val[:-3] + 'Z'
-                    x.update(temp)
+                recursive_date_format(x, self.dt)
+        else:
+            recursive_date_format(o, self.dt)
         return JSONEncoder.encode(self, o)
+
+
+def recursive_date_format(x, dt):
+    if isinstance(x, dict):
+        temp = {}
+        for y in x:
+            if isinstance(x[y], dict):
+                recursive_date_format(x[y], dt)
+            elif isinstance(x[y], list):
+                for i, z in enumerate(x[y]):
+                    if isinstance(z, dict):
+                        recursive_date_format(z, dt)
+                    else:
+                        x[y][i] = date_format(z, dt)
+            else:
+                temp[y] = date_format(x[y], dt)
+        x.update(temp)
+        return x
+    else:
+        return date_format(x, dt)
+
+
+def date_format(val, dt):
+    if isinstance(val, str) and dt.match(val):
+        if len(val) == 19:
+            return val + '.000Z'
+        elif len(val) == 23:
+            return val + 'Z'
+        elif len(val) == 26:
+            return val[:-3] + 'Z'
+        else:
+            return val
+    else:
+        return val
 
 
 def create_app(config):
@@ -329,7 +351,7 @@ def create_app(config):
         if language:
             response.headers['Content-Langauge'] = language
             response.set_cookie('user_lang', language)
-        if response.is_json and current_app.config['LOG_REQ_RES']:
+        if response.is_json and current_app.config['LOG_REQ_RES'] and (not str(request.url).endswith('swagger.json')):
             current_app.logger.debug(
                 "\n" + request.method + ': ' + request.url + "\nreq: "
                                                              "------\n" +
