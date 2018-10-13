@@ -792,7 +792,7 @@ def course_schedule_sql(params):
     ''']
     sql.append(" and cs.course_id=:course_id")
 
-    sql.append(' order by cs.id desc')
+    sql.append(' order by cs.id')
     return ['id', 'name', 'start', 'end', 'courseware_num','schedule_type'], ''.join(sql)
 
 
