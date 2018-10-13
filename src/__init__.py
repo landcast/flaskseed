@@ -217,30 +217,38 @@ class CustomJSONEncoder(JSONEncoder):
     def encode(self, o):
         if o and isinstance(o, dict) and 'objects' in o:
             for x in o['objects']:
-                recursive_date_format(x, self.dt)
+                dict_date_format(x, self.dt)
         else:
-            recursive_date_format(o, self.dt)
+            dict_date_format(o, self.dt)
         return JSONEncoder.encode(self, o)
 
 
-def recursive_date_format(x, dt):
+def dict_date_format(x, dt):
     if isinstance(x, dict):
         temp = {}
         for y in x:
             if isinstance(x[y], dict):
-                recursive_date_format(x[y], dt)
+                dict_date_format(x[y], dt)
             elif isinstance(x[y], list):
-                for i, z in enumerate(x[y]):
-                    if isinstance(z, dict):
-                        recursive_date_format(z, dt)
-                    else:
-                        x[y][i] = date_format(z, dt)
+                list_date_format(x[y], dt)
             else:
                 temp[y] = date_format(x[y], dt)
         x.update(temp)
         return x
+    elif isinstance(x, list):
+        list_date_format(x, dt)
     else:
         return date_format(x, dt)
+
+
+def list_date_format(l, dt):
+    for i, z in enumerate(l):
+        if isinstance(z, dict):
+            dict_date_format(z, dt)
+        elif isinstance(z, list):
+            list_date_format(z, dt)
+        else:
+            l[i] = date_format(z, dt)
 
 
 def date_format(val, dt):
