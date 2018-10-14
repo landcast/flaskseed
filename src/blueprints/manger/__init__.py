@@ -1933,7 +1933,7 @@ def view_homework_sql(params):
     current_app.logger.debug(params)
     sql = ['''
              select h.id,h.question_name,h.question_text,h.created_at ,h.question_attachment_url,h.answer_text,h.answer_attachment_url,h.score,score_reason,h.review_at from homework h
-            where h.`delete_flag` = 'IN_FORCE' 
+            where h.`delete_flag` = 'IN_FORCE' and homework_type = 1
              ''']
     if 'course_schedule_id' in params.keys():
         sql.append(
