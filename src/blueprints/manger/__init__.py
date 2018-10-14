@@ -1938,7 +1938,7 @@ def view_homework_sql(params):
     if 'course_schedule_id' in params.keys():
         sql.append(
             ' and h.course_schedule_id = '+params['course_schedule_id'])
-    sql.append(' order by cs.id desc')
+    sql.append(' order by h.id desc')
     return ['id', 'question_name', 'question_text','created_at','question_attachment_url','answer_text','answer_attachment_url','student_name','score','score_reason','review_at','evaluation'], ''.join(sql)
 
 
