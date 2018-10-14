@@ -688,6 +688,8 @@ def course_common_sql(params):
         sql.append("%'")
     if 'teacher_id' in params.keys():
         sql.append(" and t.teacher_id=:teacher_id")
+    if 'student_id' in params.keys():
+        sql.append(" and t.id in (select course_id from `order` o where o.student_id =:student_id)")
 
     if 'student_name' in params.keys():
         sql.append(" and t.student_name like '%")
