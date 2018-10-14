@@ -588,8 +588,11 @@ def thacher_interview_sql(params):
     if 'email' in params.keys():
         sql.append(' and t.email =:email')
 
-    if 'state' in params.keys():
-        sql.append(' and t.state =:state')
+    if 'state' in params.keys() :
+        if '99' ==params['state']:
+            sql.append(' and t.state =99')
+        else:
+            sql.append(' and t.state !=99')
 
     if 'interview_at' in params.keys():
         sql.append(
