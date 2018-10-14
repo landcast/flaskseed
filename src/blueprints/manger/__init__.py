@@ -563,6 +563,7 @@ def thacher_interview_sql(params):
     '''
     generate dynamic sql for order query by params
     :param params:
+    and i.state in(2,3,4,5)
     :return:
     '''
     current_app.logger.debug(params)
@@ -574,7 +575,7 @@ def thacher_interview_sql(params):
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.package_type = 'INTERVIEW'
     left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'
     ,interview i left join sys_user su on i.interviewer_id = su.id 
-    where  t.`delete_flag` = 'IN_FORCE' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 and i.state in(2,3,4,5) 
+    where  t.`delete_flag` = 'IN_FORCE' and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99  
     ''']
 
     if 'teacher_name' in params.keys():
