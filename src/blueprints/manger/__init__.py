@@ -590,9 +590,9 @@ def thacher_interview_sql(params):
 
     if 'state' in params.keys() :
         if '98' ==params['state']:
-            sql.append(' and t.state !=99')
+            sql.append(' and i.state !=99')
         else:
-            sql.append(' and t.state =:state')
+            sql.append(' and i.state =:state')
 
     if 'interview_at' in params.keys():
         sql.append(
