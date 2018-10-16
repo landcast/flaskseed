@@ -2,7 +2,7 @@
 from flask import jsonify, Blueprint, request,current_app
 from src.services import do_query, datetime_param_sql_format
 from src.models import db, session_scope,Teacher,Interview,CourseSchedule, \
-    CourseSchedule,StudySchedule,Homework,CourseSchedule,CourseClassroom
+    CourseSchedule,StudySchedule,Homework,CourseSchedule,CourseClassroom,Course
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
 from src.models import ClassroomRoleEnum, ClassroomDeviceEnum
@@ -1754,7 +1754,7 @@ def get_enter_room_url():
 
         courseschedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
 
-        if courseschedule is None :
+        if courseschedule is None:
             return jsonify({
                 "error": "not found course_schedule: {0}".format(
                     course_schedule_id)
@@ -1768,8 +1768,14 @@ def get_enter_room_url():
                     course_schedule_id)
             }), 500
 
+        u = ClassroomRoleEnum.SIT_IN.name
+
+        if courseschedule.schedule_type == 'INTERVIEW':
+            u = ClassroomRoleEnum.TEACHER.name
+
+
         url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['name'],
-                                      ClassroomRoleEnum.ASSISTANT.name,ClassroomDeviceEnum.PC.name)
+                                      u,ClassroomDeviceEnum.PC.name)
 
     return jsonify({'url':url })
 

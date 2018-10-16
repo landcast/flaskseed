@@ -1239,7 +1239,13 @@ def get_enter_room_url():
                                       (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
                                       (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
         current_app.logger.debug('nickName-------'+nickName)
-        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,nickName,ClassroomRoleEnum.TEACHER.name,ClassroomDeviceEnum.PC.name)
+
+        u = ClassroomRoleEnum.TEACHER.name
+
+        if courseschedule.schedule_type == 'INTERVIEW':
+            u =ClassroomRoleEnum.STUDENT.name
+
+        url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,nickName,u,ClassroomDeviceEnum.PC.name)
 
     return jsonify({'url':url })
 
