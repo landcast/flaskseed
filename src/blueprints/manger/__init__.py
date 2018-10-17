@@ -59,6 +59,9 @@ def query():
               description: '用户id'
               type: 'integer'
             username:
+              description: '用户名称'
+              type: 'string'
+            account_number:
               description: '用户账号'
               type: 'string'
             mobile:
@@ -91,7 +94,7 @@ def generate_sql(params):
     :return:
     '''
     sql = ['''
-        select su.id,su.name as username,su.mobile,su.email,su.`created_at`,
+        select su.id,su.name as username,su.username as account_number,su.mobile,su.email,su.`created_at`,
         (select GROUP_CONCAT(DISTINCT(role_name)) from sys_user_role sur1,role_definition rd1 where sur1.role_definition_id = rd1.id and  sur1.sys_user_id = su.id  and sur1.`delete_flag` = 'IN_FORCE' and rd1.`delete_flag` = 'IN_FORCE') as role_name,
         su.state,sur.id
         from sys_user su left join sys_user_role sur on su.id = sur.sys_user_id and sur.`delete_flag` = 'IN_FORCE'
@@ -118,7 +121,7 @@ def generate_sql(params):
     sql.append(' group by su.id order by su.id desc')
 
     current_app.logger.debug(sql)
-    return ['id', 'username', 'mobile', 'email', 'created_at',
+    return ['id', 'username', 'account_number','mobile', 'email', 'created_at',
             'role_name', 'state'], ''.join(sql)
 
 
@@ -673,6 +676,9 @@ def students_query():
               description: '学生id'
               type: 'integer'
             username:
+              description: '学生名称'
+              type: 'string'
+            account_number:
               description: '学生账号'
               type: 'string'
             student_name:
@@ -715,7 +721,7 @@ def students_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select s.id,s.`created_at`,s.name as username,s.parent_mobile,s.grade,c.channel_name,s.gender,s.username as account,
+    select s.id,s.`created_at`,s.name as username,s.username as account_number,s.parent_mobile,s.grade,c.channel_name,s.gender,s.username as account,
     (select count(*) from study_appointment where student_id = s.id) as enroll_type
     from student s 
     left join  student_subject ss on s.id = ss.student_id and ss.`delete_flag` = 'IN_FORCE'  
@@ -761,7 +767,7 @@ def students_sql(params):
 
     sql.append(' group by s.id order by s.id desc')
 
-    return ['id','created_at','username', 'parent_mobile',
+    return ['id','created_at','username', 'account_number','parent_mobile',
             'grade', 'channel_name','gender', 'account','enroll_type'], ''.join(sql)
 
 
