@@ -123,7 +123,7 @@ def my_course_sql(params):
     if 'student_id' in params.keys():
         sql.append(' and o.student_id =:student_id')
     else:
-        sql.append("and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+        sql.append(" and o.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     if 'course_id' in params.keys():
         sql.append(' and c.id =:course_id')
