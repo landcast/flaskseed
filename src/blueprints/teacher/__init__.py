@@ -1474,7 +1474,7 @@ def accept_students():
         session.flush()
         current_app.logger.debug('---------------->5')
         order = Order(
-                order_type = 2,
+                order_type = 6,
                 order_desc = '试听订单',
                 amount = 0,
                 discount = 0,
