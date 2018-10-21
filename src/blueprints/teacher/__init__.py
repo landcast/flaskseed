@@ -1714,21 +1714,20 @@ def accept_interview():
         live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'INTERVIEW',
                                  getTimeDiff(interview_at_start.replace('T', ' ').replace('Z', ''),interview_at_end.replace('T', ' ').replace('Z', '')),
                                  class_type,interview_at_start,0,'en')
-        email = getattr(g, current_app.config['CUR_USER'])['email']
 
-        if email is not None and "@" in email:
+        teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
+        email = teacher.email
 
-            nickName = "{0} {1} {2}".format((getattr(g, current_app.config['CUR_USER'])['first_name']).strip(),
-                                          (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
-                                          (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
+        if email is not None and "@" in email and teacher.timezone is not None:
+
 
             current_app.logger.debug('------111-------------')
-            tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])
+            tz = pytz.timezone(teacher.timezone)
             a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
 
             current_app.logger.debug('----------->'+a)
 
-            email_service.sendEmail(email,getattr(g, current_app.config['CUR_USER'])['first_name']+','+a,'interview','interview2',1,'en')
+            email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
 
         return jsonify({'id':interview.id })
 
@@ -1794,10 +1793,10 @@ def edit_interview():
         if email is not None and "@" in email and teacher.timezone is not None:
 
             current_app.logger.debug('------111-------------')
-            tz = pytz.timezone(teacher.timezone)
-            a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
+ #           tz = pytz.timezone(teacher.timezone)
+  #          a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
 
-            email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
+  #          email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
 
         return jsonify({'id':interview.id })
 
