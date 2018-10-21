@@ -1794,7 +1794,7 @@ def edit_interview():
 
            current_app.logger.debug('------111-------------')
 
-           hourtt = 'Asia/Shanghai:=-6'
+           hourtt = 'Asia/Shanghai:-6'
 
            hour = hourtt.split(':')[1]
 
