@@ -1800,7 +1800,7 @@ def edit_interview():
 
            #hour = teacher.timezone.split('：')[1]
 
-           current_app.logger.debug('------11122------------'+hour)
+           current_app.logger.debug('------11122------------'+str(int(hour)))
 
            current_app.logger.debug('------11123------------'+str(interview.start))
 
