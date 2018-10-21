@@ -1734,7 +1734,7 @@ def accept_interview():
 
 
 @teacher.route('/edit_interview', methods=['POST'])
-def accept_interview():
+def edit_interview():
     """
     swagger-doc: 'schedule'
     required: []
