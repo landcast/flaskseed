@@ -1791,14 +1791,11 @@ def edit_interview():
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email:
-
+        if email is not None and "@" in email and teacher.timezone is not None:
 
             current_app.logger.debug('------111-------------')
-            tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])
+            tz = pytz.timezone(teacher.timezone)
             a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
-
-            current_app.logger.debug('----------->'+a)
 
             email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
 
