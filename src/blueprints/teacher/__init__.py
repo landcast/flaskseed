@@ -1793,8 +1793,16 @@ def edit_interview():
         if email is not None and "@" in email and teacher.timezone is not None:
 
            current_app.logger.debug('------111-------------')
-           tz = pytz.timezone(teacher.timezone)
-           a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+           hourtt = 'Asia/Shanghai:=+6'
+
+           hour = hourtt.split('：')[1]
+
+           #hour = teacher.timezone.split('：')[1]
+
+           interview.start + datetime.timedelta(hours=hour)
+
+           a = (interview.start + datetime.timedelta(hours=hour)).strftime("%Y-%m-%d %H:%M:%S")
 
            email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
 
