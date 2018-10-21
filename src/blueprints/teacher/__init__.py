@@ -1718,12 +1718,13 @@ def accept_interview():
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email and teacher.timezone is not None:
-
+        if email is not None and "@" in email and teacher.timezone is not None and ":" in teacher.timezone:
 
             current_app.logger.debug('------111-------------')
-            tz = pytz.timezone(teacher.timezone)
-            a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+            hour = teacher.timezone.split('：')[1]
+
+            a = (interview.start + datetime.timedelta(hours=int(hour))).strftime("%Y-%m-%d %H:%M:%S")
 
             current_app.logger.debug('----------->'+a)
 
@@ -1790,23 +1791,11 @@ def edit_interview():
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email and teacher.timezone is not None:
+        if email is not None and "@" in email and teacher.timezone is not None and ":" in teacher.timezone:
 
            current_app.logger.debug('------111-------------')
 
-           hourtt = 'Asia/Shanghai:-6'
-
-           hour = hourtt.split(':')[1]
-
-           #hour = teacher.timezone.split('：')[1]
-
-           current_app.logger.debug('------11122------------'+str(int(hour)))
-
-           current_app.logger.debug('------11123------------'+str(interview.start))
-
-           current_app.logger.debug('------11123------------'+str(datetime.datetime.now()))
-
-           current_app.logger.debug('------11124------------'+str(datetime.datetime.now()+datetime.timedelta(hours=1)))
+           hour = teacher.timezone.split('：')[1]
 
            a = (interview.start + datetime.timedelta(hours=int(hour))).strftime("%Y-%m-%d %H:%M:%S")
 
