@@ -524,6 +524,9 @@ def thacher_interview():
             course_id:
               description: '课程id'
               type: 'integer'
+            interview_id:
+              description: '面试id'
+              type: 'integer'
             username:
               description: '教师账号'
               type: 'integer'
@@ -573,7 +576,7 @@ def thacher_interview_sql(params):
     sql = ['''
     select t.id,c.id as course_id,concat(t.first_name,' ',t.middle_name,' ',t.last_name) as username,t.mobile,t.email,c.`course_name`,su.name as interview_name,i.`start`,i.`end`,t.state,i.state as 		integerview_state,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
-    cs.id as course_schedule_id
+    cs.id as course_schedule_id,i.id as interview_id
     from teacher t
     left join course c on c.`primary_teacher_id` = t.id  and c.`delete_flag` = 'IN_FORCE'  and c.`state` <> 99 and c.package_type = 'INTERVIEW'
     left join course_schedule cs on c.id = cs.course_id and cs.`delete_flag` = 'IN_FORCE'
@@ -608,7 +611,7 @@ def thacher_interview_sql(params):
     sql.append(' order by t.id desc')
 
     return ['id', 'course_id', 'username', 'mobile', 'email',
-            'course_name', 'interview_name', 'start', 'end', 'state','integerview_state','courseware_num','course_schedule_id'], ''.join(sql)
+            'course_name', 'interview_name', 'start', 'end', 'state','integerview_state','courseware_num','course_schedule_id','interview_id'], ''.join(sql)
 
 
 @manger.route('/students', methods=['POST'])
