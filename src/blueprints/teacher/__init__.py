@@ -1794,7 +1794,7 @@ def edit_interview():
 
            current_app.logger.debug('------111-------------')
 
-           hourtt = 'Asia/Shanghai:=+6'
+           hourtt = 'Asia/Shanghai:=-6'
 
            hour = hourtt.split(':')[1]
 
@@ -1808,7 +1808,7 @@ def edit_interview():
 
            current_app.logger.debug('------11124------------'+str(datetime.datetime.now()+datetime.timedelta(hours=1)))
 
-           a = (interview.start + datetime.timedelta(hours=hour)).strftime("%Y-%m-%d %H:%M:%S")
+           a = (interview.start + datetime.timedelta(hours=int(hour))).strftime("%Y-%m-%d %H:%M:%S")
 
            email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
 
