@@ -1718,9 +1718,7 @@ def accept_interview():
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email and teacher.timezone is not None and ":" in teacher.timezone:
-
-            current_app.logger.debug('------111-------------')
+        if email is not None and "@" in email and teacher.timezone is not None and ':' in teacher.timezone:
 
             hour = teacher.timezone.split('：')[1]
 
@@ -1791,9 +1789,7 @@ def edit_interview():
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email and teacher.timezone is not None and ":" in teacher.timezone:
-
-           current_app.logger.debug('------111-------------')
+        if email is not None and "@" in email and teacher.timezone is not None and ':' in teacher.timezone:
 
            hour = teacher.timezone.split('：')[1]
 
