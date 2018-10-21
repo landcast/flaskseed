@@ -1796,7 +1796,7 @@ def edit_interview():
 
            hourtt = 'Asia/Shanghai:=+6'
 
-           hour = hourtt.split('：')[1]
+           hour = hourtt.split(':')[1]
 
            #hour = teacher.timezone.split('：')[1]
 
