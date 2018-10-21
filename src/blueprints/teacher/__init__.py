@@ -1804,7 +1804,9 @@ def edit_interview():
 
            current_app.logger.debug('------11123------------'+str(interview.start.timestamp))
 
-           current_app.logger.debug('------11124------------'+str(interview.start.timestamp + datetime.timedelta(hours=hour)))
+           current_app.logger.debug('------11123------------'+str(datetime.datetime.now()))
+
+           current_app.logger.debug('------11124------------'+str(datetime.datetime.now()+datetime.timedelta(hours=1)))
 
            a = (interview.start.timestamp + datetime.timedelta(hours=hour)).strftime("%Y-%m-%d %H:%M:%S")
 
