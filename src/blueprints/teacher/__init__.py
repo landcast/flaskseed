@@ -1705,6 +1705,10 @@ def accept_interview():
         session.add(courseschedule)
         session.flush()
 
+        setattr(interview,'course_schedule_id',courseschedule.id)
+        session.add(interview)
+        session.flush()
+
         class_type =ClassroomTypeEnum.ONE_VS_ONE.name
 
         live_service.create_room(getattr(g, current_app.config['CUR_USER'])['username'], courseschedule.id,'INTERVIEW',
@@ -1717,6 +1721,78 @@ def accept_interview():
             nickName = "{0} {1} {2}".format((getattr(g, current_app.config['CUR_USER'])['first_name']).strip(),
                                           (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
                                           (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
+
+            current_app.logger.debug('------111-------------')
+            tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])
+            a = interview.start(tz).strftime("%Y-%m-%d %H:%M:%S")
+
+            current_app.logger.debug('----------->'+a)
+
+            email_service.sendEmail(email,getattr(g, current_app.config['CUR_USER'])['first_name']+','+a,'interview','interview2',1,'en')
+
+        return jsonify({'id':interview.id })
+
+
+@teacher.route('/edit_interview', methods=['POST'])
+def accept_interview():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      interview_id:
+        description: '试听申请id'
+        type: 'string'
+      interview_at_start:
+        description: '面试开始时间,用户选择时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+      interview_at_end:
+        description: '面试结束时间，排课之后的最后一堂课结束时间 in sql format YYYY-mm-dd HH:MM:ss.SSS'
+        type: 'string'
+    res:
+      id:
+        description: 'id'
+        type: ''
+    """
+    interview_id = request.json['interview_id']
+    interview_at_start = request.json['interview_at_start']
+    interview_at_end = request.json['interview_at_end']
+
+    with session_scope(db) as session:
+        interview = session.query(Interview).filter_by(id=interview_id).one_or_none()
+        if interview is None :
+            return jsonify({
+                "error": "not found interview: {0}".format(
+                    interview_id)
+            }), 500
+        courseschedule = session.query(CourseSchedule).filter_by(id=interview.course_schedule_id).one_or_none()
+        if courseschedule is None :
+            return jsonify({
+                "error": "not found interview: {0}".format(
+                    interview_id)
+            }), 500
+
+        setattr(interview,'start',interview_at_start.replace('T', ' ').replace('Z', '').split('.')[0])
+        setattr(interview,'end',interview_at_end.replace('T', ' ').replace('Z', '').split('.')[0])
+        setattr(interview,'state',2)
+        setattr(interview,'updated_by',getattr(g, current_app.config['CUR_USER'])['username'])
+        session.add(interview)
+        session.flush()
+
+        start = request.json['interview_at_start'].replace('T', ' ').replace('Z', '')
+        end = request.json['interview_at_end'].replace('T', ' ').replace('Z', '')
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id=courseschedule.id).one_or_none()
+
+        live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
+                               getTimeDiff(start,end),request.json['interview_at_start'],request.json['interview_at_end'],0,'en')
+
+        email = getattr(g, current_app.config['CUR_USER'])['email']
+
+        if email is not None and "@" in email:
+
+            nickName = "{0} {1} {2}".format((getattr(g, current_app.config['CUR_USER'])['first_name']).strip(),
+                                            (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
+                                            (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
 
             current_app.logger.debug('------111-------------')
             tz = pytz.timezone(getattr(g, current_app.config['CUR_USER'])['timezone'])

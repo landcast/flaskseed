@@ -39,6 +39,7 @@ class Interview(EntityMixin, db.Model):
     interviewer_id = Column(db.Integer, db.ForeignKey('sys_user.id'),
                             nullable=True)
     interviewers = db.relationship('SysUser', backref='interviewers', lazy=True)
+    course_schedule_id = Column(Integer,nullable=True)
     teacher_id = Column(db.Integer, db.ForeignKey('teacher.id'),
                         nullable=False)
     teachers = db.relationship('Teacher', backref='interviews', lazy=True)
