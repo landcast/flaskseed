@@ -934,7 +934,7 @@ def common_summary_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select ss.id as study_schedule_id,s.nickname as student_name,ss.teacher_evaluation
+    select ss.id as study_schedule_id,s.name as student_name,ss.teacher_evaluation
     from course_schedule cs,study_schedule ss,student s
     where cs.id = ss.`course_schedule_id` and ss.student_id = s.id
     and cs.`delete_flag` = 'IN_FORCE' and ss.`delete_flag` = 'IN_FORCE' and s.`delete_flag` = 'IN_FORCE' 
