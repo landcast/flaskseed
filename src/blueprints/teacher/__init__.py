@@ -1718,11 +1718,17 @@ def accept_interview():
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email and teacher.timezone is not None and ':' in teacher.timezone:
+        if email is not None and "@" in email and teacher.timezone is not None :
 
-            hour = teacher.timezone.split('：')[1]
+            hour = teacher.timezone.split(' ')[1]
 
-            a = (interview.start + datetime.timedelta(hours=int(hour))).strftime("%Y-%m-%d %H:%M:%S")
+            minute = '0'
+
+            if ':' in hour:
+                minute =hour.split(' ')[1]
+                hour =hour.split(' ')[0]
+
+            a = (interview.start + datetime.timedelta(hours=int(hour))+ datetime.timedelta(minutes=int(minute))).strftime("%Y-%m-%d %H:%M:%S")
 
             current_app.logger.debug('----------->'+a)
 
@@ -1784,16 +1790,20 @@ def edit_interview():
         live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,courseclassroom.room_title,
                                getTimeDiff(start,end),request.json['interview_at_start'],request.json['interview_at_end'],0,'en')
 
-
-
         teacher = session.query(Teacher).filter_by(id=interview.teacher_id).one_or_none()
         email = teacher.email
 
-        if email is not None and "@" in email and teacher.timezone is not None and ':' in teacher.timezone:
+        if email is not None and "@" in email and teacher.timezone is not None :
 
-           hour = teacher.timezone.split('：')[1]
+           hour = teacher.timezone.split(' ')[1]
 
-           a = (interview.start + datetime.timedelta(hours=int(hour))).strftime("%Y-%m-%d %H:%M:%S")
+           minute = '0'
+
+           if ':' in hour:
+               minute =hour.split(' ')[1]
+               hour =hour.split(' ')[0]
+
+           a = (interview.start + datetime.timedelta(hours=int(hour))+ datetime.timedelta(minutes=int(minute))).strftime("%Y-%m-%d %H:%M:%S")
 
            email_service.sendEmail(email,teacher.first_name+','+a,'interview','interview2',1,'en')
 

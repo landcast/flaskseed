@@ -692,7 +692,7 @@ def growth_report_sql(params):
     sql = ['''''']
 
     sql.append(" select * from (")
-    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type',c.start,c.end,sr.id as study_schedule_id "
+    sql.append(" select sr.id ,c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,sr.name as class_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.`created_at`,sr.teacher_evaluation as evaluation, '' as report_card_url,'schedule' as 'type','NO' as 'result_type','' as start,'' as end,sr.id as study_schedule_id "
                "from study_schedule sr,course_schedule cs,course c ,teacher t "
                "where cs.id = sr.course_schedule_id and cs.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and cs.`state` <> 99  and c.`state` <> 99  and sr.teacher_evaluation is not null "
@@ -701,8 +701,8 @@ def growth_report_sql(params):
     if 'course_id' in params.keys():
         sql.append(" and c.id =:course_id")
     sql.append(" union all ")
-    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,'NO' as class_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,c.start,c.end,'0' as study_schedule_id "
-               "from study_result sr,course c ,teacher t "
+    sql.append(" select sr.id, c.`course_name` as course_name,c.`course_name_zh` as course_name_zh,'NO' as class_name,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.`created_at`,sr.evaluation,sr.report_card_url,'result' as 'type',sr.result_type,ce.start,ce.end,'0' as study_schedule_id "
+               "from study_result sr left join course_exam ce on sr.`course_exam_id` = ce.id and ce.`delete_flag` = 'IN_FORCE',course c ,teacher t "
                "where sr.course_id = c.id and c.`primary_teacher_id` = t.id "
                "and c.`state` <> 99  and sr.`delete_flag` = 'IN_FORCE' "
                "and c.`delete_flag` = 'IN_FORCE'")
