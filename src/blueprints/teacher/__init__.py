@@ -159,7 +159,7 @@ def teacher_query_sql(params):
     :return:
     '''
     sql = ['''
-        select t.id,t.`created_at`,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as username,t.`mobile`,t.`email`,t.country,t.`province`,t.timezone,t.`state` 
+        select t.id,t.`created_at`,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  as username,t.`mobile`,t.`email`,t.country,t.`province`,t.timezone,t.`state` 
         from teacher t 
         left join teacher_history th on t.id = th.`teacher_id` and th.`delete_flag` = 'IN_FORCE'
         left join subject s on th.`subject_id` = s.id and s.`delete_flag` = 'IN_FORCE' 
@@ -169,7 +169,7 @@ def teacher_query_sql(params):
         where t.`delete_flag` = 'IN_FORCE'
     ''']
     if 'username' in params.keys():
-        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name) like '%")
+        sql.append(" and concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) like '%")
         sql.append(params['username'])
         sql.append("%'")
     if 'mobile' in params.keys():

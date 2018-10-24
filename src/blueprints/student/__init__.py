@@ -113,7 +113,7 @@ def my_course_sql(params):
     sql = ['''
 			select c.id as course_id,c.`course_name`,(select count(*) from study_schedule ss,course_schedule cs  where student_id = o.student_id and course_schedule_id = cs.id  and cs.`delete_flag` = 'IN_FORCE' and cs.course_id = c.id
 			and cs.end < now()) as finish,
-           c.classes_number,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
+           c.classes_number,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as teacher_name,c.start,c.end,t.avatar as teacher_avatar,c.course_desc
             from  course c,`order` o, teacher t
             where  o.course_id = c.id and c.primary_teacher_id = t.id  
             and o.`state` <> 99  and c.state<> 99 and o.payment_state in (2,7,8)
@@ -136,7 +136,7 @@ def my_course_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
+        sql.append(" and concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'course_time' in params.keys():
@@ -238,7 +238,7 @@ def my_order_sql(params):
     current_app.logger.debug(params)
     sql = ['''
     select o.id,c.`course_name`,c.classes_number,o.`order_type`,
-    o.`payment_state`,o.`created_at`,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,o.`amount`
+    o.`payment_state`,o.`created_at`,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  as teacher_name,o.`amount`
     from `order` o, teacher t, course c
     where  o.course_id = c.id and
         c.primary_teacher_id = t.id
@@ -261,7 +261,7 @@ def my_order_sql(params):
         sql.append(params['course_name'])
         sql.append("%')")
     if 'teacher_name' in params.keys():
-        sql.append(" and concat(t.first_name,' ',t.middle_name,' ',t.last_name)  like '%")
+        sql.append(" and concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) like '%")
         sql.append(params['teacher_name'])
         sql.append("%'")
     if 'payment_state' in params.keys():
@@ -487,7 +487,7 @@ def report_card_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-	select sr.id,c.id as course_id,c.`course_name`,sr.`created_at`,concat(t.first_name,' ',t.middle_name,' ',t.last_name)  as teacher_name,sr.report_card_url
+	select sr.id,c.id as course_id,c.`course_name`,sr.`created_at`,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  as teacher_name,sr.report_card_url
 	from study_result sr,course_exam ce,course c,teacher t
 	where sr.course_exam_id = ce.id and ce.course_id = c.id and c.primary_teacher_id = t.id
     and ce.state<> 99 and c.`state` <> 99  and t.state<> 99 
