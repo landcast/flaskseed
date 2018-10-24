@@ -220,6 +220,16 @@ def establish():
 
         student_id = getattr(student, 'id')
 
+        if 'course_id' in request.json:
+
+            order1s = session.query(Order).filter_by(course_id = course_id,student_id = student_id, state=98,delete_flag = 'IN_FORCE').all()
+
+            if len(order1s) > 0:
+                return jsonify({
+                    "error": "Student already have orders."
+                }), 500
+
+
         if 'have_course' in request.json and request.json['have_course'] == 0:
 
             teacher_parm = request.json['teacher']
