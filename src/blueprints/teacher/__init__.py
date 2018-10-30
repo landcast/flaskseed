@@ -13,7 +13,7 @@ from src.services import do_query, datetime_param_sql_format
 from src.utils import generate_pdf_from_template
 import uuid
 from src.services import live_service,email_service
-from src.models import ClassroomRoleEnum, ClassroomDeviceEnum,CourseScheduleStatueEnum
+from src.models import ClassroomRoleEnum, ClassroomDeviceEnum
 
 teacher = Blueprint('teacher', __name__)
 
@@ -1242,7 +1242,7 @@ def get_enter_room_url():
 
         u = ClassroomRoleEnum.TEACHER.name
 
-        if courseschedule.schedule_type == CourseScheduleStatueEnum.INTERVIEW:
+        if courseschedule.schedule_type.name == 'INTERVIEW':
             u =ClassroomRoleEnum.STUDENT.name
 
         url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,nickName,u,ClassroomDeviceEnum.PC.name)
