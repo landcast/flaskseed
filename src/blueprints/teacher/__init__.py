@@ -1238,7 +1238,7 @@ def get_enter_room_url():
         nickName = "{0}{1}{2}".format((getattr(g, current_app.config['CUR_USER'])['first_name']).strip(),
                                       (getattr(g, current_app.config['CUR_USER'])['middle_name']).strip(),
                                       (getattr(g, current_app.config['CUR_USER'])['last_name']).strip())
-        current_app.logger.debug('nickName-------'+nickName)
+
 
         u = ClassroomRoleEnum.TEACHER.name
 

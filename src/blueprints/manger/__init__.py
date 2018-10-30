@@ -1783,6 +1783,7 @@ def get_enter_room_url():
         if courseschedule.schedule_type == 'INTERVIEW':
             u = ClassroomRoleEnum.TEACHER.name
 
+        current_app.logger.debug('nickName--1212-----'+str(courseschedule.schedule_type))
 
         url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['name'],
                                       u,ClassroomDeviceEnum.PC.name)
