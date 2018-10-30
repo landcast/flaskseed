@@ -1578,6 +1578,9 @@ def thacher_apponit():
             interview_state:
               description: '面试状态'
               type: 'string'
+            teacher_state:
+              description: '教师状态'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, thacher_apponit_sql))
@@ -1592,7 +1595,7 @@ def thacher_apponit_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select t.id,i.id as interview_id,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
+    select t.id,i.id as interview_id,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as username,t.mobile,t.email,i.`updated_at`,i.state as interview_state,t.state as teacher_state
     from teacher t , interview i  
     where t.`delete_flag` = 'IN_FORCE'  and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
@@ -1615,7 +1618,7 @@ def thacher_apponit_sql(params):
         sql.append(
             ' and i.`start` <:interview_at and i.`end` >:interview_at')
     sql.append(' order by t.id desc')
-    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','interview_state'], ''.join(sql)
+    return ['id','interview_id', 'username', 'mobile', 'email','updated_at','interview_state','teacher_state'], ''.join(sql)
 
 
 @manger.route('/interview_result', methods=['POST'])
