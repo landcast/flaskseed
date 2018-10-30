@@ -5,7 +5,7 @@ from src.models import db, session_scope,Teacher,Interview,CourseSchedule, \
     CourseSchedule,StudySchedule,Homework,CourseSchedule,CourseClassroom,Course
 from src.services import do_query, datetime_param_sql_format
 from src.services import live_service
-from src.models import ClassroomRoleEnum, ClassroomDeviceEnum
+from src.models import ClassroomRoleEnum, ClassroomDeviceEnum,CourseScheduleStatueEnum
 from flask import g
 
 
@@ -1780,10 +1780,8 @@ def get_enter_room_url():
 
         u = ClassroomRoleEnum.SIT_IN.name
 
-        if courseschedule.schedule_type == 'INTERVIEW':
+        if courseschedule.schedule_type == CourseScheduleStatueEnum.INTERVIEW:
             u = ClassroomRoleEnum.TEACHER.name
-
-        current_app.logger.debug('nickName--1212-----'+str(courseschedule.schedule_type))
 
         url = live_service.enter_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,getattr(g, current_app.config['CUR_USER'])['name'],
                                       u,ClassroomDeviceEnum.PC.name)
