@@ -1587,13 +1587,14 @@ def thacher_apponit_sql(params):
     '''
     generate dynamic sql for order query by params
     :param params:
+    and t.state = 'CHECK_PASS'
     :return:
     '''
     current_app.logger.debug(params)
     sql = ['''
     select t.id,i.id as interview_id,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as username,t.mobile,t.email,i.`updated_at`,i.state as interview_state
     from teacher t , interview i  
-    where t.`delete_flag` = 'IN_FORCE' and t.state = 'CHECK_PASS' and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
+    where t.`delete_flag` = 'IN_FORCE'  and i.state in(1,6,7,8) and i.teacher_id = t.id  and i.`delete_flag` = 'IN_FORCE' and i.`state` <> 99 
     
     ''']
 
