@@ -1176,12 +1176,9 @@ def save_subject():
             session.add(studentSubject)
             session.flush()
         else:
-            studentSubject = StudentSubject(optional = optional,
-                                            subject_type = subject_type,
-                                            student_id = student_id,
-                                            subject_id = subject_id,
-                                            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
-                                            )
+            setattr(studentSubject,'subject_id',subject_id)
+            setattr(studentSubject,'subject_type',subject_type)
+            setattr(studentSubject,'optional',optional)
             session.add(studentSubject)
             session.flush()
 
