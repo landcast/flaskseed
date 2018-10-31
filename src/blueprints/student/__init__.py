@@ -1161,11 +1161,10 @@ def save_subject():
     if 'optional' in request.json:
         optional = request.json['optional']
 
-
+    current_app.logger.debug('-----------'+str(student_id)+'-------'+str(subject_type))
     with session_scope(db) as session:
 
-
-        studentSubject = session.query(StudentSubject).filter_by(student_id=student_id,subject_type = subject_type).one_or_none()
+        studentSubject = session.query(StudentSubject).filter_by(student_id=student_id,subject_type=subject_type).one_or_none()
 
         if studentSubject is None :
             studentSubject = StudentSubject(optional = optional,
