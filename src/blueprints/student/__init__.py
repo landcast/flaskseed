@@ -6,7 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from sqlalchemy.sql import *
 
-from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom,Homework
+from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom,\
+    Homework,StudentSubject
 
 from src.services import do_query
 import hashlib
@@ -1134,4 +1135,60 @@ def get_courseware_sql(params):
     sql.append(' order by ss.id desc')
 
     return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
+
+
+@student.route('/save_subject', methods=['POST'])
+def save_subject():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      subject_id:
+        description: '课节id'
+        type: 'string'
+      subject_type:
+        description: '类型'
+        type: '1:学习科目，2：意向科目'
+    res:
+      id:
+        description: ''
+        type: ''
+    """
+    student_id = getattr(g, current_app.config['CUR_USER'])['id']
+    subject_id = request.json['subject_id']
+    subject_type = request.json['subject_type']
+    optional = 2
+    if 'optional' in request.json:
+        optional = request.json['optional']
+
+
+    with session_scope(db) as session:
+
+
+        studentSubject = session.query(StudentSubject).filter_by(student_id=student_id,subject_type = subject_type).one_or_none()
+
+        if studentSubject is None :
+            studentSubject = StudentSubject(optional = optional,
+                                            subject_type = subject_type,
+                                            student_id = student_id,
+                                            subject_id = subject_id.id,
+                                            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                                 )
+            session.add(studentSubject)
+            session.flush()
+        else:
+            studentSubject = StudentSubject(optional = optional,
+                                            subject_type = subject_type,
+                                            student_id = student_id,
+                                            subject_id = subject_id.id,
+                                            updated_by=getattr(g, current_app.config['CUR_USER'])['username']
+                                            )
+            session.add(studentSubject)
+            session.flush()
+
+
+
+
+    return jsonify({'id':studentSubject.id })
+
 
