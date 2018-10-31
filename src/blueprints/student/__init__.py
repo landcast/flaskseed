@@ -1145,10 +1145,10 @@ def save_subject():
     req:
       subject_id:
         description: '课节id'
-        type: 'string'
+        type: 'int'
       subject_type:
-        description: '类型'
-        type: '1:学习科目，2：意向科目'
+        description: '1:学习科目，2：意向科目'
+        type: 'int'
     res:
       id:
         description: ''
@@ -1171,7 +1171,7 @@ def save_subject():
             studentSubject = StudentSubject(optional = optional,
                                             subject_type = subject_type,
                                             student_id = student_id,
-                                            subject_id = subject_id.id,
+                                            subject_id = subject_id,
                                             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                                  )
             session.add(studentSubject)
@@ -1180,7 +1180,7 @@ def save_subject():
             studentSubject = StudentSubject(optional = optional,
                                             subject_type = subject_type,
                                             student_id = student_id,
-                                            subject_id = subject_id.id,
+                                            subject_id = subject_id,
                                             updated_by=getattr(g, current_app.config['CUR_USER'])['username']
                                             )
             session.add(studentSubject)
