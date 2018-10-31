@@ -1131,7 +1131,7 @@ def course_ware_sql(params):
     if 'class_at' in params.keys() :
         sql.append(
             ' and cs.`start` <:class_at and cs.`end` >:class_at')
-    sql.append(' order by c.id desc')
+    sql.append(' order by csw.id desc')
     return ['id', 'ware_name', 'room_title', 'subject_name', 'teacher_name',
             'created_at', 'state'], ''.join(sql)
 
