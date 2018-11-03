@@ -190,20 +190,20 @@ def register():
     value = hashlib.md5(str(user).encode('utf-8')).hexdigest()
     redis_store.set(redis_key, value)
 
-    if user.mobile is not None:
+    # if user.mobile is not None:
 
-        if code != '86':
-            mobile = '00'+code+'-'+mobile
-        current_app.logger.debug('code--->' + code+":"+mobile+"----->"+str(user_id))
-        teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
-        current_app.logger.debug('target_table:' + user_type+'---table_id:'+str(user_id)+'-----teacher_id:'+str(teacher_id))
-        thirdDateLog = ThirdDateLog(table_name = user_type,
-                                   table_id = user_id,
-                                   third_id = str(teacher_id),
-                                    third_date = '',
-                                   delete_flag = 'IN_FORCE')
-        session.add(thirdDateLog)
-        session.flush()
+        # if code != '86':
+        #     mobile = '00'+code+'-'+mobile
+        # current_app.logger.debug('code--->' + code+":"+mobile+"----->"+str(user_id))
+        # teacher_id = classin_service.register(mobile,mobile, request.json['password'], 0, 'en')
+        # current_app.logger.debug('target_table:' + user_type+'---table_id:'+str(user_id)+'-----teacher_id:'+str(teacher_id))
+        # thirdDateLog = ThirdDateLog(table_name = user_type,
+        #                            table_id = user_id,
+        #                            third_id = str(teacher_id),
+        #                             third_date = '',
+        #                            delete_flag = 'IN_FORCE')
+        # session.add(thirdDateLog)
+        # session.flush()
 
 
     return jsonify(token)

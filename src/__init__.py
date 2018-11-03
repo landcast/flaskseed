@@ -63,10 +63,10 @@ def auth_check_needed(request):
                          '/auth/*', '/upload', '/download/*', '/admin/*',
                          '/order/*', '/api/*', '/swagger.json', '/test/*',
                          '/static/*', '/swagger_ui/*', '/swagger', '/student/*',
-                         '/teacher/*', '/course/*', '/manger/*']
+                         '/teacher/*', '/course/*', '/manger/*','/channel/*']
     else:
         visitor_allow = ['/', '/*.html', '/*.js', '/*.css', '/*.ico', '/*.jpg',
-                         '/auth/*', '/upload', '/download/*', '/static/*']
+                         '/auth/*', '/upload', '/download/*', '/static/*','/channel/*']
     for allow in visitor_allow:
         if fnmatchcase(path, allow):
             return False
@@ -300,6 +300,7 @@ def create_app(config):
     app.register_blueprint(student, url_prefix='/student')
     app.register_blueprint(teacher, url_prefix='/teacher')
     app.register_blueprint(manger, url_prefix='/manger')
+    app.register_blueprint(manger, url_prefix='/channel')
     app.register_blueprint(test, url_prefix='/test')
     # register restful endpoints
     sw_manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
