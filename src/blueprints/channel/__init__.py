@@ -17,10 +17,10 @@ from src.services import classin_service,do_query
 
 BEARER_TOKEN = 'Bearer '
 
-auth = Blueprint('channel', __name__)
+channel = Blueprint('channel', __name__)
 
 
-@auth.route('/login', methods=['POST'])
+@channel.route('/login', methods=['POST'])
 def login():
     """
     swagger-doc: 'do login for registered user'

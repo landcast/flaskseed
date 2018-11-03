@@ -23,6 +23,7 @@ from src.blueprints.course import course
 from src.blueprints.student import student
 from src.blueprints.teacher import teacher
 from src.blueprints.manger import manger
+from src.blueprints.channel import channel
 from src.blueprints.test import test
 
 from src.resources.api import api, admin
@@ -300,8 +301,8 @@ def create_app(config):
     app.register_blueprint(student, url_prefix='/student')
     app.register_blueprint(teacher, url_prefix='/teacher')
     app.register_blueprint(manger, url_prefix='/manger')
-    app.register_blueprint(manger, url_prefix='/channel')
     app.register_blueprint(test, url_prefix='/test')
+    app.register_blueprint(channel, url_prefix='/channel')
     # register restful endpoints
     sw_manager = SwagAPIManager(app, flask_sqlalchemy_db=db)
     app.sw_manager = sw_manager
