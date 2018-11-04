@@ -116,7 +116,7 @@ def login():
                 session.add(thirdDateLog)
                 session.flush()
 
-                return jsonify({**token})
+                return jsonify(token)
             else:
                 return jsonify({'message': 'password check failed!'}), 401
         else:
