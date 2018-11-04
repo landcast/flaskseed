@@ -60,7 +60,9 @@ def login():
     """
     user_name = request.json['mobile']
     code = request.json['code']
-    password = request.json['password']
+    password = 'vipustutor'
+    if 'password' in request.json:
+        password = request.json['password']
     user_type = 'Student'
     partnerId = request.json['partnerId']
     appKey = request.json['appKey']
