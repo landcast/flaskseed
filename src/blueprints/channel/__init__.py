@@ -50,6 +50,9 @@ def login():
       sex:
         description: '性别 ：male或female'
         type: 'string'
+      real_name:
+        description: '真实姓名'
+        type: 'string'
     res:
       Authorization:
         description: 'Athorization jwt http header'
@@ -81,7 +84,7 @@ def login():
             }), 500
 
         m2 = hashlib.md5()
-        m2.update(channel.app_key+timeStamp)
+        m2.update((channel.app_key+timeStamp).encode('utf-8'))
 
         if m2.hexdigest() != appKey:
             if channel is None :
