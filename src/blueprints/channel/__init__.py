@@ -86,6 +86,8 @@ def login():
         m2 = hashlib.md5()
         m2.update((channel.app_key+timeStamp).encode('utf-8'))
 
+        current_app.logger.debug(m2.hexdigest()+'---->'+appKey)
+
         if m2.hexdigest() != appKey:
             if channel is None :
                 return jsonify({
