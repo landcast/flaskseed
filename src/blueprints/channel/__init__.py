@@ -109,8 +109,8 @@ def login():
                 token = generate_jwt_token(current_app.config['JWT_HEADER'],
                                            user_name)
                 thirdDateLog = ThirdDateLog(table_name = 'Channel',
-                                           table_id = appKey,
-                                           third_id = user.username,
+                                           table_id = user.id,
+                                           third_id = appKey,
                                             third_date = token,
                                            delete_flag = 'IN_FORCE')
                 session.add(thirdDateLog)
