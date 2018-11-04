@@ -102,7 +102,7 @@ def login():
         if user is None:
             user = target_table(username=user_name,
                                 password=generate_password_hash(request.json['password']), state=1,
-                                updated_by=user_name, mobile=user_name,nickname=user_name,name=real_name,nation = code,gender=sex)
+                                updated_by=user_name, mobile=user_name,nickname=user_name,name=real_name,nation = code,gender=sex,channel_id=channel.id)
 
             session.add(user)
             session.flush()
