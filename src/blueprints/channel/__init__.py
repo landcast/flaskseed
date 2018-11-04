@@ -44,8 +44,8 @@ def login():
       appKey:
         description: 'MD5(secret+timeStamp)'
         type: 'string'
-      token:
-        description: '返回需要携带的信息'
+      data:
+        description: '回传数据字符串'
         type: 'string'
       sex:
         description: '性别 ：male或female'
@@ -67,7 +67,7 @@ def login():
     timeStamp = request.json['timeStamp']
     target_table = user_source[user_type]
     real_name = request.json['real_name']
-    session = request.json['token']
+    data = request.json['data']
     sex1= request.json['sex']
     sex = '男';
     if sex1 == 'female':
@@ -111,7 +111,7 @@ def login():
                 thirdDateLog = ThirdDateLog(table_name = 'Channel',
                                            table_id = user.id,
                                            third_id = appKey,
-                                            third_date = session,
+                                            third_date = data,
                                            delete_flag = 'IN_FORCE')
                 session.add(thirdDateLog)
                 session.flush()
