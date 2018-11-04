@@ -67,7 +67,7 @@ def login():
     timeStamp = request.json['timeStamp']
     target_table = user_source[user_type]
     real_name = request.json['real_name']
-    token = request.json['token']
+    session = request.json['token']
     sex1= request.json['sex']
     sex = '男';
     if sex1 == 'female':
@@ -111,7 +111,7 @@ def login():
                 thirdDateLog = ThirdDateLog(table_name = 'Channel',
                                            table_id = user.id,
                                            third_id = appKey,
-                                            third_date = token,
+                                            third_date = session,
                                            delete_flag = 'IN_FORCE')
                 session.add(thirdDateLog)
                 session.flush()
