@@ -26,7 +26,10 @@ def login():
     swagger-doc: 'do login for registered user'
     required: ['username', 'password', 'usertype']
     req:
-      username:
+      code:
+        description: '国家代码'
+        type: 'string'
+      mobile:
         description: 'login user name'
         type: 'string'
       password:
