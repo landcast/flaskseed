@@ -88,7 +88,7 @@ def login():
 
         current_app.logger.debug(m2.hexdigest()+'---->'+appKey)
 
-        if m2.hexdigest() != appKey:
+        if m2.hexdigest() is not appKey:
             if channel is None :
                 return jsonify({
                     "error": "appKey error: {0}".format(
