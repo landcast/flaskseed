@@ -1241,16 +1241,17 @@ def start_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-           select cw.`ware_uid`,ss.`name` ,ss.actual_start as start,ss.actual_end as end,cw.`ware_name`,cw.ware_url
-           from study_schedule ss, courseware cw
-           where ss.course_schedule_id = cw.course_schedule_id and cw .`delete_flag` = 'IN_FORCE' and ss .`delete_flag` = 'IN_FORCE'
+    select c.course_name,ss.name,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as teacher_name,ss.actual_start start,ss.actual_end end from 
+    study_schedule ss,course_schedule cs,course c,teacher t
+    where ss.`course_schedule_id` = cs.id and cs.course_id = c.id and c.primary_teacher_id = t.id
+     and ss .`delete_flag` = 'IN_FORCE' and cs .`delete_flag` = 'IN_FORCE'  and c .`delete_flag` = 'IN_FORCE' and t .`delete_flag` = 'IN_FORCE'
          ''']
 
     sql.append("and ss.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
 
     sql.append(' ORDER BY ABS(NOW() - ss.actual_start) ASC')
 
-    return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
+    return ['course_name','name','teacher_name','start','end'], ''.join(sql)
 
 
 
