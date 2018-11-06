@@ -1125,12 +1125,13 @@ def get_courseware_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-           select cw.`ware_uid`,ss.`name` ,ss.actual_start as start,ss.actual_end as end,cw.`ware_name`,cw.ware_url
-           from study_schedule ss, courseware cw
-           where ss.course_schedule_id = cw.course_schedule_id and cw .`delete_flag` = 'IN_FORCE' and ss .`delete_flag` = 'IN_FORCE'
+    select c.course_name,ss.name,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as teacher_name,ss.actual_start start,ss.actual_end end from 
+    study_schedule ss,course_schedule cs,course c,teacher t
+    where ss.`course_schedule_id` = cs.id and cs.course_id = c.id and c.primary_teacher_id = t.id
+     and ss .`delete_flag` = 'IN_FORCE' and cs .`delete_flag` = 'IN_FORCE'  and c .`delete_flag` = 'IN_FORCE' and t .`delete_flag` = 'IN_FORCE'
          ''']
 
-    sql.append(' and ss.id =:study_schedule_id ')
+    sql.append(' and ss.student_id =:study_schedule_id ')
 
     sql.append(' order by ss.id desc')
 
@@ -1181,9 +1182,75 @@ def save_subject():
             session.add(studentSubject)
             session.flush()
 
-
-
-
     return jsonify({'id':studentSubject.id })
+
+
+@student.route('/start_course', methods=['POST'])
+def start_course():
+    """
+    swagger-doc: 'start_course'
+    required: []
+    req:
+      page_limit:
+        description: 'records in one page'
+        type: 'integer'
+      page_no:
+        description: 'page no'
+        type: 'integer'
+    res:
+      num_results:
+        description: 'objects returned by query in current page'
+        type: 'integer'
+      page:
+        description: 'current page no in total pages'
+        type: 'integer'
+      total_pages:
+        description: 'total pages'
+        type: 'integer'
+      objects:
+        description: 'objects returned by query'
+        type: array
+        items:
+          type: object
+          properties:
+            course_name:
+              description: '课程名称'
+              type: 'string'
+            name:
+              description: '课节名称'
+              type: 'string'
+            start:
+              description: '上课时间'
+              type: 'string'
+            end:
+              description: '上课结束时间'
+              type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
+    """
+    j = request.json
+    return jsonify(do_query(j, start_course_sql))
+
+
+def start_course_sql(params):
+    '''
+    generate dynamic sql for order query by params
+    :param params:
+    :return:
+    '''
+    current_app.logger.debug(params)
+    sql = ['''
+           select cw.`ware_uid`,ss.`name` ,ss.actual_start as start,ss.actual_end as end,cw.`ware_name`,cw.ware_url
+           from study_schedule ss, courseware cw
+           where ss.course_schedule_id = cw.course_schedule_id and cw .`delete_flag` = 'IN_FORCE' and ss .`delete_flag` = 'IN_FORCE'
+         ''']
+
+    sql.append("and ss.student_id =" + getattr(g, current_app.config['CUR_USER'])['id'])
+
+    sql.append(' ORDER BY ABS(NOW() - ss.actual_start) ASC')
+
+    return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
+
 
 
