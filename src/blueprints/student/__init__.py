@@ -1228,6 +1228,9 @@ def start_course():
             teacher_name:
               description: '教师名称'
               type: 'string'
+            avatar:
+              description: '教师头像'
+              type: 'string'
     """
     j = request.json
     return jsonify(do_query(j, start_course_sql))
@@ -1241,7 +1244,7 @@ def start_course_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select c.course_name,ss.name,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as teacher_name,ss.actual_start start,ss.actual_end end from 
+    select c.course_name,ss.name,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,'')) as teacher_name,ss.actual_start start,ss.actual_end end,t.avatar from 
     study_schedule ss,course_schedule cs,course c,teacher t
     where ss.`course_schedule_id` = cs.id and cs.course_id = c.id and c.primary_teacher_id = t.id  and ss.actual_start > now()
      and ss .`delete_flag` = 'IN_FORCE' and cs .`delete_flag` = 'IN_FORCE'  and c .`delete_flag` = 'IN_FORCE' and t .`delete_flag` = 'IN_FORCE'
@@ -1251,7 +1254,7 @@ def start_course_sql(params):
 
     sql.append(' ORDER BY ABS(NOW() - ss.actual_start) ASC')
 
-    return ['course_name','name','teacher_name','start','end'], ''.join(sql)
+    return ['course_name','name','teacher_name','start','end','avatar'], ''.join(sql)
 
 
 
