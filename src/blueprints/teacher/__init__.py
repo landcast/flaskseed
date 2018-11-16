@@ -1809,8 +1809,6 @@ def edit_interview():
 
         return jsonify({'id':interview.id })
 
-
-
 @teacher.route('/get_preview_doc', methods=['POST'])
 def get_preview_doc():
     """
@@ -1883,6 +1881,7 @@ def get_preview_doc_sql(params):
     sql.append(' order by cs.id desc')
 
     return ['ware_uid','name','start','end','ware_name','ware_url'], ''.join(sql)
+
 
 @teacher.route('/interview_result', methods=['POST'])
 def interview_result():
@@ -1969,7 +1968,65 @@ def interview_result_sql(params):
     return ['interview_id','course_id','course_name','interview_name','start','end','state','interview_state','course_schedule_id','courseware_num'], ''.join(sql)
 
 
+@teacher.route('/edit_course_schedule', methods=['POST'])
+def edit_course_schedule():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+      course_schedule_id:
+        description: '课节id'
+        type: 'string'
+      name:
+        description: '课程名称'
+        type: 'string'
 
+    res:
+      verify_code:
+        description: 'id'
+        type: ''
+    """
+    course_schedule_id = request.json['course_schedule_id']
+    name = request.json['name']
+
+    with session_scope(db) as session:
+
+        courseSchedule = session.query(CourseSchedule).filter_by(id=course_schedule_id).one_or_none()
+
+        courseclassroom = session.query(CourseClassroom).filter_by(course_schedule_id=course_schedule_id).one_or_none()
+
+        if courseSchedule is None or courseclassroom is None:
+            return jsonify({
+                "error": "not found course_schedule: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        setattr(courseSchedule,'name',name)
+        session.add(courseSchedule)
+        session.flush()
+
+        setattr(courseclassroom,'room_title',name)
+        session.add(courseclassroom)
+        session.flush()
+
+        live_service.edit_room(getattr(g, current_app.config['CUR_USER'])['username'],courseclassroom.room_id,name,
+                               getTimeDiff(courseSchedule.start.strftime('%Y-%m-%d %H:%M:%S'),courseSchedule.end.strftime('%Y-%m-%d %H:%M:%S')),
+                               courseSchedule.start.isoformat() + '.000Z',courseSchedule.end.isoformat() + '.000Z',0,'en')
+
+        studyschedules = session.query(StudySchedule).filter_by(course_schedule_id=course_schedule_id).all()
+
+        if studyschedules is None or len(studyschedules)<1:
+            return jsonify({
+                "error": "not found Course_Class_room: {0}".format(
+                    course_schedule_id)
+            }), 500
+
+        for studyschedule in studyschedules:
+            setattr(studyschedule,'name',name)
+            session.add(studyschedule)
+            session.flush()
+
+    return jsonify({'id':courseSchedule.id })
 
 
 def getTimeDiff(timeStra,timeStrb):
