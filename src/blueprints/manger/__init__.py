@@ -977,7 +977,7 @@ def student_tryout_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select * from (select c.id,c.`course_name`,c.open_grade,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  as teacher_name,s.name as student_name,cs.`start`,cs.`end`,
+    select * from (select c.id,cs.name as course_name,c.open_grade,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  as teacher_name,s.name as student_name,cs.`start`,cs.`end`,
     (select count(*) from course c1,courseware cs where c1.`id` = cs.`course_id` and c1.id = c.id and c1.`delete_flag` = 'IN_FORCE' and cs.`delete_flag` = 'IN_FORCE') as courseware_num,
     cs.`schedule_type` as course_schedule_state,ss.id as study_schedule_id,cs.id as course_schedule_id,t.id as teacher_id,s.id as student_id
     from course c,teacher t ,student s,`order` o,course_schedule cs,study_schedule ss
