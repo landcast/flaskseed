@@ -95,6 +95,9 @@ def query():
             created_at:
               description: '创建时间'
               type: 'string'
+            teacher_name:
+              description: '教师名称'
+              type: 'string'
     """
     j = request.json
     datetime_param_sql_format(j, ['created_at_start', 'created_at_end']),
@@ -109,13 +112,12 @@ def generate_sql(params):
     '''
     current_app.logger.debug(params)
     sql = ['''
-    select c.`course_name`,c.`course_name_zh`,c.id,c.`course_type`,c.state,
-    c.`updated_by`,c.`created_at`
-    from   course c, subject su,subject_category sc, curriculum cr
+    select c.`course_name`,c.`course_name_zh`,c.id,c.`course_type`,c.state,c.`updated_by`,c.`created_at`,concat(IFNULL(t.first_name,''),' ',IFNULL(t.middle_name,''),' ',IFNULL(t.last_name,''))  as teacher_name
+    from   course c, subject su,subject_category sc, curriculum cr,teacher t
     where  c.subject_id = su.id and
-        su.curriculum_id = cr.id and su.subject_category_id = sc.id
+        su.curriculum_id = cr.id and su.subject_category_id = sc.id and c.primary_teacher_id= t.id
     and c.state <> 99 and su.state <> 99 and sc.state <> 99 and cr.state <> 99    
-    and c.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE'  and cr.`delete_flag` = 'IN_FORCE' 
+    and c.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE' and su.`delete_flag` = 'IN_FORCE'  and cr.`delete_flag` = 'IN_FORCE' and t.`delete_flag` = 'IN_FORCE' 
     ''']
     if 'course_id' in params.keys():
         sql.append(' and c.id = :course_id')
@@ -146,7 +148,7 @@ def generate_sql(params):
     sql.append(' order by c.id desc')
 
     return [ 'course_name', 'course_name_zh','id', 'course_type', 'state',
-            'updated_by', 'created_at'], ''.join(sql)
+            'updated_by', 'created_at','teacher_name'], ''.join(sql)
 
 
 @course.route('/category_query', methods=['POST'])
