@@ -9,7 +9,7 @@ import random
 import requests
 
 from src.models import db, session_scope, user_source, SmsLog,ThirdDateLog,SysUser,SysUserRole
-from src.services import send_email, redis_store
+from src.services import send_email, redis_store,email_service
 import hashlib
 from src.services import classin_service,do_query
 
@@ -520,3 +520,43 @@ def generate_jwt_token(header_name, username):
     encoded = jwt.encode(payload, current_app.config['JWT_SECRET'],
                          algorithm=current_app.config['JWT_ALG'])
     return {header_name: BEARER_TOKEN + str(encoded, encoding='utf-8')}
+
+
+@auth.route('/applyLession', methods=['POST'])
+def applyLession():
+    """
+    swagger-doc: 'do register for new user'
+    required: ['username', 'password', 'usertype', 'verify_code']
+    req:
+      mobile:
+        description: '手机号'
+        type: 'string'
+      name:
+        description: '姓名'
+        type: 'string'
+      introduce:
+        description: '自我介绍'
+        type: 'string'
+      suggest;:
+        description: '建议'
+        type: 'int'
+    res:
+      id:
+        description: '用户id'
+        type: 'string'
+    """
+
+    mobile = request.json['mobile']
+    name = request.json['name']
+    introduce = '无'
+    if 'introduce' in request.json:
+        introduce = request.json['introduce']
+    suggest = '无'
+    if 'suggest' in request.json:
+        suggest = request.json['suggest']
+
+    email_service.sendEmail('lxf4456@163.com',mobile+','+name+","+introduce+","+suggest,'申请试听','apply_ctryout',1,'en')
+
+    user_id = 1
+    return jsonify({'id':user_id })
+
