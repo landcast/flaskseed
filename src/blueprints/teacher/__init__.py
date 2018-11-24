@@ -1628,7 +1628,7 @@ def my_schedule_sql(params):
 
     if 'start' in params.keys() and 'end' in params.keys() :
         sql.append(' and cs.`start` >:start and cs.`start` <:end')
-    sql.append(' order by c.id desc')
+    sql.append(' order by cs.start desc')
 
     return ['class_name', 'start','end','student_name','course_schedule_id','course_id','course_name'], ''.join(sql)
 

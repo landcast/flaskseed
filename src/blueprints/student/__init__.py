@@ -601,7 +601,7 @@ def student_schedule_sql(params):
 
     if 'course_schedule_state' in params.keys() and '2'==params['course_schedule_state']:
         sql.append(' and cs1.end >= now()')
-    sql.append(' order by sr.id desc')
+    sql.append(' order by actual_start desc')
     return ['id', 'name', 'start', 'end','course_id', 'courseware_num'], ''.join(sql)
 
 
