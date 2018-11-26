@@ -555,8 +555,9 @@ def applyLession():
     if 'suggest' in request.json:
         suggest = request.json['suggest']
 
-    email_service.sendEmail('lxf4456@163.com',name+','+mobile+","+introduce+","+suggest,'申请试听','apply_ctryout',1,'en')
+   # email_service.sendEmail('lxf4456@163.com',name+','+mobile+","+introduce+","+suggest,'申请试听','apply_ctryout',1,'en')
 
+    email_service.sendEmail('lxf4456@163.com','1,2,3,4','2323','apply_ctryout',1,'en')
     user_id = 1
     return jsonify({'id':user_id })
 
