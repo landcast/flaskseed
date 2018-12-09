@@ -7,7 +7,7 @@ import datetime
 from sqlalchemy.sql import *
 
 from src.models import db, session_scope,CourseAppointment,StudyAppointment,StudySchedule,CourseClassroom,\
-    Homework,StudentSubject
+    Homework,StudentSubject,Student,Channel
 
 from src.services import do_query
 import hashlib
@@ -1255,6 +1255,34 @@ def start_course_sql(params):
     sql.append(' ORDER BY ABS(NOW() - ss.actual_start) ASC')
 
     return ['course_name','name','teacher_name','start','end','avatar'], ''.join(sql)
+
+
+@student.route('/student_logo', methods=['POST'])
+def save_subject():
+    """
+    swagger-doc: 'schedule'
+    required: []
+    req:
+
+    res:
+      url:
+        description: ''
+        type: 'string'
+    """
+    student_id = getattr(g, current_app.config['CUR_USER'])['id']
+
+    url = 'images/logo.png'
+
+    with session_scope(db) as session:
+
+        student = session.query(Student).filter_by(id=student_id).one_or_none()
+
+        if student is not None  and student.channel_id is not None:
+            channel = session.query(Channel).filter_by(id=student.channel_id).one_or_none()
+            if channel is not None and channel.logo_url is not None:
+                url = channel.logo_url
+
+    return jsonify({'url':url })
 
 
 
