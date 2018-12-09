@@ -1258,7 +1258,7 @@ def start_course_sql(params):
 
 
 @student.route('/student_logo', methods=['POST'])
-def save_subject():
+def student_logo():
     """
     swagger-doc: 'schedule'
     required: []
