@@ -1273,6 +1273,8 @@ def student_logo():
 
     url = 'images/logo.png'
 
+    domain_address = 'http://www.vipustutor.com/'
+
     with session_scope(db) as session:
 
         student = session.query(Student).filter_by(id=student_id).one_or_none()
@@ -1282,7 +1284,7 @@ def student_logo():
             if channel is not None and channel.logo_url is not None:
                 url = channel.logo_url
 
-    return jsonify({'url':url })
+    return jsonify({'url':url,'domain_address':domain_address })
 
 
 
