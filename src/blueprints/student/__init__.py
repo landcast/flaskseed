@@ -1281,8 +1281,12 @@ def student_logo():
 
         if student is not None  and student.channel_id is not None:
             channel = session.query(Channel).filter_by(id=student.channel_id).one_or_none()
-            if channel is not None and channel.logo_url is not None:
-                url = channel.logo_url
+            if channel is not None :
+                if channel.logo_url is not None:
+                    url = channel.logo_url
+                if channel.domain_address is not None:
+                    domain_address = channel.domain_address
+
 
     return jsonify({'url':url,'domain_address':domain_address })
 
