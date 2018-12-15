@@ -1287,7 +1287,6 @@ def student_logo():
                 if channel.domain_address is not None:
                     domain_address = channel.domain_address
 
-
     return jsonify({'url':url,'domain_address':domain_address })
 
 
