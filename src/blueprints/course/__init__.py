@@ -680,8 +680,8 @@ def course_common_sql(params):
       (select count(*) from courseware cs where c.`id` = cs.`course_id` and cs.`delete_flag` = 'IN_FORCE') as courseware_num,t.id as teacher_id
          from 
         course c,
-        teacher t where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`package_type` ='COMMON'  
-        ) t where 1=1
+        teacher t,`order` o1 where t.id = c.`primary_teacher_id` and c.`delete_flag` = 'IN_FORCE'and t.`delete_flag` = 'IN_FORCE' and c.`package_type` ='COMMON'  
+        and c.id = o1.course_id and o1.payment_state in (2,8)) t where 1=1
     ''']
 
     if 'teacher_name' in params.keys():
