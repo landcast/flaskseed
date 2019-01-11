@@ -152,10 +152,10 @@ def enter_room(username, room_id, nick_name,
     """
     current_app.logger.debug(room_id)
     with session_scope(db) as session:
-        course_classroom = session.query(CourseClassroom).filter(
-                CourseClassroom.room_id == room_id).one_or_none()
-        if not course_classroom:
-            raise RuntimeError('CourseClassroom of room_id passed in not found')
+        # course_classroom = session.query(CourseClassroom).filter(
+        #         CourseClassroom.room_id == room_id).one_or_none()
+        # if not course_classroom:
+        #     raise RuntimeError('CourseClassroom of room_id passed in not found')
         r = requests.post(
                 current_app.config['EP_LOCATION'] + current_app.config[
                     'EP_LIVE_PATH'] + '/getRoomEnterUrl',
@@ -167,23 +167,23 @@ def enter_room(username, room_id, nick_name,
                     'deviceType': ClassroomDeviceEnum[device_type].value - 1
                 }), headers={'Content-type': 'application/json'})
         current_app.logger.debug(r.text)
-        if r.json()['code'] == 0:
-            if course_classroom.room_url:
-                temp = eval(course_classroom.room_url)
-                temp.append(r.json()['url'])
-                course_classroom.room_url = str(temp)
-            else:
-                course_classroom.room_url = "['{}']".format(r.json()['url'])
-            c_c_p = CourseClassParticipant(
-                    role_in_course=role_in_classroom,
-                    access_url=r.json()['url'],
-                    device_type=device_type,
-                    course_classroom_id=course_classroom.id,
-                    role_id=nick_name,
-                    updated_by=username
-            )
-            session.add(c_c_p)
-            session.merge(course_classroom)
+        # if r.json()['code'] == 0:
+        #     if course_classroom.room_url:
+        #         temp = eval(course_classroom.room_url)
+        #         temp.append(r.json()['url'])
+        #         course_classroom.room_url = str(temp)
+        #     else:
+        #         course_classroom.room_url = "['{}']".format(r.json()['url'])
+        #     c_c_p = CourseClassParticipant(
+        #             role_in_course=role_in_classroom,
+        #             access_url=r.json()['url'],
+        #             device_type=device_type,
+        #             course_classroom_id=course_classroom.id,
+        #             role_id=nick_name,
+        #             updated_by=username
+        #     )
+        #     session.add(c_c_p)
+        #     session.merge(course_classroom)
     return r.json()['url']
 
 
