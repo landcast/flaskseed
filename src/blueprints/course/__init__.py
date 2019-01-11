@@ -721,7 +721,7 @@ def course_common_sql(params):
 
     if 'courseware' in params.keys() and '1' ==params['courseware'] :
         sql.append(' and t.courseware_num > 0')
-    sql.append(' order by t.id desc order by t.id desc')
+    sql.append(' group by t.id order by t.id desc')
 
     return ['id', 'course_name', 'course_name_zh', 'teacher_name', 'student_name',
             'start', 'end','classes_number','finish','course_schedule_id','open_grade','courseware_num'], ''.join(sql)
